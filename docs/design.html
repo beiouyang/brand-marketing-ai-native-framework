@@ -1,0 +1,617 @@
+<!--
+  ═══════════════════════════════════════════════════════════════════════
+  JD APP 16.0 GUIDELINE · 设计系统对外站点
+  ═══════════════════════════════════════════════════════════════════════
+
+  本文件由 `.claude/skills/design-md-to-portal/` 生成 —— 不要手动编辑。
+  改板式请改 `.claude/skills/design-md-to-portal/references/site-template.html`。
+
+  全量重建产物，故意留大量 TBD 占位，预期多轮迭代。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JD APP 16.0 GUIDELINE · 设计系统</title>
+  <meta name="description" content="JD APP 16.0 设计系统对外公开规范。设计与用研部 - AI 核心产品设计部。" />
+  <style>
+    :root {
+      --color-text: #11141A;
+      --color-text-help: #6B6F7A;
+      --color-banner-bg: #F5F6FA;
+      --color-divider: rgba(17, 20, 26, 0.08);
+      --color-tips-bg: #F0F7FF;
+      --color-tips-border: #B3D4FC;
+      --color-must: #E94B5A;
+      --color-optional: #5BAA5F;
+      --color-example-bg: #FFF8DC;
+      --color-link: #1976D2;
+      --color-bullet: #1976D2;
+      --font-display: 'Intro', 'Helvetica Neue', Arial, sans-serif;
+      --font-cjk: 'PingFang SC', 'PingFang-SC', 'Microsoft YaHei', sans-serif;
+      --max-width: 1666px;
+      --page-max-width: 1200px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #fff; color: var(--color-text); font-family: var(--font-cjk); -webkit-font-smoothing: antialiased; line-height: 1.6; }
+    .wrap { max-width: var(--max-width); margin: 0 auto; }
+
+    /* ─── 顶部唯一 banner ────────────────────────────────────── */
+    .banner {
+      position: relative;
+      background: #fff;
+      display: grid;
+      grid-template-columns: 1fr 548px;
+      min-height: 240px;
+    }
+    .banner__text { padding: 54px 60px; display: flex; flex-direction: column; gap: 28px; grid-column: 1; min-width: 0; }
+    .banner__tag { font-family: var(--font-display); font-size: 20px; line-height: 20px; letter-spacing: 0.04em; }
+    .banner__title { font-family: var(--font-cjk); font-size: 40px; font-weight: 600; line-height: 1.1; margin: 0; word-break: break-word; }
+    .banner__subtitle { font-family: var(--font-cjk); font-size: 16px; line-height: 16px; margin: 0; }
+    .banner__art {
+      grid-column: 2;
+      width: 548px;
+      height: 240px;
+      background-image:
+        url('assets/banner-art.png'),
+        radial-gradient(circle at 30% 50%, #FFB8C5 0%, #FFE0E6 28%, transparent 62%),
+        radial-gradient(circle at 68% 48%, #E8DDFF 0%, transparent 52%);
+      background-size: cover, auto, auto;
+      background-position: center, center, center;
+      background-repeat: no-repeat, no-repeat, no-repeat;
+    }
+
+    /* ─── 正文限宽容器 ──────────────────────────────────────── */
+    .page { max-width: var(--page-max-width); margin: 0 auto; padding: 60px; }
+    .page__h2 { font-size: 28px; font-weight: 600; margin: 56px 0 40px; letter-spacing: 0.5px; }
+    .page__h2:first-of-type { margin-top: 0; }
+    .page__h2 .num { color: var(--color-link); font-weight: 600; margin-right: 8px; }
+
+    /* ─── 规范要素参考蓝框 ──────────────────────────────────── */
+    .guideline-tips { border: 1px solid var(--color-tips-border); background: var(--color-tips-bg); padding: 28px 36px; border-radius: 8px; margin: 0 0 56px; }
+    .guideline-tips__title { font-size: 18px; font-weight: 600; margin: 0 0 16px; }
+    .guideline-tips ol { margin: 0; padding-left: 24px; font-size: 15px; line-height: 1.85; }
+    .guideline-tips ol li { margin-bottom: 4px; }
+    .guideline-tips .must { color: var(--color-must); font-weight: 500; }
+    .guideline-tips .optional { color: var(--color-optional); font-weight: 500; }
+    .guideline-tips strong { font-weight: 600; }
+
+    /* ─── 示意黄色标题 ──────────────────────────────────────── */
+    .example-header { background: var(--color-example-bg); padding: 10px 16px; margin: 0 0 36px; font-size: 15px; border-radius: 4px; display: flex; align-items: baseline; gap: 24px; flex-wrap: wrap; }
+    .example-tag { color: var(--color-must); font-weight: 600; }
+    .example-name { font-weight: 600; }
+    .example-link { color: var(--color-link); text-decoration: none; }
+    .example-link:hover { text-decoration: underline; }
+
+    /* ─── 圆点章节 ──────────────────────────────────────────── */
+    .bullet-section { margin: 0 0 56px; }
+    .bullet-section__title { position: relative; padding-left: 24px; font-size: 18px; font-weight: 500; margin: 0 0 20px; letter-spacing: 0.3px; }
+    .bullet-section__title::before { content: ""; position: absolute; left: 0; top: 9px; width: 8px; height: 8px; border-radius: 50%; background: var(--color-bullet); }
+    .bullet-section p,
+    .bullet-section ol,
+    .bullet-section ul { font-size: 15px; line-height: 1.8; margin: 0 0 16px; }
+    .bullet-section ol,
+    .bullet-section ul { padding-left: 24px; }
+    .bullet-section ol li,
+    .bullet-section ul li { margin-bottom: 6px; }
+    .bullet-section .tbd { color: var(--color-text-help); font-style: italic; font-size: 14px; }
+
+    /* ─── 章节内插表格 ──────────────────────────────────────── */
+    .section-table { width: 100%; border-collapse: collapse; margin: 0 0 24px; font-size: 14px; }
+    .section-table th,
+    .section-table td { text-align: left; padding: 12px 16px; border: 1px solid var(--color-divider); vertical-align: top; }
+    .section-table th { background: var(--color-banner-bg); font-weight: 600; }
+
+    /* ─── 章节内图示 ────────────────────────────────────────── */
+    .section-figure { margin: 16px 0 24px; }
+    .section-figure img { display: block; max-width: 100%; height: auto; border: 1px solid var(--color-divider); border-radius: 4px; }
+    .section-figure figcaption { font-size: 13px; color: var(--color-text-help); margin-top: 8px; }
+    .section-figure .placeholder { display: block; width: 100%; height: 220px; background: #f0f0f0; border-radius: 4px; }
+
+    /* ─── 分隔 ──────────────────────────────────────────────── */
+    .spec-divider { border: 0; border-top: 1px dashed var(--color-divider); margin: 0 0 56px; }
+
+    /* ─── 页脚 ──────────────────────────────────────────────── */
+    .site-footer { padding: 40px 60px; border-top: 1px solid var(--color-divider); font-size: 13px; color: var(--color-text-help); }
+    .site-footer a { color: inherit; }
+
+    /* ─── 移动端 ────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .banner { grid-template-columns: 1fr; grid-template-rows: auto auto; min-height: 0; }
+      .banner__art { grid-column: 1; width: 100%; height: 120px; }
+      .banner__text, .page, .site-footer { padding: 32px 20px; }
+      .banner__title { font-size: 28px; line-height: 1.2; }
+      .page__h2 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- 顶部唯一 banner -->
+    <header class="banner">
+      <div class="banner__text">
+        <span class="banner__tag">JD APP 16.0&nbsp;&nbsp;GUIDELINE</span>
+        <h1 class="banner__title">设计系统</h1>
+        <p class="banner__subtitle">设计与用研部 - AI 核心产品设计部</p>
+      </div>
+      <div class="banner__art" aria-hidden="true"></div>
+    </header>
+
+    <main class="page">
+
+      <h2 class="page__h2"><span class="num">1.</span>业务组件库（component-base）</h2>
+
+      <!-- 规范要素参考蓝框（固定，对所有 spec 通用） -->
+      <aside class="guideline-tips">
+        <h3 class="guideline-tips__title">🌟 规范要素参考：</h3>
+        <ol>
+          <li><strong>组件定义</strong><span class="must">（必写）</span>：组件的目的或用途</li>
+          <li><strong>行为准则</strong><span class="optional">（选写）</span>：和用户约定好的行为规则</li>
+          <li><strong>组件类型</strong><span class="optional">（选写）</span>：根据不同交互/视觉形态或功能模式的分类</li>
+          <li><strong>组件结构</strong><span class="must">（必写）</span>：组件的骨架说明，包括组件的内部组成、层级关系、必需和可选元素，需明确每个元素的使用场景及使用上下限，包括是否为必配置项、文本字数限制、按钮数量等</li>
+          <li><strong>组件属性</strong><span class="must">（必写）</span>：元素的空间关系、对齐方式、间距、颜色、在不同尺寸下的适配规则等</li>
+          <li><strong>典型场景示意</strong><span class="must">（必写）</span>：组件的使用场景举例，需尽可能覆盖全部典型场景</li>
+          <li><strong>错误示例</strong><span class="optional">（选写）</span>：组件"千万别这么做"的反面案例，尽量避免滥用或误用</li>
+        </ol>
+      </aside>
+
+      <!-- ═══════════════════════════════════════════════════════════
+           SPEC · button · component-base
+           ═══════════════════════════════════════════════════════════ -->
+
+      <p class="example-header">
+        <span class="example-tag">*示意：</span>
+        <span class="example-name">样式=主要操作（红色填充）, 状态=默认（Button） · draft v0.1</span>
+        <a class="example-link" href="../jd-design-system-md-v16/foundations/components-base/button/design.md">design.md →</a>
+        <a class="example-link" href="https://relay.jd.com/file/design?id=2029484645871009793&page_id=33%3A5&node_id=608%3A1031">Relay frame →</a>
+      </p>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">样式=主要操作（红色填充）, 状态=默认 定义</h3>
+        <p>主要按钮（红色填充）是首要操作的视觉锚点，用于页面主操作链路（确认 / 提交 / 立即购买 / 加入购物车），<strong>全页面通常仅 1 个</strong>，与次要操作 / 链接按钮形成主次关系。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">行为准则</h3>
+        <p class="tbd"><!-- TBD --> 设计师描述手势、转场、状态切换、边界情况。当前 design.md 「## 交互」段为 TODO 占位（已知状态：默认 / 禁用 / 点击）。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">样式=主要操作（红色填充）, 状态=默认 类型</h3>
+        <p>同属 ↘️ 按钮 Button (page <code>33:5</code>) 下的相关变体（INSTANCE 命名暗示）：样式=主要操作（红色填充）状态=默认（本节点 <code>608:1031</code>）、状态=禁用（<code>608:1082</code>）等。页面共 9 个 top frames，含 spec 文档 + 多个状态变体。</p>
+        <p class="tbd"><!-- TBD --> 完整 variants 矩阵建议参考 page <code>33:5</code> 顶层结构。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">样式=主要操作（红色填充）, 状态=默认 结构</h3>
+        <p>主要按钮组件由「容器 + 文字（+ 可选图标）」构成，单行高度 48px，圆角 8px，红底 + 白字 + 可选 home 图标 ×2 槽位（前置 / 后置）。</p>
+        <p class="tbd"><!-- TBD --> 详细元素表 / 槽位规则待 page-doc bundle 拆解（issue #35）。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">设计属性</h3>
+        <table class="section-table">
+          <thead>
+            <tr><th style="width: 22%;">类别</th><th style="width: 38%;">Token</th><th>实际值</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>按钮底</td><td><code>color_primary</code></td><td>#FF0F23</td></tr>
+            <tr><td>文字 + 图标</td><td><code>color_primary_text</code></td><td>#FFFFFF</td></tr>
+            <tr><td>按钮文案</td><td><code>pingfang_semibold/font_size_18_600</code></td><td>PingFang SC / 18pt / 600</td></tr>
+            <tr><td>按钮容器圆角</td><td><code>radius_l</code></td><td>8px</td></tr>
+            <tr><td>左右内边距</td><td><code>spacing_xl</code></td><td>24px</td></tr>
+            <tr><td>图标-文字间距</td><td><code>spacing_s</code></td><td>8px</td></tr>
+          </tbody>
+        </table>
+        <p class="tbd"><!-- TBD --> 点击高亮态 overlay 用 <code>#FFFFFF@90%</code>，V16 atom 缺，建议增加 <code>atom.white_90</code>。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">典型场景示意</h3>
+        <figure class="section-figure">
+          <img src="../jd-design-system-md-v16/foundations/components-base/button/preview.png" alt="主要按钮（红色填充）默认态截图" />
+          <figcaption>来源：<a href="https://relay.jd.com/file/design?id=2029484645871009793&page_id=33%3A5&node_id=608%3A1031">Relay frame 608:1031</a> · skill v0.2 自动导出 352×96 @2x</figcaption>
+        </figure>
+        <p><strong>✅ 用</strong>：</p>
+        <ul>
+          <li>表单页提交 / 确认动作（下单确认、登录、支付、保存）</li>
+          <li>页面级首要 CTA（立即购买、立即领取、加入购物车）</li>
+          <li>模态 / 弹窗的主操作（确认删除、完成、知道了）</li>
+        </ul>
+        <p><strong>❌ 不用</strong>：</p>
+        <ul>
+          <li>同一页面 / 区域多个主按钮并排（应仅 1 个主按钮，其余降级为次要 / 链接）</li>
+          <li>非首要操作（取消 / 返回 / 关闭 → 次要按钮或链接按钮）</li>
+          <li>列表项中的行内操作（用图标按钮或链接按钮，避免视觉抢戏）</li>
+        </ul>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">错误示例</h3>
+        <ul>
+          <li>❌ 不要硬编码 <code>#FF0F23</code> 替代 token <code>color_primary</code> —— 主色由 V16 Foundation 集中管理</li>
+          <li>❌ 不要在非首要操作场景使用主要按钮 —— 同页面 / 同区域应仅 1 个主按钮</li>
+          <li>❌ 不要把 18pt Semibold 改成其他字号字重 —— 按钮文案字号字重是组件契约的一部分</li>
+          <li>❌ 不要把按钮圆角改成与 <code>radius_l</code>（8px）不同的值</li>
+          <li>❌ 不要把点击高亮态 overlay <code>#FFFFFF@90%</code> 换成其它透明度</li>
+        </ul>
+      </section>
+
+      <hr class="spec-divider" />
+
+      <!-- ═══════════════════════════════════════════════════════════
+           SPEC · tabbar · component-base
+           ═══════════════════════════════════════════════════════════ -->
+
+      <p class="example-header">
+        <span class="example-tag">*示意：</span>
+        <span class="example-name">底部导航栏（Tabbar） · draft v0.7 · page-doc bundle</span>
+        <a class="example-link" href="../jd-design-system-md-v16/foundations/components-base/tabbar/design.md">design.md →</a>
+        <a class="example-link" href="https://relay.jd.com/file/design?id=2029484645871009793&page_id=31%3A1&node_id=312%3A46893">Relay frame →</a>
+      </p>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">底部导航栏 定义</h3>
+        <p>底部导航栏（Tabbar）位于屏幕底部，<strong>作为页面导航的最高层级</strong>，管控全局，点击切换整页内容。它分为<strong>常规底导</strong>和 <strong>Joy Agent 组合底导</strong>两种形态，支持 <strong>2~5 个坑位</strong> + 可选<strong>灵动岛运营资源位</strong>，并在不同 OS 端 / 版本下选择不同<strong>材质</strong>（iOS 26+ 液态玻璃 / Android 与 iOS 老系统毛玻璃）。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">行为准则</h3>
+        <ul>
+          <li><strong>基础切换</strong>：点击坑位，切换整页内容</li>
+          <li><strong>状态切换</strong>：默认态 ↔ 选中态（图标 + 文本变 <code>jdred</code>，背景变 <code>gray_6</code>）</li>
+          <li><strong>灵动岛激活</strong>：对应坑位选中态背景消失；同时 Joy Agent 向外抽缩 16 → 28 DP</li>
+          <li><strong>招手降级</strong>：底部存在灵动岛时，文字 / 数字招手自动降级为红点型，灵动岛消失后恢复</li>
+          <li><strong>Joy Agent 招手</strong>：气泡缓出向上弹出，最多 18 汉字</li>
+          <li><strong>Joy Agent 点击</strong>：进入对话中心场景弹层</li>
+        </ul>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">底部导航栏 类型</h3>
+        <p>本组件按「<strong>形态</strong> × <strong>坑位</strong> × <strong>灵动岛</strong> × <strong>招手</strong>」多维度组织。组件层两种主形态：</p>
+        <ul>
+          <li><strong>组件-普通形态</strong>（Relay <code>266:674</code>）：无 Joy Agent，底导宽 351 DP，2~5 坑位均分 + 可选灵动岛</li>
+          <li><strong>组件-Joy Agent 形态</strong>（Relay <code>266:475</code>）：含左侧 Joy Agent，底导宽 319 DP，Agent 与 Tabbar 间距 8 DP</li>
+        </ul>
+        <p class="tbd"><!-- TBD --> 完整变体矩阵见 <code>variants.md</code>（含 atom 层「12 状态 × 4 招手」组合）。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">底部导航栏 结构</h3>
+        <p>Tabbar 在 Relay 中按「<strong>原子 → 组件</strong>」两层组织。Atom 是不可拆的视觉单位，组件层只做布局组合，<strong>不修改 atom 内部规则</strong>。</p>
+        <table class="section-table">
+          <thead>
+            <tr><th>层级</th><th>节点</th><th>角色</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Atom</td><td><code>93:10967</code></td><td>基础状态 — 单坑位 12 状态组合</td></tr>
+            <tr><td>Atom</td><td><code>266:516</code></td><td>灵动岛 — 三型（常规 / 运营 / 大促）</td></tr>
+            <tr><td>Atom</td><td><code>266:227</code></td><td>Joy Agent — 52×52 模块</td></tr>
+            <tr><td>组件</td><td><code>266:674</code></td><td>普通形态</td></tr>
+            <tr><td>组件</td><td><code>266:475</code></td><td>Joy Agent 形态</td></tr>
+          </tbody>
+        </table>
+        <p class="tbd"><!-- TBD --> 详细几何参数（坑位高度 44 DP / 容器圆角 16 DP / iOS 安全区 17 DP 等）见 <code>spec.md</code>。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">设计属性</h3>
+        <table class="section-table">
+          <thead>
+            <tr><th style="width: 22%;">类别</th><th style="width: 38%;">Token</th><th>实际值 / 备注</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>容器底色</td><td><code>color_background_component</code></td><td>#F5F6FA</td></tr>
+            <tr><td>选中文字 / 图标</td><td><code>color_primary</code></td><td>#FF0F23</td></tr>
+            <tr><td>默认文字 / 图标</td><td><code>gray_1</code></td><td>#11141A</td></tr>
+            <tr><td>选中背景 / 灵动岛常规底</td><td><code>gray_6</code></td><td>#F0F2F7</td></tr>
+            <tr><td>Tabbar 容器圆角</td><td><code>radius_xxl</code></td><td>16px</td></tr>
+            <tr><td>灵动岛容器圆角</td><td><code>radius_xl</code></td><td>12px</td></tr>
+            <tr><td>标签默认 / 选中</td><td><code>pingfang_regular/font_size_10_400</code> / <code>pingfang_semibold/font_size_10_600</code></td><td>苹方 10 / lh14</td></tr>
+            <tr><td>灵动岛主字</td><td><code>pingfang_semibold/font_size_14_600</code></td><td>苹方 Semibold 14 / lh20</td></tr>
+          </tbody>
+        </table>
+        <p class="tbd"><!-- TBD --> 材质 token（液态玻璃 / 毛玻璃 / 渐变描边）待 V16 materials token 表确立后回填。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">典型场景示意</h3>
+        <figure class="section-figure">
+          <span class="placeholder" role="img" aria-label="底部导航栏 截图占位（preview.png 待 Relay 整页 export，节点高 18863 px 超 base64 token 上限）"></span>
+          <figcaption>来源：<a href="https://relay.jd.com/file/design?id=2029484645871009793&page_id=31%3A1&node_id=312%3A46893">Relay frame 312:46893</a> · preview.png 待手动 export（节点 18863 px）</figcaption>
+        </figure>
+        <p>v0.7 由 outline 自动归纳为 <strong>4 类典型场景</strong>：</p>
+        <ul>
+          <li><strong>A · Joy Agent + 常规底导</strong>（无灵动岛 / 无招手）—— 默认状态，占样张大多数</li>
+          <li><strong>B · Joy Agent + 常规灵动岛</strong> —— 日常商品复购提醒（鲜奶定期购 / 订阅续费）</li>
+          <li><strong>C · Joy Agent + 运营 / 大促灵动岛</strong> —— 运营会场推广 / 618 / 11.11 重点大促</li>
+          <li><strong>D · Joy Agent + 招手气泡</strong> —— 新用户 onboarding / 长期未使用提醒</li>
+        </ul>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">错误示例</h3>
+        <ul>
+          <li>❌ iOS 系统安全区 17 DP 内不可放置任何操作</li>
+          <li>❌ 坑位数禁止设置 6 个及以上，建议 2~5 个</li>
+          <li>❌ 营销态仅可替换 38×38 图片，不可做其它样式更改</li>
+          <li>❌ 文字型招手最大 4 字符；Joy Agent 招手气泡最多 18 汉字</li>
+          <li>❌ 灵动岛红色区域禁止出现任何元素</li>
+          <li>❌ 运营 / 大促灵动岛必须使用浅色系背景 + 深色字，避免红配绿 / 纯黑 / 纯白</li>
+          <li>❌ Tabbar 不承担二级页面导航，应由 NavBar / SegmentControl 承担</li>
+        </ul>
+      </section>
+
+      <hr class="spec-divider" />
+
+      <!-- ═══════════════════════════════════════════════════════════
+           SPEC · toolbar-general · component-base
+           ═══════════════════════════════════════════════════════════ -->
+
+      <p class="example-header">
+        <span class="example-tag">*示意：</span>
+        <span class="example-name">底部工具栏 · 通用状态（ToolBar · General） · draft v0.1</span>
+        <a class="example-link" href="../jd-design-system-md-v16/foundations/components-base/toolbar-general/design.md">design.md →</a>
+        <a class="example-link" href="../jd-design-system-md-v16/foundations/components-base/toolbar-general/spec-page.html">spec-page →</a>
+        <a class="example-link" href="https://relay.jd.com/file/design?id=2029484645871009793&page_id=47%3A1447&node_id=493%3A5303">Relay frame →</a>
+      </p>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">底部工具栏 · 通用状态 定义</h3>
+        <p class="tbd"><!-- TBD --> 设计师补充。一句话讲清这个组件是什么、解决什么问题。</p>
+        <p>参考：本组件是 toolbar 体系的基础形态，提供「单 / 双操作 × 单 / 双行文本」4 种基本布局，不挂具体业务场景。商详 / 购物车 / 结算 / 订详等场景 toolbar 都基于本组件特化。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">行为准则</h3>
+        <p class="tbd"><!-- TBD --> 设计师描述手势、转场、状态切换、边界情况。参考方向：主操作按钮按下态 / 禁用态（继承 Button 状态 variant）；容器在 keyboard 弹起 / 安全区变化时的避让；双行文本溢出截断策略。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">底部工具栏 · 通用状态 类型</h3>
+        <table class="section-table">
+          <thead>
+            <tr><th>Variant Name</th><th>变体 ID</th><th>类型</th><th>信息</th><th>主体</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>单操作单行</td><td><code>493:5324</code></td><td>单操作</td><td>单行文本</td><td>1 个 359×44 主按钮</td></tr>
+            <tr><td>单操作双行</td><td><code>635:604</code></td><td>单操作</td><td>双行文本</td><td>1 个 359×44 主按钮（单行 CTA + 11pt 辅助说明）</td></tr>
+            <tr><td>双操作单行</td><td><code>493:5314</code></td><td>双操作</td><td>单行文本</td><td>辅 176×44 + 主 176×44，横排，各单行</td></tr>
+            <tr><td>双操作双行</td><td><code>635:646</code></td><td>双操作</td><td>双行文本</td><td>辅 176×44 + 主 176×44，横排，各内嵌双行</td></tr>
+          </tbody>
+        </table>
+        <p class="tbd"><!-- TBD --> 缺失维度：「模式」（日间 / 暗黑）与「状态」（默认 / 按下 / 禁用 / loading）。前者待暗色 FRAME 合并；后者可能继承 Button 状态。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">底部工具栏 · 通用状态 结构</h3>
+        <p>容器内嵌半透明白 <code>#FFFFFF@90%</code>，推测有 Liquid Glass 材质背板，但本 COMPONENT_SET 未单独 instance。按钮 + 容器统一圆角 8px。</p>
+        <p class="tbd"><!-- TBD --> 详细元素表 / Liquid Glass 材质归并待父稿 toolbar 整页录入。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">设计属性</h3>
+        <table class="section-table">
+          <thead>
+            <tr><th style="width: 30%;">类别</th><th style="width: 30%;">Token</th><th>实际值 / 备注</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>主背景</td><td><code>color_white</code></td><td>#FFFFFF</td></tr>
+            <tr><td>材质 overlay</td><td><code>color_white_a90</code>（候选）</td><td>#FFFFFF@90%</td></tr>
+            <tr><td>主操作 CTA</td><td><code>color_primary</code></td><td>#FF0F23</td></tr>
+            <tr><td>优惠浅橙背景</td><td>⚠️ token-miss</td><td>#FFE6C2（不在 V16 标准）</td></tr>
+            <tr><td>白条品牌棕</td><td>⚠️ token-miss</td><td>#80512D（不在 V16 标准）</td></tr>
+            <tr><td>按钮 CTA 文字</td><td><code>font_size_16_semibold</code></td><td>PingFang SC / 16 / Semibold</td></tr>
+            <tr><td>辅助说明文字</td><td>⚠️ token-miss</td><td>PingFang SC / 11 / Regular（半步字号，V16 最小 12）</td></tr>
+            <tr><td>容器 / 按钮圆角</td><td><code>radius_m</code></td><td>8px</td></tr>
+            <tr><td>容器 padding（左 / 右 / 上）</td><td><code>spacing_xs</code></td><td>8px</td></tr>
+            <tr><td>容器 padding（底，安全区）</td><td>⚠️ 半步</td><td>34px（介于 32 与 40 间）</td></tr>
+            <tr><td>按钮内 padding（左右）</td><td><code>spacing_m</code></td><td>16px</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">典型场景示意</h3>
+        <p>📐 完整 6 场景（通用 / 商详 / 购物车 / 结算 / 订详 / 店铺）浅 / 暗交互演示见 <a href="../jd-design-system-md-v16/foundations/components-base/toolbar-general/spec-page.html">spec-page →</a>，按 Relay <code>493:5296</code> 逐节点还原（真·京东正黑 V2.3 价格字体 + Relay 导出图标）。</p>
+        <p style="color:var(--c-text-3);font-size:12px;">来源：<a href="https://relay.jd.com/file/design?id=2029484645871009793&page_id=47%3A1447&node_id=493%3A5303">Relay frame 493:5303</a>（通用状态）/ <a href="https://relay.jd.com/file/design?id=2029484645871009793&page_id=47%3A1447&node_id=493%3A5296">493:5296</a>（全 6 场景）</p>
+        <p class="tbd"><!-- TBD --> 设计师列举什么场景下用 / 不用。参考方向：</p>
+        <ul>
+          <li>通用底部操作条，需要 1-2 个主操作按钮（✅）</li>
+          <li>操作按钮可能带主信息 + 辅助说明（双行文本）（✅）</li>
+          <li>≥3 个并列入口图标 → 用 toolbar-pdp（❌）</li>
+          <li>需要全选 / 合计 / 优惠提示 → 用 toolbar-cart（❌）</li>
+        </ul>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">错误示例</h3>
+        <p class="tbd"><!-- TBD --> 设计师列举常见误用。参考方向：</p>
+        <ul>
+          <li>不要在 toolbar 内放 ≥3 个并列按钮（用 toolbar-pdp / toolbar-order）</li>
+          <li>不要把「商详级 CTA」（立即购买 / 加入购物车）放在 toolbar-general，应放 toolbar-pdp</li>
+          <li>不要超出 34px 底部安全区盖住 home indicator</li>
+        </ul>
+      </section>
+
+      <h2 class="page__h2"><span class="num">2.</span>业务架构（page / flow）</h2>
+
+      <!-- ═══════════════════════════════════════════════════════════
+           SPEC · brand-and-marketing typography · page
+           ═══════════════════════════════════════════════════════════ -->
+
+      <p class="example-header">
+        <span class="example-tag">*示意：</span>
+        <span class="example-name">品牌与营销设计部 · 字体规范（Brand &amp; Marketing · Typography Guideline） · draft v0.1 · page-doc bundle</span>
+        <a class="example-link" href="../jd-design-system-md-v16/product-architecture/brand-and-marketing/campaign-system/typography/design.md">design.md →</a>
+        <a class="example-link" href="https://relay.jd.com/file/design?id=2059875217240489986&page_id=0:2&node_id=6:18">Relay frame →</a>
+      </p>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">品牌与营销设计部 · 字体规范 定义</h3>
+        <p>品牌与营销设计部「大促 / Campaign-System」场景下的字体使用规范：把字体分为<strong>系统实现</strong>与<strong>视觉切图配置</strong>两类，定义 4 个字族（PingFang SC / 方正兰亭黑简体 / 京东朗正体 / 京东正黑 V2.3）在大促场景的字阶梯度、字重选择、价格符号缩放与行高换算规则。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">行为准则</h3>
+        <p class="tbd"><!-- TBD --> 详细应用原则 / 价格规则 / 倒计时规则 / 多端适配见 <a href="../jd-design-system-md-v16/product-architecture/brand-and-marketing/campaign-system/typography/behaviors.md">behaviors.md</a>（bundle 子文件）。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">品牌与营销设计部 · 字体规范 类型</h3>
+        <p>字体按用途分两类：</p>
+        <ul>
+          <li><strong>系统实现字体</strong>：PingFang SC（iOS / macOS / Web 默认）+ 方正兰亭黑简体（Android / Web fallback）</li>
+          <li><strong>视觉切图配置字体</strong>：京东朗正体（logo / 品牌识别）+ 京东正黑 V2.3（价格 5 阶 + 倒计时 2 类）</li>
+        </ul>
+        <p class="tbd"><!-- TBD --> 详细字族 × 字阶 × 字重 × 应用场景矩阵见 <a href="../jd-design-system-md-v16/product-architecture/brand-and-marketing/campaign-system/typography/variants.md">variants.md</a>。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">品牌与营销设计部 · 字体规范 结构</h3>
+        <p>本规范来自 Relay page-doc 节点（高 10265 px，3 大章节），已按 v0.5.1 multi-md bundle 模板拆分为 6 份：design.md（index）/ spec.md / variants.md / behaviors.md / ai-schema.yaml / CHANGELOG.md。</p>
+        <table class="section-table">
+          <thead>
+            <tr><th>#</th><th>Relay 章节</th><th>高度</th><th>bundle 落点</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>字体类型（系统实现 vs 视觉切图）</td><td>1124</td><td>spec.md §字体类型 / variants.md §概览</td></tr>
+            <tr><td>2</td><td>字阶字重（PingFang SC 10 阶 / 京东正黑价格 5 阶 + 倒计时 2 类）</td><td>7512</td><td>spec.md §字阶梯度 / variants.md §详细 / behaviors.md §价格 §倒计时</td></tr>
+            <tr><td>3</td><td>行高间距（单行用字体行高，多行 × 1.5 遇奇数 −3）</td><td>851</td><td>spec.md §行高规则 / behaviors.md §行高规则</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">设计属性</h3>
+        <p class="tbd"><!-- TBD --> 字阶梯度 / 行高规则 / 价格缩放规则等 token 表见 <a href="../jd-design-system-md-v16/product-architecture/brand-and-marketing/campaign-system/typography/spec.md">spec.md</a>。</p>
+        <p class="tbd"><!-- TBD --> 机器可读 schema 见 <a href="../jd-design-system-md-v16/product-architecture/brand-and-marketing/campaign-system/typography/ai-schema.yaml">ai-schema.yaml</a>。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">典型场景示意</h3>
+        <figure class="section-figure">
+          <img src="../jd-design-system-md-v16/product-architecture/brand-and-marketing/campaign-system/typography/preview.png" alt="品牌与营销设计部 · 字体规范 整页缩略图" />
+          <figcaption>来源：<a href="https://relay.jd.com/file/design?id=2059875217240489986&page_id=0:2&node_id=6:18">Relay frame 6:18</a> · preview.png SCALE=0.25（节点 1960×10265，高清原图回 Relay 看）</figcaption>
+        </figure>
+        <p class="tbd"><!-- TBD --> 应用场景按字族 × 用途展开（大促主视觉 / 价格 / 倒计时 / logo / 利益点等），见 behaviors.md。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">错误示例</h3>
+        <p class="tbd"><!-- TBD --> 100+ 文本 node name 全叫「推流地址」（历史草稿残留），Donts 段在 behaviors.md 中标 TODO，等设计师补。</p>
+      </section>
+
+      <hr class="spec-divider" />
+
+      <!-- ═══════════════════════════════════════════════════════════
+           SPEC · video-tabbar atom · page
+           ═══════════════════════════════════════════════════════════ -->
+
+      <p class="example-header">
+        <span class="example-tag">*示意：</span>
+        <span class="example-name">视频场域底导-单坑原子（Video Tabbar / Slot Atom） · draft v0.1</span>
+        <a class="example-link" href="../jd-design-system-md-v16/product-architecture/comprehensive-business/content-ecosystem/video/video-tabbar/atom/design.md">design.md →</a>
+        <a class="example-link" href="https://relay.jd.com/file/design?id=1976604323748007938&page_id=286%3A1&node_id=286%3A16020&mode=dev">Relay frame →</a>
+      </p>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">视频场域底导-单坑原子 定义</h3>
+        <p>视频场域底导单坑原子是逛 / 视频频道在底部导航中的 44×44 slot 内容。它继承通用 tabbar 的容器、坑位数和安全区规则，只补充视频场域自己的单坑视觉：默认态为黑色 video icon + 文案，选中态为淡灰容器 + 红白实心 video icon + 红字 Semibold；icon / 营销态则替换为 38×38 圆形位图插槽。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">行为准则</h3>
+        <p class="tbd"><!-- TBD --> 设计师描述手势、转场、状态切换、边界情况。提示：12 COMPONENT 在 root COMPONENT_SET 下，按「底导类型 × 招手类型」二维切换。</p>
+        <ul>
+          <li>默认 → 选中 的转场（颜色 / 缩放 / 反馈）</li>
+          <li>招手类型切换规则（红点 / 数字 / 文字 / 营销 的触发条件）</li>
+          <li>icon 形态 vs 文字形态的运用约束</li>
+        </ul>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">视频场域底导-单坑原子 类型</h3>
+        <p>子 frame「逛底导 / 默认态 / 无」（<code>286:17175</code>，349×282）含 12 个 44×44 单坑 symbol。矩阵可按 <strong>3 类底导类型 × 4 类招手类型</strong> 消费：</p>
+        <ul>
+          <li><strong>底导类型</strong>：默认 / icon / 营销 / 选中</li>
+          <li><strong>招手类型</strong>：无 / 红点 / 数字 / 文字</li>
+        </ul>
+        <p class="tbd"><!-- TBD --> 当前 Relay 属性名有历史残留（<code>286:17212</code>/<code>286:17218</code> 写作「选中」但结构为营销态），实现时按结构归类。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">视频场域底导-单坑原子 结构</h3>
+        <p>单坑骨架（44×44 垂直布局）：</p>
+        <ul>
+          <li>icon 槽位「透明层」FRAME 20×20（含 <code>#FFFFFF@90% + IMAGE</code> 占位位图）</li>
+          <li>icon 本体「video」VECTOR 20×17（在槽位内）</li>
+          <li><code>spacing.4</code> 间距</li>
+          <li>文案 10pt PingFang SC「逛逛」/「文案」高约 14</li>
+        </ul>
+        <p>44 总高 ≈ 6（top padding） + 20（icon slot） + 4（gap） + 14（text），左右居中。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">设计属性</h3>
+        <table class="section-table">
+          <thead>
+            <tr><th style="width: 30%;">类别</th><th style="width: 30%;">Token</th><th>实际值 / 备注</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>容器底（选中态）</td><td><code>color_background</code></td><td>#F2F4F7（淡灰高亮）</td></tr>
+            <tr><td>icon video 默认</td><td><code>gray_1</code> / <code>color_title</code></td><td>#11141A 黑色单色</td></tr>
+            <tr><td>icon video 选中外</td><td>待统一</td><td>#FF0000（建议与 <code>color_primary</code> 对齐）</td></tr>
+            <tr><td>icon video 选中内</td><td><code>color_primary_text</code></td><td>#FFFFFF 小三角 ▶</td></tr>
+            <tr><td>文字「逛逛」选中</td><td><code>color_primary</code></td><td>#FF0F23 atom.jdred.6</td></tr>
+            <tr><td>飘新红点 / Badge 容器</td><td><code>color_primary</code></td><td>#FF0F23</td></tr>
+            <tr><td>默认 / 选中态文案</td><td><code>pingfang_regular/font_size_10_400</code> / <code>pingfang_semibold/font_size_10_600</code></td><td>10pt PingFang SC</td></tr>
+            <tr><td>选中态容器圆角</td><td><code>radius_xl</code></td><td>12px</td></tr>
+            <tr><td>数字 / 文字 badge 圆角</td><td><code>radius_l</code></td><td>8px</td></tr>
+            <tr><td>icon-文案纵向间距</td><td><code>spacing.4</code></td><td>4px</td></tr>
+            <tr><td>icon 形态横向布局</td><td>⚠️ half-step</td><td>10px（V16 无 10 atom，建议归 8 或 12）</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">典型场景示意</h3>
+        <figure class="section-figure">
+          <span class="placeholder" role="img" aria-label="视频场域底导原子 截图占位（preview-double-default.jpg / preview-immersive-default.png 尚未落盘）"></span>
+          <figcaption>来源：<a href="https://relay.jd.com/file/design?id=1976604323748007938&page_id=286%3A1&node_id=286%3A16020&mode=dev">Relay frame 286:16020</a> · 切图清单见 _assets-cdn.md</figcaption>
+        </figure>
+        <p>典型场景：</p>
+        <ul>
+          <li>双列商品瀑布场景，default 形态，5 个单坑（中间选中态）</li>
+          <li>沉浸视频场景，default 形态 + Liquid Glass dark，5 个单坑</li>
+        </ul>
+        <p class="tbd"><!-- TBD --> 设计师列举什么场景下用 / 不用。</p>
+      </section>
+
+      <section class="bullet-section">
+        <h3 class="bullet-section__title">错误示例</h3>
+        <p class="tbd"><!-- TBD --> 设计师列举常见误用。参考方向：</p>
+        <ul>
+          <li>video 实心图标外层 <code>#FF0000</code> 未统一收敛到 <code>color_primary #FF0F23</code></li>
+          <li>飘新文字 9pt（V16 size atom 无 9pt，建议改 10）</li>
+          <li>spacing 10 half-step（建议归 spacing.8 或 spacing.12）</li>
+          <li>icon 透明层占位 99 处复用（应改 V16 icon library）</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      生成于 <time datetime="2026-05-29T03:21:30Z">2026-05-29T03:21:30Z</time> ·
+      源：<a href="https://github.com/ShuaiMXu/design-wiki-proposal">jd-design-wiki-proposal</a> ·
+      共 5 份 V16 design.md 入站（component-base ×3 / page ×2，零 V15）
+      <!-- TBD: 4 份战略 HTML（executive-summary / master-diagram / knowledge-tree / contributor-guide）footer 互链 -->
+    </footer>
+
+  </div>
+</body>
+</html>
