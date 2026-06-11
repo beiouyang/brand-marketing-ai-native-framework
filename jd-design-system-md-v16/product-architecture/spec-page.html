@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zone 04 · 🏗 组织架构 — JD V16 设计系统</title>
+<style>
+  :root {
+    --c-text: #171a26;
+    --c-text-2: #3d414d;
+    --c-text-3: #828794;
+    --c-line: #00000014;
+    --c-bg: #ffffff;
+    --c-bg-sunken: #f5f6fa;
+    --c-brand: #ff0f23;
+    --c-info: #0073ff;
+    --c-info-bg: #e5f5ff;
+    --c-success: #2aa32a;
+    --c-success-bg: #ebfbeb;
+    --r-base: 6px;
+    --r-xl: 12px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--c-bg-sunken);
+    color: var(--c-text);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 15px; line-height: 1.7;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  a { color: var(--c-info); }
+  code {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px; background: var(--c-bg-sunken);
+    padding: 2px 6px; border-radius: 4px;
+    color: var(--c-brand);
+  }
+
+  .top-bar {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 16px;
+    padding: 0 24px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+    flex-wrap: wrap;
+  }
+  .top-bar__brand {
+    padding: 14px 0; margin-right: 12px;
+    font-size: 13px; font-weight: 600;
+    color: var(--c-text); text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .top-bar__brand small { color: var(--c-text-3); font-weight: 500; margin-left: 6px; }
+  .top-bar__nav { display: flex; align-items: stretch; gap: 4px; flex-wrap: wrap; }
+  .top-bar__nav-link {
+    padding: 14px 14px 12px; font-size: 13px;
+    color: var(--c-text-2); text-decoration: none;
+    font-weight: 500; line-height: 1.4;
+    white-space: nowrap; position: relative;
+    transition: color 150ms;
+  }
+  .top-bar__nav-link:hover { color: var(--c-text); }
+  .top-bar__nav-link.is-current { color: var(--c-text); font-weight: 600; }
+  .top-bar__nav-link.is-placeholder { color: var(--c-text-3); cursor: default; font-style: italic; }
+  .top-bar__nav-link.is-placeholder:hover { color: var(--c-text-3); }
+  .top-bar__spacer { flex: 1; }
+
+  .layout {
+    max-width: 1400px; margin: 0 auto;
+    padding: 24px 24px 80px;
+    display: grid; grid-template-columns: 240px 1fr;
+    gap: 24px; align-items: start;
+  }
+  .sidebar {
+    position: sticky; top: 64px;
+    align-self: start;
+    max-height: calc(100vh - 88px);
+    overflow-y: auto;
+    background: var(--c-bg);
+    padding: 20px 12px;
+    border-radius: var(--r-xl);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  }
+  .sidebar__zone-tag {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-text-3);
+    padding: 6px 12px 12px;
+    border-bottom: 1px solid var(--c-line);
+    margin-bottom: 12px;
+  }
+  .sidebar__group { margin-bottom: 14px; }
+  .sidebar__link {
+    display: block; padding: 7px 12px;
+    font-size: 13px; color: var(--c-text-2);
+    text-decoration: none; border-radius: var(--r-base);
+    font-weight: 500; line-height: 1.5;
+    transition: background 150ms, color 150ms;
+  }
+  .sidebar__link:hover { background: rgba(0, 0, 0, 0.04); color: var(--c-text); }
+  .sidebar__link.is-current { background: var(--c-text); color: var(--c-bg); }
+  .sidebar__link.is-current:hover { background: var(--c-text); }
+  .sidebar__link.is-placeholder { color: var(--c-text-3); cursor: default; font-style: italic; }
+  .sidebar__link.is-placeholder:hover { background: transparent; color: var(--c-text-3); }
+  .sidebar__sub {
+    margin: 4px 0 8px 12px; padding-left: 8px;
+    border-left: 1px solid var(--c-line);
+  }
+  .sidebar__sub-link {
+    display: block; padding: 4px 10px;
+    font-size: 12px; color: var(--c-text-3);
+    text-decoration: none; border-radius: 4px;
+    line-height: 1.6;
+  }
+  .sidebar__sub-link:hover { background: rgba(0, 0, 0, 0.03); color: var(--c-text-2); }
+  .sidebar__sub-link.is-current { background: rgba(0, 0, 0, 0.04); color: var(--c-text); font-weight: 600; }
+
+  .main {
+    background: var(--c-bg);
+    padding: 56px 64px 64px;
+    border-radius: var(--r-xl);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    min-width: 0;
+  }
+  .main h1 {
+    font-size: 32px; font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+  }
+  .main h1 small {
+    font-size: 14px; font-weight: 500;
+    color: var(--c-text-3); margin-left: 12px;
+  }
+  .main > p:first-of-type {
+    color: var(--c-text-2); font-size: 16px; line-height: 1.7;
+    max-width: 720px;
+    margin: 0 0 36px;
+  }
+  .main h2 {
+    font-size: 20px; font-weight: 600;
+    margin: 36px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--c-line);
+  }
+  .main h2 .count {
+    font-size: 12px; font-weight: 500;
+    color: var(--c-text-3); margin-left: 8px;
+  }
+
+  .arch-section {
+    margin-bottom: 28px;
+  }
+  .arch-section__intro {
+    color: var(--c-text-2); font-size: 14px;
+    margin: 8px 0 14px;
+    max-width: 720px;
+  }
+  .comp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    margin: 14px 0 24px;
+  }
+  .comp-card {
+    background: var(--c-bg-sunken);
+    border-radius: var(--r-xl);
+    padding: 18px 20px;
+    transition: box-shadow 200ms, transform 200ms;
+    text-decoration: none; color: inherit;
+    display: block;
+  }
+  .comp-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+  }
+  .comp-card__head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .comp-card__name {
+    font-size: 15px; font-weight: 600;
+    color: var(--c-text);
+  }
+  .comp-card__status {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 999px;
+    letter-spacing: 0.05em;
+  }
+  .comp-card__status--ready { background: var(--c-success-bg); color: var(--c-success); }
+  .comp-card__status--draft { background: var(--c-info-bg); color: var(--c-info); }
+  .comp-card__status--todo { background: var(--c-bg-sunken); color: var(--c-text-3); border: 1px solid var(--c-line); }
+  .comp-card__desc {
+    font-size: 13px; color: var(--c-text-2);
+    margin: 0; line-height: 1.6;
+  }
+  .empty-row {
+    color: var(--c-text-3); font-style: italic;
+    font-size: 13px;
+    padding: 12px 16px;
+    background: var(--c-bg-sunken);
+    border-radius: var(--r-base);
+    margin: 8px 0;
+  }
+
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; gap: 16px; padding: 16px 12px 32px; }
+    .sidebar { position: static; max-height: none; }
+    .main { padding: 32px 24px 40px; }
+    .main h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="../../docs/jd-design-wiki-knowledge-tree.html" class="top-bar__brand">JD Design Wiki <small>· V16</small></a>
+  <nav class="top-bar__nav" aria-label="5 大分区导航">
+    <a href="../knowledge/spec-page.html" class="top-bar__nav-link">📚 Design 知识</a>
+    <a href="../foundations/spec-page.html" class="top-bar__nav-link">🎨 Design 基础</a>
+    <a href="../ai-mechanism/spec-page.html" class="top-bar__nav-link">🤖 AI 机制</a>
+    <a href="./spec-page.html" class="top-bar__nav-link is-current">🏗 组织架构</a>
+    <a href="../horizontal/spec-page.html" class="top-bar__nav-link">🚀 横向专项</a>
+  </nav>
+  <span class="top-bar__spacer"></span>
+</div>
+
+<div class="layout">
+
+<aside class="sidebar" aria-label="🏗 组织架构 - 子目录">
+  <div class="sidebar__zone-tag">ZONE 04 · 🏗 组织架构</div>
+
+  <div class="sidebar__group">
+    <a class="sidebar__link is-current" href="#top">页面说明</a>
+  </div>
+
+  <div class="sidebar__group">
+    <a class="sidebar__link" href="./comprehensive-business/spec-page.html">综合业务设计部</a>
+    <div class="sidebar__sub">
+      <a class="sidebar__sub-link" href="./comprehensive-business/spec-page.html">内容生态 / 视频</a>
+    </div>
+    <a class="sidebar__link" href="./brand-and-marketing/spec-page.html">品牌与营销设计部</a>
+    <div class="sidebar__sub">
+      <a class="sidebar__sub-link" href="./brand-and-marketing/spec-page.html">营销活动体系 / 字体</a>
+    </div>
+    <a class="sidebar__link" href="./huangliu-design/spec-page.html">黄流导购设计部</a>
+    <div class="sidebar__sub">
+      <a class="sidebar__sub-link" href="./huangliu-design/spec-page.html">商品详情 / 商详大脑</a>
+    </div>
+    <span class="sidebar__link is-placeholder" title="其它设计部门待录入">其它设计部门 /</span>
+  </div>
+</aside>
+
+<main class="main">
+  <h1 id="top">🏗 组织架构 <small>Zone 04 · 业务线设计师主战场</small></h1>
+  <p>"我找业务结构 / 看页面规范"。本分区按<strong>设计部门</strong>组织:设计部门 → 业务 → 页面 / 场景,层层往下,与京东设计组织架构对齐。每一层都是组织 / 业务单元,不混入 pages/ 这类内容维度的平行轴。</p>
+  <blockquote style="background:var(--c-info-bg);border-left:3px solid var(--c-info);padding:12px 20px;margin:8px 0 24px;border-radius:0 var(--r-base) var(--r-base) 0;color:var(--c-text-2);font-size:14px;">
+    <strong>📦 组件不在本 Zone</strong> —— 原子组件(Tabbar / Button 等)归 <a href="../foundations/spec-page.html">🎨 Design 基础</a>;业务组件(ProductCard / CartItem 等)跨业务复用、无单一业务能认领,归横向专项 <a href="../horizontal/spec-page.html">🚀 Horizontal → components-business</a>。本 Zone 04 只放"设计部门 → 业务"。
+  </blockquote>
+
+  <h2>设计部门 → 业务 <span class="count">13 个设计部门 · 3 个已建入口</span></h2>
+  <div class="arch-section">
+    <p class="arch-section__intro">按设计部门切分(搜推与基础产品 / 黄流导购 / 平台交易 / 综合业务 等 13 个),部门下按业务 → 页面 / 场景层层往下。这是业务线设计师的主战场。</p>
+    <div class="comp-grid">
+      <a class="comp-card" href="./comprehensive-business/spec-page.html">
+        <div class="comp-card__head">
+          <span class="comp-card__name">综合业务设计部</span>
+          <span class="comp-card__status comp-card__status--draft">DRAFT</span>
+        </div>
+        <p class="comp-card__desc">内容生态 / 视频：沉浸式视频信息流页面及四组件、视频场域底导、预告页等业务规范入口。</p>
+      </a>
+      <a class="comp-card" href="./brand-and-marketing/spec-page.html">
+        <div class="comp-card__head">
+          <span class="comp-card__name">品牌与营销设计部</span>
+          <span class="comp-card__status comp-card__status--draft">DRAFT</span>
+        </div>
+        <p class="comp-card__desc">营销活动体系：营销场域下的字体规范（字族 / 字阶 / 价格 / 倒计时排版）等业务规范入口。</p>
+      </a>
+      <a class="comp-card" href="./huangliu-design/spec-page.html">
+        <div class="comp-card__head">
+          <span class="comp-card__name">黄流导购设计部</span>
+          <span class="comp-card__status comp-card__status--draft">DRAFT</span>
+        </div>
+        <p class="comp-card__desc">商品详情：「商详大脑」AI 协同工作台（应用工程，从独立仓库迁入）等业务入口。</p>
+      </a>
+    </div>
+  </div>
+
+  <h2>复用关系 <span class="count">辅助视图,待画</span></h2>
+  <div class="arch-section">
+    <p class="arch-section__intro">业务对横向业务组件的引用关系图,按 dependency / referenced-by 双向追踪。</p>
+    <div class="empty-row">⏳ 待画第一张关系图</div>
+  </div>
+</main>
+
+</div><!-- /layout -->
+</body>
+</html>

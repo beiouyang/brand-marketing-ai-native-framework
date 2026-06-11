@@ -1,0 +1,131 @@
+[
+  {
+    "ruleId": "display-general-default",
+    "ruleName": "默认展示通用楼层",
+    "ruleType": "defaultDisplay",
+    "trigger": "enterToolOrSelectGeneral",
+    "condition": { "ytype": "general" },
+    "result": { "visible": true },
+    "displayOrder": [
+      { "instanceId": "topNav", "name": "顶部导航", "placement": "页面顶部" },
+      { "instanceId": "heroPic", "name": "主图图片", "placement": "主图区域" },
+      { "instanceId": "liveWidget", "name": "直播挂件", "placement": "主图顶部右侧" },
+      { "instanceId": "skuPicker", "name": "小图选款", "placement": "首卡区" },
+      { "instanceId": "purchaseTabs", "name": "购买方式 Tabs", "placement": "首卡区" },
+      { "instanceId": "price", "name": "价格", "placement": "首卡区" },
+      { "instanceId": "enjoyed", "name": "已享受", "placement": "首卡区" },
+      { "instanceId": "canEnjoy", "name": "可再享", "placement": "首卡区" },
+      { "instanceId": "activateEnjoy", "name": "开通享", "placement": "首卡区" },
+      { "instanceId": "title", "name": "标题", "placement": "首卡区" },
+      { "instanceId": "highlights", "name": "亮点行", "placement": "首卡区" },
+      { "instanceId": "bottomTip", "name": "底部提示条", "placement": "底 Bar 上方" },
+      { "instanceId": "bottomBar", "name": "底 Bar", "placement": "页面最下方吸底" }
+    ],
+    "layerRelations": [
+      {
+        "base": "heroPic",
+        "overlays": [
+          { "id": "topNav", "position": "top", "align": "stretch" },
+          { "id": "liveWidget", "position": "absolute", "offset": { "top": 176, "right": 8 }, "size": { "width": 74, "height": 130 } }
+        ]
+      }
+    ],
+    "fixedLayers": [
+      { "id": "bottomTip", "position": "bottom", "order": 1 },
+      { "id": "bottomBar", "position": "bottom", "order": 2 }
+    ],
+    "example": "用户默认进入或选择通用 Tab 时，只展示 ytype = general 的楼层。",
+    "relatedYtype": ["general"],
+    "relatedXtype": [],
+    "relatedInstanceIds": [],
+    "relatedSceneIds": [],
+    "relatedMdDocIds": ["pdp-display-rule-general"],
+    "priority": 100,
+    "version": "1.0.0",
+    "status": "active"
+  },
+  {
+    "ruleId": "display-business-with-general",
+    "ruleName": "事业群视图保留通用楼层并追加垂类楼层",
+    "ruleType": "businessDisplay",
+    "trigger": "selectBusiness",
+    "condition": {
+      "include": [
+        { "ytype": "general" },
+        { "ytype": "$selectedBusiness", "xtype": 0 }
+      ]
+    },
+    "result": { "visible": true },
+    "displayOrder": [
+      { "instanceId": "topNav", "name": "顶部导航", "placement": "页面顶部" },
+      { "instanceId": "heroPic", "name": "主图图片", "placement": "主图区域" },
+      { "instanceId": "liveWidget", "name": "直播挂件", "placement": "主图顶部右侧" },
+      { "instanceId": "skuPicker", "name": "小图选款", "placement": "首卡区" },
+      { "instanceId": "purchaseTabs", "name": "购买方式 Tabs", "placement": "首卡区" },
+      { "instanceId": "price", "name": "价格", "placement": "首卡区" },
+      { "instanceId": "enjoyed", "name": "已享受", "placement": "首卡区" },
+      { "instanceId": "canEnjoy", "name": "可再享", "placement": "首卡区" },
+      { "instanceId": "activateEnjoy", "name": "开通享", "placement": "首卡区" },
+      { "instanceId": "title", "name": "标题", "placement": "首卡区" },
+      { "instanceId": "highlights", "name": "亮点行", "placement": "首卡区" },
+      { "instanceId": "bottomTip", "name": "底部提示条", "placement": "底 Bar 上方" },
+      { "instanceId": "bottomBar", "name": "底 Bar", "placement": "页面最下方吸底" }
+    ],
+    "layerRelations": [
+      {
+        "base": "heroPic",
+        "overlays": [
+          { "id": "topNav", "position": "top", "align": "stretch" },
+          { "id": "liveWidget", "position": "absolute", "offset": { "top": 176, "right": 8 }, "size": { "width": 74, "height": 130 } }
+        ]
+      }
+    ],
+    "fixedLayers": [
+      { "id": "bottomTip", "position": "bottom", "order": 1 },
+      { "id": "bottomBar", "position": "bottom", "order": 2 }
+    ],
+    "example": "选择 3C数码时，展示 general 楼层 + ytype = 3C 且 xtype = 0 的楼层。",
+    "relatedYtype": ["general", "$selectedBusiness"],
+    "relatedXtype": [0],
+    "relatedInstanceIds": [],
+    "relatedSceneIds": [],
+    "relatedMdDocIds": ["pdp-display-rule-business"],
+    "priority": 90,
+    "version": "1.0.0",
+    "status": "active"
+  },
+  {
+    "ruleId": "hide-business-xtype-cross",
+    "ruleName": "横切楼层不进入当前阅览展示",
+    "ruleType": "xtypeFilter",
+    "trigger": "calculateBusinessDisplay",
+    "condition": { "xtype": 1 },
+    "result": { "visible": false },
+    "example": "当当前事业群命中但 xtype = 1 时，该楼层不进入阅览区，可在索引区或详情中说明隐藏原因。",
+    "relatedYtype": ["$selectedBusiness"],
+    "relatedXtype": [1],
+    "relatedInstanceIds": [],
+    "relatedSceneIds": [],
+    "relatedMdDocIds": ["pdp-display-rule-xtype"],
+    "priority": 80,
+    "version": "1.0.0",
+    "status": "active"
+  },
+  {
+    "ruleId": "hide-business-before-selected",
+    "ruleName": "未选择事业群时保持通用展示",
+    "ruleType": "emptyBusinessState",
+    "trigger": "selectBusinessTabWithoutBusiness",
+    "condition": { "selectedBusiness": null },
+    "result": { "visible": false },
+    "example": "用户点击事业群但未选择具体事业群时，阅览区仍保持通用楼层展示。",
+    "relatedYtype": ["general"],
+    "relatedXtype": [],
+    "relatedInstanceIds": [],
+    "relatedSceneIds": [],
+    "relatedMdDocIds": ["pdp-display-rule-business-empty"],
+    "priority": 70,
+    "version": "1.0.0",
+    "status": "active"
+  }
+]

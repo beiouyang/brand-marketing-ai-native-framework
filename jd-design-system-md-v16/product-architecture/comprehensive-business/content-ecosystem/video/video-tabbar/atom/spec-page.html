@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>视频场域底导-单坑原子 · Video Tabbar / Slot Atom — JD APP V16.0</title>
+<style>
+  :root {
+    --c-text: #171a26;
+    --c-text-2: #3d414d;
+    --c-text-3: #828794;
+    --c-line: #00000014;
+    --c-bg: #ffffff;
+    --c-bg-sunken: #f5f6fa;
+    --c-brand: #ff0f23;
+    --c-success: #2aa32a;
+    --c-success-bg: #ebfbeb;
+    --c-danger: #ff0f23;
+    --c-danger-bg: #fff0f4;
+    --c-warning: #b26b00;
+    --c-warning-bg: #fff9e0;
+    --c-info: #0073ff;
+    --c-info-bg: #e5f5ff;
+    --c-mask: rgba(0, 0, 0, 0.7);
+    --c-code-bg: #f5f6fa;
+    --r-base: 6px;
+    --r-detail: 8px;
+    --r-xl: 12px;
+    --r-xxl: 16px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--c-bg-sunken);
+    color: var(--c-text);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .top-bar {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 16px;
+    padding: 0 24px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+    flex-wrap: wrap;
+  }
+  .top-bar__brand { padding: 14px 0; margin-right: 12px; font-size: 13px; font-weight: 600; color: var(--c-text); text-decoration: none; letter-spacing: 0.02em; }
+  .top-bar__brand small { color: var(--c-text-3); font-weight: 500; margin-left: 6px; }
+  .top-bar__nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  .top-bar__nav-link { padding: 14px 14px 12px; font-size: 13px; color: var(--c-text-2); text-decoration: none; font-weight: 500; line-height: 1.4; white-space: nowrap; }
+  .top-bar__nav-link:hover { color: var(--c-text); }
+  .top-bar__nav-link.is-current { color: var(--c-text); font-weight: 600; }
+  .top-bar__spacer { flex: 1; }
+  .layout {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 24px 0;
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+  .sidebar {
+    position: sticky;
+    top: 64px;
+    align-self: start;
+    max-height: calc(100vh - 88px);
+    overflow-y: auto;
+    background: var(--c-bg);
+    padding: 20px 12px;
+    border-radius: var(--r-xl);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .sidebar__zone-tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c-text-3);
+    padding: 6px 12px 12px;
+    border-bottom: 1px solid var(--c-line);
+    margin-bottom: 12px;
+  }
+  .sidebar__group { margin-bottom: 18px; }
+  .sidebar__group:last-child { margin-bottom: 0; }
+  .sidebar__link,
+  .sidebar__sub-link {
+    display: block;
+    text-decoration: none;
+  }
+  .sidebar__link {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--c-text-2);
+    border-radius: var(--r-base);
+    font-weight: 500;
+    line-height: 1.5;
+    transition: background 150ms, color 150ms;
+  }
+  .sidebar__sub {
+    margin: 8px 0 8px 12px;
+    padding-left: 10px;
+    border-left: 1px solid var(--c-line);
+  }
+  .sidebar__sub-link {
+    padding: 6px 10px;
+    font-size: 12px;
+    color: var(--c-text-3);
+    border-radius: 4px;
+    line-height: 1.6;
+    transition: background 150ms, color 150ms;
+  }
+  .sidebar__link:hover { background: rgba(0, 0, 0, 0.04); color: var(--c-text); }
+  .sidebar__link.is-current { background: var(--c-text); color: var(--c-bg); }
+  .sidebar__link.is-current:hover { background: var(--c-text); }
+  .sidebar__link.is-placeholder { color: var(--c-text-3); cursor: default; font-style: italic; }
+  .sidebar__link.is-placeholder:hover { background: transparent; color: var(--c-text-3); }
+  .sidebar__sub-link:hover { background: rgba(0, 0, 0, 0.03); color: var(--c-text-2); }
+  .sidebar__sub-link.is-current { background: var(--c-bg-sunken); color: var(--c-text); font-weight: 500; }
+  .doc { min-width: 0; background: var(--c-bg); padding: 64px 72px; border-radius: var(--r-xl); box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+
+  h1 { font-size: 32px; font-weight: 600; margin: 0 0 8px; line-height: 1.3; border-bottom: 2px solid var(--c-text); padding-bottom: 16px; }
+  .meta { color: var(--c-text-3); font-size: 13px; margin-bottom: 40px; line-height: 1.8; }
+  .meta code { font-size: 12px; }
+
+  .view-tabs { display: inline-flex; padding: 3px; background: var(--c-bg-sunken); border-radius: var(--r-base); align-self: center; }
+  .view-tab { padding: 4px 12px; font-size: 12px; border: none; background: transparent; color: var(--c-text-3); cursor: pointer; border-radius: 4px; font-family: inherit; transition: all 150ms; line-height: 1.4; }
+  .view-tab:hover { color: var(--c-text); }
+  .view-tab.is-active { background: var(--c-bg); color: var(--c-text); box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-weight: 600; }
+
+  body.mode-basic .pro-only { display: none !important; }
+  body.mode-pro .basic-only { display: none !important; }
+  body:not(.mode-basic):not(.mode-pro) .pro-only, body:not(.mode-basic):not(.mode-pro) .basic-only { display: none; }
+  .basic-only.summary { margin: 16px 0; padding: 12px 20px; background: var(--c-info-bg); border-left: 3px solid var(--c-info); border-radius: 0 var(--r-base) var(--r-base) 0; color: var(--c-text-2); font-size: 14px; }
+  .basic-only.summary strong { color: var(--c-text); }
+  body.mode-pro .pro-inline { display: inline; }
+  .pro-inline { color: var(--c-text-3); font-size: 12px; margin-left: 6px; }
+
+  h2 { font-size: 24px; font-weight: 600; margin: 56px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--c-line); }
+  h2 .num { display: inline-block; width: 32px; height: 32px; line-height: 32px; background: var(--c-brand); color: #fff; border-radius: var(--r-base); text-align: center; font-size: 16px; margin-right: 12px; vertical-align: middle; }
+  h3 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; }
+  h4 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; color: var(--c-text-2); }
+
+  p { margin: 12px 0; }
+  ul, ol { margin: 12px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  code { background: var(--c-code-bg); padding: 1px 6px; border-radius: 3px; font-family: "JetBrains Mono", "SF Mono", Menlo, monospace; font-size: 13px; }
+  pre { background: var(--c-code-bg); padding: 16px 20px; border-radius: var(--r-base); overflow-x: auto; font-size: 13px; line-height: 1.6; }
+  pre code { background: none; padding: 0; }
+
+  blockquote { margin: 16px 0; padding: 12px 20px; background: var(--c-info-bg); border-left: 3px solid var(--c-info); border-radius: 0 var(--r-base) var(--r-base) 0; color: var(--c-text-2); }
+  blockquote.warn { background: var(--c-warning-bg); border-left-color: var(--c-warning); }
+  blockquote.danger { background: var(--c-danger-bg); border-left-color: var(--c-danger); }
+  blockquote p { margin: 6px 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--c-line); vertical-align: top; }
+  th { background: var(--c-bg-sunken); font-weight: 600; color: var(--c-text); font-size: 13px; }
+  td code { font-size: 12px; }
+
+  .toc { background: var(--c-bg-sunken); padding: 20px 32px; border-radius: var(--r-base); margin-bottom: 32px; }
+  .toc h3 { margin: 0 0 12px; font-size: 14px; color: var(--c-text-2); }
+  .toc ol { margin: 0; padding-left: 20px; font-size: 14px; }
+  .toc a { color: var(--c-text-2); text-decoration: none; }
+  .toc a:hover { color: var(--c-brand); }
+
+  /* ============ 切图 stage (页面级 mock + atom 级 chip) ============ */
+  .stage { background: var(--c-bg-sunken); border-radius: var(--r-detail); padding: 16px; margin: 16px 0; text-align: center; }
+  .stage img { display: block; max-width: 100%; height: auto; cursor: zoom-in; margin: 0 auto; border-radius: var(--r-detail); }
+  .stage-label { margin-top: 8px; color: var(--c-text-3); font-size: 12px; }
+  .stage--phone img { max-width: 280px; }
+  .stage--icon img { max-width: 88px; }
+  .stage--pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: end; }
+  .stage--pair > div { background: var(--c-bg-sunken); padding: 12px; border-radius: var(--r-detail); }
+  .stage--pair img { max-width: 100%; }
+
+  /* 6 phone mocks 3×2 grid - default / joy-agent 默认 / joy-agent 招手新 × light/dark */
+  .stage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0; }
+  .stage-grid > .cell { background: var(--c-bg-sunken); padding: 14px 10px 12px; border-radius: var(--r-detail); text-align: center; }
+  .stage-grid > .cell img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-radius: var(--r-detail); cursor: zoom-in; }
+  .stage-grid > .cell .cell-title { font-size: 12px; font-weight: 600; color: var(--c-text); margin-bottom: 10px; line-height: 1.35; min-height: 32px; display: flex; flex-direction: column; justify-content: center; }
+  .stage-grid > .cell .cell-title small { color: var(--c-text-3); font-weight: 500; font-size: 11px; }
+  .stage-grid > .cell .cell-cap { margin-top: 8px; color: var(--c-text-3); font-size: 11px; line-height: 1.4; }
+  @media (max-width: 900px) { .stage-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .stage-grid { grid-template-columns: 1fr; } }
+
+  /* ============ 12 chip 矩阵展示（atom 44×44 1:1 还原 Relay 坐标）============ */
+  .chip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+  .chip-cell { background: var(--c-bg); border: 1px solid var(--c-line); border-radius: var(--r-detail); padding: 18px 8px 12px; text-align: center; overflow: visible; }
+  /* atom 44×44 box, 所有内部元素 absolute, atom-相对坐标 = Relay 真实坐标 */
+  .chip-cell .atom {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 12px;     /* 水平居中 + 下方留 12px 给 cap */
+    position: relative;
+    border-radius: 12px;
+    overflow: visible;
+  }
+  .chip-cell .atom.selected { background: #F2F4F7; }
+
+  /* icon — default/选中: 20×20 at (12, 3); icon/营销: 38×38 at (3, 3) 圆形 */
+  .chip-cell .atom .ic {
+    position: absolute;
+    top: 3px; left: 12px;
+    width: 20px; height: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+  .chip-cell .atom .ic.video-default { background-image: url('./icon-video-default.svg'); }
+  .chip-cell .atom .ic.video-selected { background-image: url('./icon-video-selected.svg'); }
+  .chip-cell .atom .ic.cir-image {
+    top: 3px; left: 3px;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background-image: url('https://img20.360buyimg.com/img/jfs/t1/441995/17/1610/25673/6a154079F266c5a7b/0276084084a42ebe.png');
+    background-size: cover;
+  }
+
+  /* 文案 at (0, 27), 44×14, 居中 */
+  .chip-cell .atom .lb {
+    position: absolute;
+    top: 27px; left: 0;
+    width: 44px; height: 14px;
+    font-size: 9px; line-height: 14px;
+    text-align: center;
+    color: #11141A;
+  }
+  .chip-cell .atom.selected .lb { color: #FF0F23; font-weight: 600; }
+
+  /* badge: 按 Relay 实测坐标 atom-相对绝对定位 + 0.5px 白描边 */
+  /* 红点: atom (31, 3), 6×6 r=3 — 贴在 icon 内部右上角 */
+  .chip-cell .atom .badge-dot {
+    position: absolute;
+    top: 3px; left: 31px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #FF0F23;
+    border: 0.5px solid #fff;
+    box-sizing: border-box;
+  }
+  /* 数字: atom (27, -3), 12×12 r=8 — 向上溢出 atom top 3px */
+  .chip-cell .atom .badge-num {
+    position: absolute;
+    top: -3px; left: 27px;
+    min-width: 12px; height: 12px;
+    padding: 0 3px;
+    border-radius: 8px;
+    background: #FF0F23; color: #fff;
+    font-size: 8px; font-weight: 600;
+    border: 0.5px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  /* 文字: atom (27, -3), 41×12 r=8 — 向上溢出 + 向右大幅溢出 (起 27 终 68, 超 atom width 44 共 24px) */
+  .chip-cell .atom .badge-txt {
+    position: absolute;
+    top: -3px; left: 27px;
+    width: 41px; height: 12px;
+    padding: 0 4px;
+    border-radius: 8px;
+    background: #FF0F23; color: #fff;
+    font-size: 8px; font-weight: 600;
+    white-space: nowrap;
+    border: 0.5px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .chip-cell .cap { font-size: 11px; color: var(--c-text-3); line-height: 1.3; margin-top: 4px; }
+  .chip-cell .cap .nid { display: block; font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--c-text-3); margin-top: 2px; }
+
+  /* Joy Agent 4 状态 chip: 用 3x 坐标绘制后整体缩放，避免气泡与头像比例漂移 */
+  .ja-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0; }
+  .ja-cell {
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-detail);
+    padding: 18px 12px 14px;
+    text-align: center;
+    min-height: 234px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+  }
+  .ja-stage {
+    width: 236px;
+    height: 154px;
+    position: relative;
+    overflow: hidden;
+  }
+  .ja-scene {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 708px;
+    height: 462px;
+    transform: scale(0.333333);
+    transform-origin: 0 0;
+  }
+  .ja-cell .ja-head {
+    width: 396px;
+    height: 396px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    left: 0;
+    top: 24px;
+    z-index: 1;
+  }
+  .ja-cell .ja-head.default { background-image: url('https://img20.360buyimg.com/img/jfs/t1/441883/40/1438/104956/6a153c2fF4139f574/027618c18c8c6c59.png'); }
+  .ja-cell .ja-head.new { background-image: url('https://img20.360buyimg.com/img/jfs/t1/441355/12/3640/109838/6a153c3eF0762c085/027618c18c368474.png'); }
+  /* Joy Agent 招手气泡 — 对齐 Relay 286:17337 / 286:17358:
+     - 气泡容器: 232×24, r=100 胶囊
+     - 3 层渐变 fill (青径向 + 粉径向 + 蓝紫线性 133deg)
+     - 内嵌 4px 白光 inset
+     - 尾巴: SVG path `M0 0 L13.6 10.2 C14.369 10.777 13.961 12 13 12 L0 12 Z` fill #933EEA
+     - 尾巴 size 14×12 在气泡内部 (14, 12) 位置（气泡底部偏左）
+     - preview 统一在 3x 坐标系中绘制，再整体 scale 到卡片内；间距按可见白底边缘校准
+  */
+  .ja-bubble {
+    position: absolute;
+    top: 24px;
+    left: 216px;
+    width: 492px;
+    height: 72px;
+    padding: 0 24px;
+    border-radius: 100px;
+    color: #fff;
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 36px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background:
+      radial-gradient(100% 50% at 150% 100%, rgba(51, 255, 255, 0.5) 0%, rgba(51, 255, 255, 0) 100%),
+      radial-gradient(100% 50% at 100% 100%, rgba(255, 102, 255, 0.4) 0%, rgba(255, 102, 255, 0) 100%),
+      linear-gradient(133deg, #8F39E6 0%, #6A59FF 100%);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.4) inset;
+    overflow: visible;
+    z-index: 2;
+    isolation: isolate;
+  }
+  /* 尾巴: Relay 中是 14×12，水平镜像后指向头像 */
+  .ja-bubble svg.ja-tail {
+    position: absolute;
+    top: 36px;
+    left: 42px;
+    width: 42px;
+    height: 36px;
+    display: block;
+    transform: scaleX(-1);
+    transform-origin: 0 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .ja-cell .ja-label { margin-top: 10px; font-size: 12px; font-weight: 600; color: var(--c-text); }
+  .ja-cell .ja-desc { margin-top: 4px; font-size: 11px; color: var(--c-text-3); line-height: 1.3; }
+  .ja-cell .nid { display: block; font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--c-text-3); margin-top: 4px; }
+  @media (max-width: 720px) { .ja-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .ja-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; gap: 16px; padding: 16px 12px 0; }
+    .sidebar { position: static; max-height: none; }
+    .doc { padding: 40px 24px; }
+  }
+
+  hr { border: none; border-top: 1px solid var(--c-line); margin: 56px 0 32px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="../../../../../../../docs/jd-design-wiki-knowledge-tree.html" class="top-bar__brand">JD Design Wiki <small>· V16</small></a>
+  <nav class="top-bar__nav">
+    <a href="../../../../../../knowledge/spec-page.html" class="top-bar__nav-link">📚 Design 知识</a>
+    <a href="../../../../../../foundations/spec-page.html" class="top-bar__nav-link">🎨 Design 基础</a>
+    <a href="../../../../../../ai-mechanism/spec-page.html" class="top-bar__nav-link">🤖 AI 机制</a>
+    <a href="../../../../../../product-architecture/spec-page.html" class="top-bar__nav-link is-current">🏗 组织架构</a>
+    <a href="../../../../../../horizontal/spec-page.html" class="top-bar__nav-link">🚀 横向专项</a>
+  </nav>
+  <span class="top-bar__spacer"></span>
+  <div class="view-tabs" role="tablist" aria-label="视图密度切换">
+    <button class="view-tab is-active" role="tab" data-view="basic" aria-selected="true">常规版</button>
+    <button class="view-tab" role="tab" data-view="pro" aria-selected="false">专业版</button>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar" aria-label="🏗 组织架构 - 子目录">
+    <div class="sidebar__zone-tag">ZONE 04 · 🏗 组织架构</div>
+    <div class="sidebar__group">
+      <a class="sidebar__link" href="../../../../../../product-architecture/spec-page.html#top">页面说明</a>
+    </div>
+    <div class="sidebar__group">
+      <a class="sidebar__link is-current" href="#top">综合业务设计部</a>
+      <div class="sidebar__sub">
+        <a class="sidebar__sub-link" href="../spec-page.html">内容生态</a>
+        <a class="sidebar__sub-link" href="../spec-page.html">视频 / 逛底导</a>
+        <a class="sidebar__sub-link is-current" href="#top">单坑原子</a>
+      </div>
+    </div>
+  </aside>
+
+<div class="doc">
+
+<h1 id="top">视频场域底导-单坑原子 · Video Tabbar / Slot Atom</h1>
+<div class="meta">
+  归属:组织架构 / 综合业务设计部 / 内容生态 / 视频场域 / 逛底导 · slug=<code>video-tabbar-atom</code> · level=<code>sub-spec</code> · bg=<code>retail</code><br>
+  样式来源:Relay <code>286:16020</code>「导航类-逛底导状态」完整设计板 · 单坑 atom <code>286:17175</code> · Joy Agent atom <code>286:17330</code><br>
+  <strong>继承自</strong>:<a href="../../../../../../foundations/components-base/tabbar/spec-page.html">foundations/components-base/tabbar</a>（容器 / 形态 / 坑位数等通用规范）—— 本页收拢视频场域 slot atom 与 Joy Agent atom 的可复用规则
+</div>
+
+<div class="toc">
+  <h3>目录</h3>
+  <ol>
+    <li><a href="#ch-1">设计原则</a></li>
+    <li><a href="#ch-2">原子结构</a></li>
+    <li><a href="#ch-3">变体矩阵</a></li>
+    <li><a href="#ch-4">多端适配 / 应用场景</a></li>
+  </ol>
+</div>
+
+<div class="basic-only summary" style="background:#fff5e6;border-left-color:#f59f00;">
+  <p><strong>常规版只看结论</strong>:这页保留核心规则、状态图例、Joy Agent 图例和场景图。节点、token、命名残留、API 与来源细节已收进专业版。</p>
+</div>
+
+<!-- ================== 章节 1 设计原则 ================== -->
+<h2 id="ch-1"><span class="num">1</span>设计原则</h2>
+
+<div class="basic-only summary">
+  <p><strong>👉 一句话理解</strong>:视频场域底导的<strong>单个坑位</strong>(那个 44×44 的小方块) —— 用户在 App 底部看到的「逛逛」「文案」按钮就是它。本组件只管这个小方块长什么样、有几种状态。<strong>整条底导</strong>由<a href="../../../../../../foundations/components-base/tabbar/spec-page.html">通用底导组件</a>统一规范。</p>
+  <p style="margin-top:8px;"><strong>它解决什么</strong>:让视频场域(逛 / 视频频道)的底导坑位<strong>跟其他频道有区分</strong> —— 选中态的图标是红色 video 播放图标(▶),其他频道是各自的品牌图标。这样用户一眼知道自己在哪个频道。</p>
+  <p style="margin-top:8px;"><strong>为什么独立录入</strong>:视频频道的<strong>选中视觉</strong>(红色 video icon + 红字加粗) 跟通用底导(线性 icon + 灰底高亮)不一样,需要单独说清楚。其他规则(2-5 坑位、文案 4 字、间距等)沿用通用底导,本文不重复。</p>
+</div>
+
+<p>视频场域底导<strong>单坑原子</strong>是 44×44 的<strong>单个坑位组件</strong>,作为<a href="../../../../../../foundations/components-base/tabbar/spec-page.html">通用 tabbar</a>的 slot 内容,在视频/逛频道场景下使用。</p>
+
+<p>它的<strong>核心边界</strong>是「<strong>单坑视觉(状态切换 + 招手位)</strong>」而非「<strong>整条底导布局</strong>」。整条底导的容器、形态、坑位数、安全区等规范<strong>继承通用 tabbar</strong>,本组件只定义视频场域单坑的视觉差异。</p>
+
+<div class="basic-only summary">
+  <p><strong>关键规则</strong>:选中态用红白实心 video icon + 红字 Semibold；icon / 营销态改为 38×38 圆形位图；招手位只允许红点、数字、文字三类 badge。</p>
+</div>
+
+<div class="pro-only">
+<h3>1.1 与通用 tabbar 单坑的差异</h3>
+
+<table>
+<thead><tr><th>维度</th><th>通用 tabbar 单坑</th><th>视频场域单坑（本组件）</th></tr></thead>
+<tbody>
+<tr><td>默认 icon</td><td>各频道线性 icon（home / category 等）</td><td>线性 video icon（频道占位为通用 home icon）</td></tr>
+<tr><td><strong>选中态视觉</strong></td><td>线性 icon + 灰底高亮</td><td><strong>红实色 video icon + 红字 Semibold</strong>（icon 形状由 line → filled，红方块包白 ▶）</td></tr>
+<tr><td>容器底色变化</td><td>选中时可加 hover 灰</td><td>选中时<strong>容器变 <span class="pro-only pro-inline">#F2F4F7</span>淡灰</strong>(+ icon 红方块 + 文字红色，3 处叠加)</td></tr>
+<tr><td>营销态 / icon 态</td><td>—（通用 tabbar 不区分）</td><td><strong>圆形位图插槽</strong>(注入频道头像 / 商品营销图)</td></tr>
+<tr><td>招手位</td><td>同 video 场域</td><td>红点 / 数字 / 文字 3 类 badge（规格继承通用）</td></tr>
+</tbody>
+</table>
+
+<h3>1.2 行为准则</h3>
+
+<ol>
+  <li><strong>视频场域选中态 = 3 处叠加</strong>:容器变淡灰 + icon 单色 → 红白双色 + 文字色黑→红 + 字重加粗<span class="pro-only pro-inline"> — 详 ch-2 § 选中态</span></li>
+  <li><strong>选中态没有「红方块外框」独立元素</strong> —— 红方块就是 video icon 本身在选中态的形状(同 icon 的 line/filled 双态)<span class="pro-only pro-inline">,详 ch-2 § 视觉解剖</span></li>
+  <li><strong>icon 态 / 营销态 = 圆形位图插槽</strong>,业务方注入位图(频道头像 / 用户头像 / 商品营销图)</li>
+  <li><strong>招手 badge 红色统一用</strong> <code>color_primary</code>(<code>#FF0F23</code>)<span class="pro-only pro-inline">；video 实心图标外层 <code>#FF0000</code> 需设计侧确认是否并入主色</span></li>
+  <li><strong>所有视觉规则继承通用 tabbar</strong>:坑位数 2~5、文案最多 4 字、icon 20×20、安全区 17 DP 等<span class="pro-only pro-inline">,见 <a href="../../../../../../foundations/components-base/tabbar/spec-page.html#ch-1">通用 tabbar ch-1 行为准则</a></span></li>
+</ol>
+
+<blockquote>
+<p><strong>V16 立场</strong>:本组件作为视频场域的<strong>专属 atom</strong>,只允许在视频/逛频道相关页面使用;不允许把红色 video icon 用在非视频频道的选中态(会让用户误判频道身份)。</p>
+</blockquote>
+</div>
+
+<!-- ================== 章节 2 原子结构 ================== -->
+<h2 id="ch-2"><span class="num">2</span>原子结构</h2>
+
+<div class="basic-only summary">
+  <p><strong>👉 一句话拆解</strong>:每个 44×44 的坑位由 <strong>3 部分</strong>组成:</p>
+  <ul style="margin-top:4px;">
+    <li>① <strong>图标</strong>(20×20):默认是 video 播放图标(线性) / 选中变红实心 / 营销/icon 态变圆形位图头像</li>
+    <li>② <strong>文字</strong>(下方):「逛逛」/「文案」,默认黑色,选中变红色加粗</li>
+    <li>③ <strong>招手位</strong>(右上角,可选):红点 / 数字 / 文字 三选一</li>
+  </ul>
+  <p style="margin-top:8px;"><strong>状态切换</strong>:默认/选中/icon/营销 共 4 类。<strong>选中态</strong>跟其他三态最大差异是「icon 形状变红实心 + 文字变红」—— 这是视频频道的视觉印记。</p>
+  <p style="margin-top:12px;color:var(--c-text-3);">完整 token / DP / 字号字重表,见<strong>专业版</strong>。</p>
+</div>
+
+<div class="pro-only">
+<h3>2.1 容器与骨架</h3>
+<table>
+<thead><tr><th>层</th><th>fill</th><th>尺寸 / 圆角</th></tr></thead>
+<tbody>
+<tr><td>外容器 COMPONENT (默认 / icon / 营销)</td><td>无 fill (透明)</td><td>44×44</td></tr>
+<tr><td>外容器 COMPONENT (<strong>选中</strong>)</td><td><code>color_background</code> / <code>#F2F4F7</code> 淡灰</td><td>44×44 <code>radius_xl 12</code></td></tr>
+<tr><td>icon 槽位「透明层」FRAME</td><td><code>#FFFFFF@90% + IMAGE</code> 占位位图</td><td>20×20</td></tr>
+<tr><td>icon 本体「video」VECTOR</td><td>见 2.2 状态切换</td><td>20×17 (在 20×20 槽位内)</td></tr>
+<tr><td>文案 TEXT</td><td>见 2.3 文字</td><td>44×14</td></tr>
+</tbody>
+</table>
+
+<h3>2.2 icon 状态切换（4 类）</h3>
+<table>
+<thead><tr><th>状态</th><th>icon 实现</th><th>fill (外)</th><th>fill (内)</th></tr></thead>
+<tbody>
+<tr><td>默认</td><td>单色线性 video icon</td><td><code>gray_1</code> / <code>#11141A</code></td><td>—</td></tr>
+<tr><td><strong>选中</strong></td><td><strong>实心 video icon（红方块 + 内白小三角 ▶）</strong></td><td><code>#FF0000</code> 实色红 20×17</td><td><code>#FFFFFF</code> 5×6 ▶</td></tr>
+<tr><td>icon 态</td><td>圆形位图插槽（注入频道头像）</td><td colspan="2">「营销图」FRAME <code>#11141A@2% + IMAGE</code> 38×38 <code>r=100</code> 圆形</td></tr>
+<tr><td>营销态</td><td>圆形位图插槽（注入商品营销图）</td><td colspan="2">同 icon 态结构，imageHash 区分业务</td></tr>
+</tbody>
+</table>
+
+<blockquote class="warn">
+<p><strong>占位图说明</strong>:Relay 中 icon / 营销态复用同一张圆形占位图。生产实现时应暴露为业务位图插槽，不要把占位图写死；不同频道头像、用户头像或商品营销图由业务侧注入。</p>
+</blockquote>
+
+<h3>2.3 文字</h3>
+<table>
+<thead><tr><th>状态</th><th>chars</th><th>token</th><th>weight</th><th>fill</th></tr></thead>
+<tbody>
+<tr><td>默认</td><td>「逛逛」/「文案」</td><td><code>pingfang_regular/font_size_10_400</code></td><td>Regular</td><td><code>color_title</code> (<code>#171A26</code>)</td></tr>
+<tr><td><strong>选中</strong></td><td>「逛逛」</td><td><code>pingfang_semibold/font_size_10_600</code></td><td><strong>Semibold</strong></td><td><strong><code>color_primary</code> (<code>#FF0F23</code>)</strong></td></tr>
+<tr><td>icon / 营销</td><td>无文字</td><td>—</td><td>—</td><td>—</td></tr>
+</tbody>
+</table>
+
+<h3>2.4 招手 badge（4 类型统一规格）</h3>
+<table>
+<thead><tr><th>类型</th><th>容器 fill</th><th>容器尺寸 / 圆角</th><th>文字</th></tr></thead>
+<tbody>
+<tr><td>无</td><td>—</td><td>—</td><td>无 badge</td></tr>
+<tr><td>红点</td><td><code>color_primary</code></td><td>6×6 <code>r=3</code></td><td>无</td></tr>
+<tr><td>数字</td><td><code>color_primary</code></td><td>12×12 <code>radius_l 8</code></td><td>9pt 京东正黑 <code>color_primary_text</code>「8」⚠️ V16 size atom 无 9pt</td></tr>
+<tr><td>文字</td><td><code>color_primary</code></td><td>41×12 <code>radius_l 8</code></td><td>9pt PingFang SC <code>color_primary_text</code>「最多四字」⚠️ 同上</td></tr>
+</tbody>
+</table>
+
+</div><!-- /pro-only 2.1-2.4 -->
+
+<!-- ================== 章节 3 变体矩阵 ================== -->
+<h2 id="ch-3"><span class="num">3</span>变体矩阵</h2>
+
+<div class="basic-only summary">
+  <p><strong>👉 一图看懂</strong>:总共 <strong>12 个变体</strong>,按「<strong>底导类型 × 招手类型</strong>」二维组合。视觉上分 4 大类:</p>
+  <ul style="margin-top:4px;">
+    <li>① <strong>默认态 × 4 招手</strong> (4 个) — 黑色 video icon + 黑字「逛逛」</li>
+    <li>② <strong>icon 态 × 2 招手</strong> (2 个) — 圆形头像位图,无文字</li>
+    <li>③ <strong>选中态 × 4 招手</strong> (4 个) — 红色 video icon + 红字 Semibold</li>
+    <li>④ <strong>选中态-X × 3 招手</strong> (3 个,命名冗余) — 视觉同 ③</li>
+  </ul>
+  <p class="pro-only" style="margin-top:8px;color:var(--c-warning-text);"><strong>⚠️ 属性名残留</strong>:营销态数字 / 文字在 Relay 中仍写作「选中」，选中派生写作「状态=选中态」。文档按结构归类，消费时以视觉结构为准。</p>
+</div>
+
+<h3>3.1 12 变体 chip 缩略矩阵</h3>
+
+<div class="chip-grid">
+  <div class="chip-cell">
+    <div class="atom"><div class="ic video-default"></div><div class="lb">逛逛</div></div>
+    <div class="cap">默认 / 无<span class="nid pro-only">286:16681</span></div>
+  </div>
+  <div class="chip-cell">
+    <div class="atom"><div class="ic video-default"></div><div class="lb">逛逛</div><div class="badge-dot"></div></div>
+    <div class="cap">默认 / 红点<span class="nid pro-only">286:17177</span></div>
+  </div>
+  <div class="chip-cell">
+    <div class="atom"><div class="ic video-default"></div><div class="lb">逛逛</div><div class="badge-num">8</div></div>
+    <div class="cap">默认 / 数字<span class="nid pro-only">286:16689</span></div>
+  </div>
+  <div class="chip-cell">
+    <div class="atom"><div class="ic video-default"></div><div class="lb">逛逛</div><div class="badge-txt">最多四字</div></div>
+    <div class="cap">默认 / 文字<span class="nid pro-only">286:17195</span></div>
+  </div>
+  <div class="chip-cell">
+    <div class="atom"><div class="ic cir-image"></div></div>
+    <div class="cap">icon / 无<span class="nid pro-only">286:17214</span></div>
+  </div>
+  <div class="chip-cell">
+    <div class="atom"><div class="ic cir-image"></div><div class="badge-dot"></div></div>
+    <div class="cap">icon / 红点<span class="nid pro-only">286:17216</span></div>
+  </div>
+  <div class="chip-cell">
+    <div class="atom"><div class="ic cir-image"></div><div class="badge-num">8</div></div>
+    <div class="cap">icon / 数字<span class="pro-only"><br><span style="font-size:10px;color:var(--c-warning);">属性名残留为「选中」</span></span><span class="nid pro-only">286:17212</span></div>
+  </div>
+  <div class="chip-cell">
+    <div class="atom"><div class="ic cir-image"></div><div class="badge-txt">最多四字</div></div>
+    <div class="cap">icon / 文字<span class="pro-only"><br><span style="font-size:10px;color:var(--c-warning);">属性名残留为「选中」</span></span><span class="nid pro-only">286:17218</span></div>
+  </div>
+  <div class="chip-cell">
+    <div class="atom selected"><div class="ic video-selected"></div><div class="lb">逛逛</div></div>
+    <div class="cap">选中 / 无<span class="nid pro-only">286:16714</span></div>
+  </div>
+  <div class="chip-cell">
+    <div class="atom selected"><div class="ic video-selected"></div><div class="lb">逛逛</div><div class="badge-dot"></div></div>
+    <div class="cap">选中态 / 红点<span class="nid pro-only">286:17255</span></div>
+  </div>
+  <div class="chip-cell">
+    <div class="atom selected"><div class="ic video-selected"></div><div class="lb">逛逛</div><div class="badge-num">8</div></div>
+    <div class="cap">选中态 / 数字<span class="nid pro-only">286:17266</span></div>
+  </div>
+  <div class="chip-cell">
+    <div class="atom selected"><div class="ic video-selected"></div><div class="lb">逛逛</div><div class="badge-txt">最多四字</div></div>
+    <div class="cap">选中态 / 文字<span class="nid pro-only">286:17292</span></div>
+  </div>
+</div>
+
+<div class="pro-only">
+<h3>3.2 命名规整建议</h3>
+<p>当前 12 COMPONENT 名不规整,稿件 review 时建议设计师整理为标准矩阵 <strong>3 类 × 4 招手 = 12 干净变体</strong>:</p>
+<table>
+<thead><tr><th></th><th>无</th><th>红点</th><th>数字</th><th>文字</th></tr></thead>
+<tbody>
+<tr><td>默认</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+<tr><td>icon / 营销</td><td>✓</td><td>✓</td><td>✓ (286:17212，属性名残留为「选中」)</td><td>✓ (286:17218，属性名残留为「选中」)</td></tr>
+<tr><td>选中</td><td>✓ (286:16714)</td><td>✓ (286:17255，属性名冗余)</td><td>✓ (286:17266，属性名冗余)</td><td>✓ (286:17292，属性名冗余)</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>3.3 Joy Agent 头像 4 状态（52×52）</h3>
+
+<div class="basic-only summary">
+  <p><strong>👉 一句话理解</strong>:Joy Agent 头像是<strong>另一个 atom</strong>(52×52,云朵卡通笑脸 + 紫光晕),只出现在 <strong>joy-agent 形态</strong>的 tabbar 左侧。共 4 个状态:</p>
+  <ul style="margin-top:4px;">
+    <li>① <strong>默认</strong>:静态云朵脸,单耳,闭嘴</li>
+    <li>② <strong>招手</strong>:同 ① + 右侧弹紫色气泡(白字最多 18 汉字)</li>
+    <li>③ <strong>默认新</strong>:云朵脸<strong>升级版</strong>(双耳 + 微笑 + 「AI」徽章)</li>
+    <li>④ <strong>招手新</strong>:同 ③ + 右侧弹气泡</li>
+  </ul>
+  <p style="margin-top:8px;">本页按 Relay <code>286:17330</code> 同板 atom 收拢展示；正式独立子组件目录待补。</p>
+</div>
+
+<div class="ja-grid">
+  <div class="ja-cell">
+    <div class="ja-stage"><div class="ja-scene"><div class="ja-head default"></div></div></div>
+    <div class="ja-label">默认</div>
+    <div class="ja-desc">闭嘴 + 单耳<span class="nid pro-only">286:17331</span></div>
+  </div>
+  <div class="ja-cell">
+    <div class="ja-stage">
+      <div class="ja-scene">
+        <div class="ja-head default has-bubble"></div>
+        <div class="ja-bubble">
+          这里是一条开启引导最多展示十八个汉字
+          <svg class="ja-tail" viewBox="0 0 14 12" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0 L13.6 10.2 C14.369 10.777 13.961 12 13 12 L0 12 Z" fill="#933EEA"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="ja-label">招手</div>
+    <div class="ja-desc">默认 + 紫气泡<span class="nid pro-only">286:17337</span></div>
+  </div>
+  <div class="ja-cell">
+    <div class="ja-stage"><div class="ja-scene"><div class="ja-head new"></div></div></div>
+    <div class="ja-label">默认新</div>
+    <div class="ja-desc">双耳 + 微笑 + AI 徽章<span class="nid pro-only">286:17347</span></div>
+  </div>
+  <div class="ja-cell">
+    <div class="ja-stage">
+      <div class="ja-scene">
+        <div class="ja-head new has-bubble"></div>
+        <div class="ja-bubble">
+          这里是一条开启引导最多展示十八个汉字
+          <svg class="ja-tail" viewBox="0 0 14 12" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0 L13.6 10.2 C14.369 10.777 13.961 12 13 12 L0 12 Z" fill="#933EEA"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="ja-label">招手新</div>
+    <div class="ja-desc">默认新 + 紫气泡<span class="nid pro-only">286:17358</span></div>
+  </div>
+</div>
+
+<div class="pro-only">
+<p><strong>实现差异</strong>:</p>
+<table>
+<thead><tr><th>状态</th><th>头像本体</th><th>气泡</th><th>切图</th></tr></thead>
+<tbody>
+<tr><td>默认 / 招手</td><td>位图(云朵 + 闭嘴 + 单耳)</td><td>—/CSS 3 层渐变胶囊</td><td>1 张 PNG @3x 132×132</td></tr>
+<tr><td>默认新 / 招手新</td><td>位图<strong>升级版</strong>(双耳 + 微笑 + AI 徽章)</td><td>—/CSS 同上</td><td>1 张 PNG @3x 132×132</td></tr>
+</tbody>
+</table>
+<p>4 状态共享 <strong>2 张 PNG</strong>(默认 + 默认新),招手态在头像基础上叠加 <strong>CSS 渲染气泡</strong>(3 层渐变 + 紫色尾巴 + 12pt 白字)。独立 Joy Agent 子组件文档待落地。</p>
+</div>
+
+<blockquote class="pro-only">
+<p><strong>「新」业务含义待澄清</strong>:升级版 / A/B 测试 / 账号等级?「头像本体重画 + AI 徽章」对应什么业务事件?需设计师确认。</p>
+</blockquote>
+
+<!-- ================== 章节 4 多端适配 / 应用场景 ================== -->
+<h2 id="ch-4"><span class="num">4</span>多端适配 / 应用场景</h2>
+
+<div class="basic-only summary">
+  <p><strong>👉 用在哪</strong>:本 atom 不直接渲染,作为<a href="../../../../../../foundations/components-base/tabbar/spec-page.html">通用 tabbar</a>的 slot 内容,在视频场域两种业务场景使用:</p>
+  <ul style="margin-top:4px;">
+    <li>🌞 <strong>双列商品瀑布流场景</strong> → 跟<strong>视频场域 default light 形态</strong> tabbar 一起用</li>
+    <li>🌑 <strong>沉浸式视频播放场景</strong> → 跟<strong>视频场域 default dark 形态</strong>(Liquid Glass) tabbar 一起用</li>
+  </ul>
+  <p style="margin-top:8px;">两种场景下 slot atom 规则一致，差异来自父级 tabbar 容器、是否挂 Joy Agent，以及 light / dark 材质。</p>
+</div>
+
+<p class="pro-only">本 atom 在 <strong>3 形态 × 2 场景 = 6 个组合</strong>下的实际渲染（含 5 个坑位的整条 tabbar）。视觉上注意:atom 本身（单坑视觉规则）<strong>6 个组合完全一致</strong>,差异在父级 tabbar 容器(default vs joy-agent 形态)、Joy Agent 状态(默认/招手)、和 mode(light vs dark)。</p>
+
+<h3>4.1 6 组合并列对照</h3>
+
+<div class="stage-grid">
+  <!-- 第 1 行：light 双列场景 -->
+  <div class="cell">
+    <div class="cell-title">🌞 双列 · light<br><small>default 形态</small></div>
+    <img src="https://img14.360buyimg.com/img/jfs/t1/442030/25/1759/206783/6a154137F62b5ae1d/027646598476c9c9.jpg" alt="双列 + default light">
+    <div class="cell-cap">5 坑无 Joy Agent<br><span class="pro-only pro-inline">wrapper #F5F5F5@60% + shadow · r=16</span></div>
+  </div>
+  <div class="cell">
+    <div class="cell-title">🌞 双列 · light<br><small>joy-agent 默认态</small></div>
+    <img src="https://img20.360buyimg.com/img/jfs/t1/441052/18/5177/208174/6a154137F4b494ae9/02764659840b167c.jpg" alt="双列 + joy-agent light 默认">
+    <div class="cell-cap">左下 Joy Agent 默认 + 主体 4 坑<br><span class="pro-only pro-inline">Joy Agent x=-16 突破父 padding</span></div>
+  </div>
+  <div class="cell">
+    <div class="cell-title">🌞 双列 · light<br><small>joy-agent 招手新（含气泡）</small></div>
+    <img src="https://img11.360buyimg.com/img/jfs/t1/440070/17/9348/215213/6a154137Fdd42a418/02764659841f04ab.jpg" alt="双列 + joy-agent light 招手新 + 气泡">
+    <div class="cell-cap">Joy Agent 默认新 + AI 徽章 + 紫色气泡<br><span class="pro-only pro-inline">气泡 z-index 高于 tabbar，最长 18 字</span></div>
+  </div>
+  <!-- 第 2 行：dark 沉浸视频场景 -->
+  <div class="cell">
+    <div class="cell-title">🌑 沉浸视频 · dark<br><small>default 形态</small></div>
+    <img src="https://img12.360buyimg.com/img/jfs/t1/441982/1/1532/1861702/6a1540ffF1c1ae5bb/02764659841a79c1.png" alt="沉浸视频 + default dark">
+    <div class="cell-cap">5 坑无 Joy Agent<br><span class="pro-only pro-inline">Liquid Glass M · 3 层 fill 玻璃感</span></div>
+  </div>
+  <div class="cell">
+    <div class="cell-title">🌑 沉浸视频 · dark<br><small>joy-agent 默认新态</small></div>
+    <img src="https://img13.360buyimg.com/img/jfs/t1/440749/28/6684/1888038/6a1540cfF96b3d88f/0276465984fdbbf4.png" alt="沉浸视频 + joy-agent dark 默认新">
+    <div class="cell-cap">左下 Joy Agent 默认新 + AI 徽章<br><span class="pro-only pro-inline">头像紫光晕在 dark 反衬更亮</span></div>
+  </div>
+  <div class="cell">
+    <div class="cell-title">🌑 沉浸视频 · dark<br><small>joy-agent 招手新（含气泡）</small></div>
+    <img src="https://img10.360buyimg.com/img/jfs/t1/442551/31/1229/1900709/6a154127F2e35589f/02764659843809e7.png" alt="沉浸视频 + joy-agent dark 招手新 + 气泡">
+    <div class="cell-cap">Joy Agent 默认新 + 紫色气泡覆盖 tabbar<br><span class="pro-only pro-inline">CSS 3 层渐变胶囊 + 前端 12pt 白字</span></div>
+  </div>
+</div>
+
+<blockquote class="pro-only">
+<p><strong>关键观察</strong>:6 个组合中,<strong>视频场域 atom(本组件)的单坑视觉规则完全一致</strong> —— 选中态都是红色 video icon + 红字 Semibold,默认态都是黑色/灰白文案(随 light/dark 切色)。<strong>差异在</strong>:① tabbar 容器(白 / Liquid Glass)② 有无 Joy Agent 头像(左侧)③ 是否处于招手态(气泡浮在 tabbar 之上)。</p>
+</blockquote>
+
+<div class="pro-only">
+<h3>4.2 dark 模式下的 atom 差异（vs light）</h3>
+<table>
+<thead><tr><th>元素</th><th>light</th><th>dark</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>选中 slot 容器</td><td><code>#F2F4F7</code></td><td><code>#14171A</code> 深灰</td><td>容器底色随 mode 反转</td></tr>
+<tr><td>默认 slot 文案</td><td><code>#11141A</code></td><td><code>#E1E6EB</code> 灰白</td><td>⚠️ <code>#E1E6EB</code> 不对齐 V16 gray.1.dark <code>#E6E6E6</code> (偏 5 字节)</td></tr>
+<tr><td>选中 slot 文案</td><td><code>#FF0F23</code></td><td><code>#FF0F23</code></td><td>红色穿透两 mode</td></tr>
+<tr><td>选中 video icon</td><td>红/白</td><td>同 light</td><td>红色穿透两 mode</td></tr>
+<tr><td>icon / 营销 位图</td><td>同上</td><td>同上</td><td>位图业务驱动，不随 mode 变</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3 class="pro-only">4.3 反例</h3>
+<blockquote class="danger pro-only">
+<p><strong>❌ 不允许</strong>:把红色 video icon 用在非视频频道(如把首页 home icon 在选中态变成红 video icon)。这会让用户误判频道身份。</p>
+<p><strong>❌ 不允许</strong>:在 dark mode 下把选中态文案改成其他色(如白色/黄色)。<code>#FF0F23</code> 红色是视频频道的视觉印记,穿透 light/dark。</p>
+<p><strong>❌ 不允许</strong>:把 icon/营销态 圆形位图换成方形 / 圆角矩形。<code>r=100</code> 圆形是视频场域 atom 的稿件约定,跨业务保持视觉一致。</p>
+</blockquote>
+
+<hr>
+
+<h3 class="pro-only">API 速查</h3>
+<pre class="pro-only"><code class="lang-yaml">component_type: video-tabbar-atom
+states:
+  default: { icon: video-line, fill: #11141A, text_weight: Regular, text_fill: #11141A }
+  selected: { icon: video-filled, fill: #FF0000+#FFFFFF, text_weight: Semibold, text_fill: #FF0F23, container_fill: #F2F4F7 }
+  icon: { content: image_slot_circular, slot: avatar_or_channel_image }
+  marketing: { content: image_slot_circular, slot: product_marketing_image }
+slots:
+  icon: { size: 20x20, type: video_icon_or_image_slot }
+  label: { font: pingfang_regular_or_semibold_10pt, optional: true }
+  badge: { type: enum[none, dot, num, text], position: top-right }
+  image: { size: 44x44, shape: circle, type: business_injected_bitmap }
+events:
+  on_press: TODO
+  on_select: TODO
+inherits_from: foundations/components-base/tabbar/slot</code></pre>
+
+<h3 class="pro-only">引用</h3>
+<ul class="pro-only">
+  <li><strong>父级规范</strong>:<a href="../../../../../../foundations/components-base/tabbar/spec-page.html">foundations/components-base/tabbar</a>（通用 tabbar 容器 / 形态 / 坑位数）</li>
+  <li><strong>同板原子</strong>:Relay <code>286:17330</code> Joy Agent（52×52 头像，4 状态）</li>
+  <li><strong>父级形态</strong>:Relay <code>286:17512</code> 组件-普通形态 · <code>286:17382</code> 组件-Joy Agent 形态</li>
+  <li><strong>Relay 真相源</strong>:<a href="https://relay.jd.com/file/design?id=1976604323748007938&amp;page_id=286%3A1&amp;node_id=286%3A16020&amp;mode=dev" target="_blank">节点 <code>286:16020</code> · 导航类-逛底导状态</a></li>
+  <li><strong>切图清单</strong>:<a href="./_assets-cdn.md">_assets-cdn.md</a></li>
+  <li><strong>design.md 源</strong>:<a href="./design.md">design.md</a></li>
+</ul>
+
+<div style="margin-top:60px; padding-top:20px; border-top:1px solid var(--c-line); color:var(--c-text-3); font-size:12px; text-align:center;">
+  JD APP V16.0 Design System · 视频场域底导-单坑原子 规范 · 校准于 2026-05-26 · 来源 = Relay <code>286:16020</code>
+</div>
+
+</div>
+</div>
+
+<script>
+(function () {
+  var STORAGE_KEY = 'spec-page-view-mode';
+  var body = document.body;
+  var tabs = document.querySelectorAll('.view-tab');
+  function setMode(mode) {
+    body.classList.remove('mode-basic', 'mode-pro');
+    body.classList.add('mode-' + mode);
+    tabs.forEach(function (t) {
+      var on = t.dataset.view === mode;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    try { localStorage.setItem(STORAGE_KEY, mode); } catch (e) {}
+  }
+  var initial = 'basic';
+  try {
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === 'pro' || saved === 'basic') initial = saved;
+  } catch (e) {}
+  setMode(initial);
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () { setMode(t.dataset.view); });
+  });
+  document.querySelectorAll('.stage img').forEach(function (img) {
+    img.addEventListener('click', function () { window.open(img.src, '_blank', 'noopener'); });
+  });
+})();
+</script>
+
+</body>
+</html>

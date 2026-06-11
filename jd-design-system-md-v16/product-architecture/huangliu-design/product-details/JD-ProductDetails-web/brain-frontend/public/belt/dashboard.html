@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>京东商详腰带 · 数据看板</title>
+<style>
+  :root{
+    --bg:#0b0f16; --bg2:#0e1420;
+    --panel:rgba(255,255,255,.05);
+    --panel2:rgba(255,255,255,.08);
+    --text:rgba(255,255,255,.92);
+    --muted:rgba(255,255,255,.62);
+    --muted2:rgba(255,255,255,.40);
+    --stroke:rgba(255,255,255,.10);
+    --stroke2:rgba(255,255,255,.18);
+    --accent:#22d3ee; --green:#43d787; --orange:#ffb454;
+    --purple:#9d7bff; --cyan:#2ed3d3; --pink:#ff7bce; --danger:#ff5d5d;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Courier New",monospace;
+    --sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    --r-sm:8px; --r-md:12px; --r-lg:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--sans);}
+  body{padding:0 0 60px;-webkit-font-smoothing:antialiased;}
+  body::before{content:"";position:fixed;inset:0 0 auto 0;height:min(680px,80vh);z-index:0;pointer-events:none;
+    background:radial-gradient(1200px 640px at 12% 0%,rgba(78,161,255,.16),transparent 56%),
+               radial-gradient(900px 520px at 92% 4%,rgba(157,123,255,.12),transparent 60%);}
+  a{color:inherit;text-decoration:none}
+
+  /* ===== header ===== */
+  .top{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
+    background:linear-gradient(180deg,rgba(11,15,22,.92),rgba(11,15,22,.72));
+    border-bottom:1px solid var(--stroke);}
+  .top__in{max-width:1320px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand__dot{width:30px;height:30px;border-radius:9px;
+    background:linear-gradient(135deg,#c41e12,#e83820);box-shadow:0 6px 18px rgba(232,56,32,.4);
+    display:grid;place-items:center;font-weight:800;font-size:14px;color:#fff;}
+  .brand__t{font-size:17px;font-weight:700;letter-spacing:.5px}
+  .brand__s{font-size:12px;color:var(--muted2);margin-top:1px}
+  .top__spacer{flex:1}
+  .seg{display:inline-flex;background:var(--panel);border:1px solid var(--stroke);border-radius:10px;padding:3px;gap:2px}
+  .seg button{border:0;background:transparent;color:var(--muted);font-size:12px;padding:6px 12px;border-radius:7px;cursor:pointer;font-family:inherit;transition:.15s}
+  .seg button.on{background:var(--accent);color:#04111f;font-weight:600}
+  .seg button:hover:not(.on){color:var(--text)}
+  .top__link{font-size:12px;color:var(--muted);border:1px solid var(--stroke);padding:7px 12px;border-radius:9px;transition:.15s}
+  .top__link:hover{color:var(--text);border-color:var(--stroke2)}
+
+  /* ===== layout ===== */
+  .wrap{max-width:1320px;margin:0 auto;padding:24px;position:relative;z-index:1}
+  .sec{margin-bottom:30px}
+  .sec__head{display:flex;align-items:baseline;gap:12px;margin:0 0 14px}
+  .sec__n{font-size:11px;font-weight:700;color:#04111f;background:var(--accent);border-radius:6px;padding:3px 8px;letter-spacing:.5px}
+  .sec__t{font-size:16px;font-weight:700}
+  .sec__d{font-size:12px;color:var(--muted2)}
+  .grid{display:grid;gap:16px}
+  .g5{grid-template-columns:repeat(5,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:1100px){.g5,.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:720px){.g5,.g4,.g3,.g2{grid-template-columns:1fr}}
+
+  .card{background:var(--panel);border:1px solid var(--stroke);border-radius:var(--r-md);padding:16px 18px;position:relative;overflow:hidden}
+  .card--pad0{padding:0}
+  .card__t{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  .card__sub{font-size:11px;color:var(--muted2)}
+
+  /* KPI */
+  .kpi{background:linear-gradient(160deg,var(--panel2),var(--panel));}
+  .kpi__k{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .kpi__v{font-size:28px;font-weight:800;margin:8px 0 2px;font-family:var(--mono);letter-spacing:-.5px}
+  .kpi__v small{font-size:14px;font-weight:600;color:var(--muted);margin-left:2px}
+  .kpi__d{font-size:11px;display:inline-flex;align-items:center;gap:4px;font-weight:600}
+  .up{color:var(--green)} .down{color:var(--danger)}
+  .kpi__spark{margin-top:12px;opacity:.85;line-height:0;min-height:40px}
+  .kpi__spark svg{width:100%;height:40px;display:block}
+  .dotrow{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+  .dot{width:8px;height:8px;border-radius:3px;display:inline-block}
+
+  /* metric small list */
+  .mlist{display:flex;flex-direction:column;gap:11px;margin-top:4px}
+  .mrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+  .mrow__k{font-size:12px;color:var(--muted)}
+  .mrow__v{font-size:13px;font-weight:700;font-family:var(--mono)}
+  .bar{grid-column:1/-1;height:6px;border-radius:4px;background:rgba(255,255,255,.07);overflow:hidden}
+  .bar>i{display:block;height:100%;border-radius:4px}
+
+  .pill{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600}
+  .pill--g{background:rgba(67,215,135,.16);color:var(--green)}
+  .pill--o{background:rgba(255,180,84,.16);color:var(--orange)}
+  .pill--r{background:rgba(255,93,93,.16);color:var(--danger)}
+  .pill--b{background:rgba(78,161,255,.16);color:var(--accent)}
+
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:10px 10px;font-size:12px;border-bottom:1px solid var(--stroke)}
+  th{color:var(--muted2);font-weight:600;font-size:11px}
+  td{color:var(--text)}
+  td.num,th.num{text-align:right;font-family:var(--mono)}
+  tr:last-child td{border-bottom:0}
+  .tname{display:flex;align-items:center;gap:8px;font-weight:600}
+
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}
+  .legend span{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+
+  /* AI advice */
+  .advice{display:flex;flex-direction:column;gap:12px}
+  .ai{display:flex;gap:12px;padding:13px 14px;border:1px solid var(--stroke);border-radius:11px;background:var(--panel)}
+  .ai__ic{flex:0 0 34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:16px}
+  .ai__t{font-size:13px;font-weight:600;margin-bottom:3px}
+  .ai__d{font-size:12px;color:var(--muted);line-height:1.55}
+  .ai__tag{font-size:10px;color:var(--accent);margin-top:6px;font-weight:600}
+
+  .issue{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--stroke)}
+  .issue:last-child{border-bottom:0}
+  .issue__l{display:flex;align-items:center;gap:10px}
+  .issue__ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:14px}
+  .issue__t{font-size:12.5px;font-weight:600}
+  .issue__s{font-size:11px;color:var(--muted2)}
+  .issue__v{font-size:15px;font-weight:800;font-family:var(--mono)}
+
+  .foot{max-width:1320px;margin:10px auto 0;padding:0 24px;color:var(--muted2);font-size:11px;text-align:center}
+  .chartwrap{margin-top:10px}
+  .chartwrap--donut{display:flex;justify-content:center;align-items:center;min-height:168px}
+  .chartwrap--donut svg{width:min(100%,188px);height:auto;display:block}
+  .chartwrap--funnel{min-height:210px}
+  .chartwrap--funnel svg{width:100%;height:auto;display:block}
+  .chartwrap--bars{min-height:200px;padding-bottom:4px}
+  .chartwrap--bars svg{width:100%;height:auto;display:block;min-height:190px}
+  .conv-rings{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:8px;min-height:172px;align-items:center}
+  .conv-rings > div{width:100%;display:flex;justify-content:center;align-items:center}
+  .conv-rings svg{width:100%;aspect-ratio:1;max-height:176px;display:block}
+  .axisx{display:flex;justify-content:space-between;margin-top:6px}
+  .axisx span{font-size:10px;color:var(--muted2)}
+
+  .rank{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;font-weight:800;font-size:12px;font-family:var(--mono)}
+  .rank--1{background:linear-gradient(135deg,#ffd44c,#ffb454);color:#04111f}
+  .rank--2{background:rgba(255,255,255,.18);color:#fff}
+  .rank--3{background:rgba(205,127,50,.28);color:#ffb454}
+  .rank--n{background:rgba(255,255,255,.06);color:var(--muted)}
+  .beltMini{display:flex;align-items:center;gap:10px}
+  .beltMini__bar{height:30px;border-radius:7px;padding:0 10px;display:flex;align-items:center;gap:6px;min-width:108px;font-size:11px;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+  .beltMini__tag{font-size:9px;padding:2px 5px;border-radius:4px;background:rgba(255,255,255,.88);font-weight:700}
+  .trendUp{color:var(--green);font-weight:700;font-family:var(--mono);font-size:11px}
+  .trendDn{color:var(--danger);font-weight:700;font-family:var(--mono);font-size:11px}
+  .scoreBar{display:inline-block;height:6px;border-radius:3px;background:var(--accent);vertical-align:middle;margin-left:6px}
+</style>
+<link rel="stylesheet" href="./side-nav.css?v=20260603-leftnav" />
+</head>
+<body>
+  <header class="top">
+    <div class="top__in">
+      <div class="brand">
+        <div class="brand__dot">腰</div>
+        <div>
+          <div class="brand__t">商详腰带 · 数据看板</div>
+          <div class="brand__s">Belt Performance Dashboard · 演示数据</div>
+        </div>
+      </div>
+      <div class="top__spacer"></div>
+      <div class="seg" id="rangeSeg" role="tablist" aria-label="时间范围">
+        <button data-range="7" class="on">近 7 天</button>
+        <button data-range="30">近 30 天</button>
+        <button data-range="90">近 90 天</button>
+      </div>
+      <div class="seg" id="termSeg" role="tablist" aria-label="终端">
+        <button data-term="all" class="on">全部端</button>
+        <button data-term="app">APP</button>
+        <button data-term="mp">小程序</button>
+        <button data-term="m">M站</button>
+        <button data-term="pc">PC</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- 模块一：整体表现概览 -->
+    <section class="sec">
+      <div class="sec__head">
+        <span class="sec__n">模块一</span>
+        <span class="sec__t">整体表现概览</span>
+        <span class="sec__d" id="rangeHint">近 7 天 · 全部端</span>
+      </div>
+      <div class="grid g5" id="kpiGrid"></div>
+    </section>
+
+    <!-- Top10 腰带排名 -->
+    <section class="sec">
+      <div class="sec__head">
+        <span class="sec__n" style="background:#ffd44c;color:#04111f">Top10</span>
+        <span class="sec__t">腰带排名</span>
+        <span class="sec__d" id="top10Hint">按综合转化得分 · 上线腰带数据沉淀</span>
+      </div>
+      <div class="card card--pad0">
+        <table id="top10Table">
+          <thead>
+            <tr>
+              <th style="width:56px">排名</th>
+              <th>腰带方案</th>
+              <th>模板</th>
+              <th class="num">CTR</th>
+              <th class="num">转化率</th>
+              <th class="num">GMV</th>
+              <th class="num">综合得分</th>
+              <th class="num">环比</th>
+            </tr>
+          </thead>
+          <tbody id="top10Body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 核心数据指标 -->
+    <section class="sec">
+      <div class="sec__head">
+        <span class="sec__n" style="background:var(--purple);color:#fff">核心指标</span>
+        <span class="sec__t">五维数据指标</span>
+        <span class="sec__d">曝光 · 点击 · 转化 · 阅读效率 · 设计质量</span>
+      </div>
+      <div class="grid g3">
+        <!-- ① 曝光 -->
+        <div class="card">
+          <div class="card__t"><span class="dot" style="background:var(--accent)"></span>① 曝光数据</div>
+          <div class="card__sub">PV / UV 与多端曝光占比</div>
+          <div class="grid g2" style="margin-top:12px">
+            <div><div class="kpi__k">曝光量 PV</div><div class="kpi__v" style="font-size:22px">3,842<small>万</small></div></div>
+            <div><div class="kpi__k">曝光人数 UV</div><div class="kpi__v" style="font-size:22px">1,265<small>万</small></div></div>
+          </div>
+          <div class="chartwrap chartwrap--donut" id="expoDonut"></div>
+          <div class="legend" id="expoLegend"></div>
+        </div>
+        <!-- ② 点击 -->
+        <div class="card">
+          <div class="card__t"><span class="dot" style="background:var(--green)"></span>② 点击数据</div>
+          <div class="card__sub">整体 CTR 与分区域点击率</div>
+          <div class="kpi__v" style="font-size:24px;margin:10px 0 6px">8.64<small>% 总 CTR</small></div>
+          <div class="mlist" id="clickList"></div>
+        </div>
+        <!-- ③ 转化 -->
+        <div class="card">
+          <div class="card__t"><span class="dot" style="background:var(--orange)"></span>③ 转化数据</div>
+          <div class="card__sub">点击 → 加购 → 下单 漏斗</div>
+          <div class="chartwrap chartwrap--funnel" id="convFunnel"></div>
+        </div>
+        <!-- ④ 阅读效率 -->
+        <div class="card">
+          <div class="card__t"><span class="dot" style="background:var(--cyan)"></span>④ 阅读效率</div>
+          <div class="card__sub">首屏可见 · 停留 · 识别率</div>
+          <div class="mlist" id="readList"></div>
+        </div>
+        <!-- ⑤ 设计质量 -->
+        <div class="card">
+          <div class="card__t"><span class="dot" style="background:var(--pink)"></span>⑤ 设计质量</div>
+          <div class="card__sub">规范达标与审核质量</div>
+          <div class="mlist" id="qualityList"></div>
+        </div>
+        <!-- 转化率合并卡 -->
+        <div class="card">
+          <div class="card__t"><span class="dot" style="background:var(--purple)"></span>转化率总览</div>
+          <div class="card__sub">曝光转化 / 点击转化</div>
+          <div class="conv-rings">
+            <div id="convExpo"></div>
+            <div id="convClick"></div>
+          </div>
+          <div class="mrow" style="margin-top:14px"><span class="mrow__k">点击后成交 GMV</span><span class="mrow__v">¥1,983<small style="color:var(--muted)">万</small></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 模块二：多端表现对比 -->
+    <section class="sec">
+      <div class="sec__head">
+        <span class="sec__n" style="background:var(--green);color:#04111f">模块二</span>
+        <span class="sec__t">多端表现对比</span>
+        <span class="sec__d">APP / 小程序 / M站 / PC</span>
+      </div>
+      <div class="grid g2">
+        <div class="card">
+          <div class="card__t">各端 CTR 对比</div>
+          <div class="chartwrap chartwrap--bars" id="termBars"></div>
+          <div class="axisx" id="termBarsX"></div>
+        </div>
+        <div class="card card--pad0">
+          <div style="padding:16px 18px 4px"><div class="card__t">多端核心指标</div></div>
+          <table id="termTable">
+            <thead><tr><th>终端</th><th class="num">曝光占比</th><th class="num">CTR</th><th class="num">转化率</th><th class="num">适配异常率</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 模块三：方案效果对比 -->
+    <section class="sec">
+      <div class="sec__head">
+        <span class="sec__n" style="background:var(--orange);color:#04111f">模块三</span>
+        <span class="sec__t">腰带方案效果对比</span>
+        <span class="sec__d">颜色 / 模板 / 信息密度 / 氛围图风格</span>
+      </div>
+      <div class="grid g4">
+        <div class="card"><div class="card__t">不同颜色方案</div><div class="card__sub">按点击转化率</div><div class="mlist" id="planColor" style="margin-top:12px"></div></div>
+        <div class="card"><div class="card__t">不同模板结构</div><div class="card__sub">两行 / 三行 / PC</div><div class="mlist" id="planTpl" style="margin-top:12px"></div></div>
+        <div class="card"><div class="card__t">不同信息密度</div><div class="card__sub">低 / 中 / 高</div><div class="mlist" id="planDensity" style="margin-top:12px"></div></div>
+        <div class="card"><div class="card__t">氛围图风格</div><div class="card__sub">按转化贡献</div><div class="mlist" id="planAtmo" style="margin-top:12px"></div></div>
+      </div>
+    </section>
+
+    <!-- 模块四 + 五 -->
+    <section class="sec">
+      <div class="grid g2">
+        <div class="card">
+          <div class="sec__head" style="margin-bottom:6px">
+            <span class="sec__n" style="background:var(--danger);color:#fff">模块四</span>
+            <span class="sec__t">设计问题监控</span>
+          </div>
+          <div id="issueList"></div>
+        </div>
+        <div class="card">
+          <div class="sec__head" style="margin-bottom:6px">
+            <span class="sec__n" style="background:var(--cyan);color:#04111f">模块五</span>
+            <span class="sec__t">AI 优化建议</span>
+          </div>
+          <div class="advice" id="adviceList"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <div class="foot">京东商详腰带 · 数据看板（演示版 · mock 数据）· 指标口径以实际埋点为准</div>
+
+<script>
+(function(){
+  "use strict";
+  const $ = (id)=>document.getElementById(id);
+  const C = {accent:'#22d3ee',green:'#43d787',orange:'#ffb454',purple:'#9d7bff',cyan:'#2ed3d3',pink:'#ff7bce',danger:'#ff5d5d'};
+
+  // ---- 演示数据：按时间范围 & 端做轻度系数变化 ----
+  const BASE = {
+    kpi:[
+      {k:'总曝光量',unit:'万',v:3842,d:+12.4,color:C.accent},
+      {k:'总点击率',unit:'%',v:8.64,d:+0.8,color:C.green,dec:2},
+      {k:'总转化率',unit:'%',v:3.27,d:+0.4,color:C.orange,dec:2},
+      {k:'GMV 贡献',unit:'万',v:1983,d:+18.6,color:C.purple,prefix:'¥'},
+      {k:'审核通过率',unit:'%',v:91.5,d:-1.2,color:C.cyan,dec:1},
+    ],
+    click:[
+      {k:'价格区域',v:42.1,color:C.green},
+      {k:'优惠标签',v:27.8,color:C.accent},
+      {k:'品牌 Logo',v:18.3,color:C.purple},
+      {k:'氛围图',v:11.8,color:C.pink},
+    ],
+    read:[
+      {k:'首屏可见率',v:96.4,color:C.cyan,suffix:'%'},
+      {k:'核心价格识别率',v:89.2,color:C.green,suffix:'%'},
+      {k:'信息完整阅读率',v:71.5,color:C.accent,suffix:'%'},
+      {k:'平均停留时长',v:2.8,color:C.orange,suffix:'s',max:5},
+      {k:'折叠/溢出异常',v:34,color:C.danger,suffix:'次',max:120,invert:true},
+    ],
+    quality:[
+      {k:'对比度达标率',v:94.6,color:C.green,suffix:'%'},
+      {k:'文案长度超限率',v:5.2,color:C.orange,suffix:'%',invert:true},
+      {k:'Logo 数量超限率',v:3.1,color:C.orange,suffix:'%',invert:true},
+      {k:'多端适配异常率',v:2.4,color:C.danger,suffix:'%',invert:true},
+      {k:'人工返修次数',v:46,color:C.danger,suffix:'次',max:150,invert:true},
+    ],
+    terms:[
+      {name:'APP',share:52,ctr:9.4,conv:3.8,err:1.6,color:C.accent},
+      {name:'小程序',share:24,ctr:8.1,conv:3.1,err:2.2,color:C.green},
+      {name:'M站',share:15,ctr:7.2,conv:2.6,err:3.4,color:C.orange},
+      {name:'PC',share:9,ctr:6.5,conv:2.9,err:2.1,color:C.purple},
+    ],
+    planColor:[
+      {k:'促销红',v:3.9,color:'#e83820'},
+      {k:'外卖黄',v:3.4,color:'#ffd44c'},
+      {k:'企业蓝',v:3.0,color:'#0088c6'},
+      {k:'高端黑金',v:2.7,color:'#caa46a'},
+      {k:'生鲜绿',v:2.5,color:'#008629'},
+    ],
+    planTpl:[
+      {k:'三行样式',v:3.6,color:C.accent},
+      {k:'两行样式',v:3.1,color:C.green},
+      {k:'PC 横版',v:2.8,color:C.purple},
+    ],
+    planDensity:[
+      {k:'中密度',v:3.7,color:C.green},
+      {k:'低密度',v:3.0,color:C.accent},
+      {k:'高密度',v:2.4,color:C.orange},
+    ],
+    planAtmo:[
+      {k:'闪电氛围',v:3.5,color:C.orange},
+      {k:'几何光斑',v:3.2,color:C.cyan},
+      {k:'品牌符号',v:2.9,color:C.purple},
+      {k:'无氛围图',v:2.3,color:C.muted},
+    ],
+    top10:[
+      {name:'618 主会场红 + 闪电',tpl:'三行',bg:'#e83820',fg:'#fff',price:'¥99',tag:'立省30',ctr:9.2,conv:3.9,gmv:382,d:12.4,score:96},
+      {name:'百亿补贴蓝 + 光斑',tpl:'两行',bg:'#0088c6',fg:'#fff',price:'¥199',tag:'补贴价',ctr:8.4,conv:3.6,gmv:296,d:9.8,score:91},
+      {name:'心动购物季红',tpl:'三行',bg:'#db2c2f',fg:'#fff',price:'¥66',tag:'限时',ctr:8.8,conv:3.5,gmv:241,d:8.2,score:89},
+      {name:'外卖橙 + 满减',tpl:'两行',bg:'#ff7a18',fg:'#fff',price:'¥29',tag:'满减',ctr:7.9,conv:3.3,gmv:168,d:6.5,score:84},
+      {name:'企业蓝直降',tpl:'两行',bg:'#1769c4',fg:'#fff',price:'¥159',tag:'直降50',ctr:8.0,conv:3.2,gmv:152,d:5.1,score:82},
+      {name:'生鲜绿日常',tpl:'三行',bg:'#0a8f3c',fg:'#fff',price:'¥39',tag:'每日鲜',ctr:7.2,conv:2.9,gmv:118,d:4.2,score:76},
+      {name:'新品首发紫',tpl:'三行',bg:'#6c3fc4',fg:'#fff',price:'¥299',tag:'尝鲜',ctr:7.5,conv:3.0,gmv:118,d:3.8,score:75},
+      {name:'高端黑金尊享',tpl:'PC',bg:'#1a1a1a',fg:'#e9c987',price:'¥1299',tag:'尊享',ctr:6.8,conv:2.7,gmv:96,d:2.1,score:71},
+      {name:'超市黄便利',tpl:'两行',bg:'#ffd44c',fg:'#1a1a1a',price:'¥19',tag:'省心价',ctr:7.0,conv:2.8,gmv:88,d:1.6,score:69},
+      {name:'数码青科技',tpl:'两行',bg:'#2ed3d3',fg:'#04111f',price:'¥499',tag:'新品',ctr:6.6,conv:2.6,gmv:72,d:-0.8,score:65},
+    ],
+    issues:[
+      {t:'对比度不达标',s:'文字/背景 < 4.5:1',v:18,ic:'◐',color:C.orange},
+      {t:'信息过长截断',s:'Slogan / 优惠文案超限',v:12,ic:'✂',color:C.orange},
+      {t:'Logo 展示异常',s:'超数量 / 溢出 91px',v:7,ic:'▤',color:C.danger},
+      {t:'多端布局异常',s:'三行/PC 错位',v:5,ic:'⊟',color:C.danger},
+      {t:'氛围图位置异常',s:'遮挡价格/文字',v:3,ic:'✦',color:C.pink},
+    ],
+    advice:[
+      {ic:'🎨',bg:'rgba(232,56,32,.16)',t:'推荐高转化颜色组合',d:'促销红（#E83820）配纯白文字，近 30 天点击转化率领先 28%，建议大促优先复用。',tag:'颜色策略'},
+      {ic:'🧱',bg:'rgba(78,161,255,.16)',t:'推荐信息优先级结构',d:'价格 → 核心优惠 → 品牌 IP → 氛围图。价格区贡献 42% 点击，应始终置于视觉首位。',tag:'信息结构'},
+      {ic:'🛡',bg:'rgba(67,215,135,.16)',t:'推荐低风险模板',d:'「三行 + 中密度 + 单 IP」组合审核通过率 98%，返修最少，建议作为默认模板。',tag:'模板推荐'},
+      {ic:'📦',bg:'rgba(157,123,255,.16)',t:'自动沉淀异常案例',d:'本周新增 12 例对比度不达标案例已归档至样本库，可用于训练审核模型。',tag:'案例沉淀'},
+      {ic:'⚙',bg:'rgba(46,211,211,.16)',t:'自动更新审核规则',d:'高密度模板转化偏低，建议将「右侧 ≤3 行」规则提升为强约束并纳入 v0.22。',tag:'规则迭代'},
+    ],
+  };
+
+  const RANGE_F = {7:1, 30:1.06, 90:1.12};
+  const TERM_F  = {all:1, app:1.08, mp:0.96, m:0.88, pc:0.82};
+  let range='7', term='all';
+
+  function f(){ return RANGE_F[range]*TERM_F[term]; }
+  const fmtNum=(n)=> n>=1000? n.toLocaleString('en-US'): String(n);
+
+  // ===== SVG 图表 =====
+  function sparkline(data,color,w=120,h=34){
+    const max=Math.max(...data),min=Math.min(...data),rng=(max-min)||1;
+    const step=w/(data.length-1);
+    const pts=data.map((v,i)=>[i*step, h-2-((v-min)/rng)*(h-6)]);
+    const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+    const area=line+` L${w} ${h} L0 ${h} Z`;
+    const id='g'+Math.random().toString(36).slice(2,7);
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+      <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${color}" stop-opacity=".35"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+      <path d="${area}" fill="url(#${id})"/><path d="${line}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="2.6" fill="${color}"/></svg>`;
+  }
+  function trend(seed){ // 生成 14 点伪随机上升趋势
+    const a=[];let v=50;for(let i=0;i<14;i++){v+=Math.sin(i*1.3+seed)*6+(i*1.1)+(((seed*7+i*13)%9)-4);a.push(Math.max(8,v));}return a;
+  }
+  function donut(segs,size=188){
+    const cx=size/2,cy=size/2,sw=20,r=size/2-sw/2-6,Cc=2*Math.PI*r;
+    const fsVal=Math.round(size*0.11), fsSub=Math.round(size*0.055);
+    let off=0; const total=segs.reduce((s,x)=>s+x.v,0);
+    const arcs=segs.map(s=>{const len=Cc*(s.v/total);const el=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${s.color}" stroke-width="${sw}" stroke-dasharray="${len.toFixed(2)} ${(Cc-len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})" stroke-linecap="butt"/>`;off+=len;return el;}).join('');
+    return `<svg viewBox="0 0 ${size} ${size}" preserveAspectRatio="xMidYMid meet">
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="${sw}"/>${arcs}
+      <text x="${cx}" y="${cy-2}" text-anchor="middle" fill="#fff" font-size="${fsVal}" font-weight="800" font-family="var(--mono)">${total}%</text>
+      <text x="${cx}" y="${cy+fsSub+10}" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="${fsSub}">曝光占比</text></svg>`;
+  }
+  function ring(pct,color,label,size=148){
+    const cx=size/2,cy=size/2,sw=11,r=size/2-sw/2-4,Cc=2*Math.PI*r,len=Cc*pct/100;
+    const fsVal=Math.round(size*0.155), fsPct=Math.round(size*0.09), fsLbl=Math.round(size*0.075);
+    return `<svg viewBox="0 0 ${size} ${size}" preserveAspectRatio="xMidYMid meet">
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="${sw}"/>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round"
+        stroke-dasharray="${len.toFixed(1)} ${(Cc-len).toFixed(1)}" transform="rotate(-90 ${cx} ${cy})"/>
+      <text x="${cx}" y="${cy+2}" text-anchor="middle" fill="#fff" font-size="${fsVal}" font-weight="800" font-family="var(--mono)">${pct}<tspan font-size="${fsPct}">%</tspan></text>
+      <text x="${cx}" y="${cy+fsLbl+14}" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="${fsLbl}">${label}</text></svg>`;
+  }
+  function funnel(steps,w=340){
+    const h=40,gap=10;const max=Math.max(...steps.map(s=>s.v));const minW=w*0.34;
+    const fs=13;
+    return `<svg width="100%" viewBox="0 0 ${w} ${(h+gap)*steps.length-gap+2}" preserveAspectRatio="xMidYMid meet">`+
+      steps.map((s,i)=>{const bw=minW+(s.v/max)*(w-minW);const x=(w-bw)/2;const y=i*(h+gap);
+        return `<rect x="${x.toFixed(1)}" y="${y}" width="${bw.toFixed(1)}" height="${h}" rx="8" fill="${s.color}" opacity="${(1-i*0.1).toFixed(2)}"/>
+        <text x="${w/2}" y="${y+h/2+fs*0.35}" text-anchor="middle" fill="#04111f" font-size="${fs}"><tspan font-weight="700">${s.k}</tspan><tspan dx="8" font-weight="800" font-family="var(--mono)">${s.disp}</tspan></text>`;}).join('')+`</svg>`;
+  }
+  function vbars(data,w=400,h=200){
+    const max=Math.max(...data.map(d=>d.ctr))*1.12;const bw=w/data.length;const fs=13;
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">`+
+      data.map((d,i)=>{const bh=(d.ctr/max)*(h-32);const x=i*bw+bw*0.2;const bwid=bw*0.6;const y=h-28-bh;
+        return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bwid.toFixed(1)}" height="${bh.toFixed(1)}" rx="7" fill="${d.color}"/>
+        <text x="${(x+bwid/2).toFixed(1)}" y="${(y-8).toFixed(1)}" text-anchor="middle" fill="#fff" font-size="${fs}" font-weight="700" font-family="var(--mono)">${d.ctr.toFixed(1)}%</text>`;}).join('')+`</svg>`;
+  }
+
+  function mlist(el,items,unitDefault){
+    el.innerHTML=items.map(it=>{
+      const suffix=it.suffix||unitDefault||'%';
+      const max=it.max||100;
+      const ratio=Math.min(100,(it.v/max)*100);
+      const good=it.invert? (100-ratio): ratio;
+      return `<div class="mrow"><span class="mrow__k">${it.k}</span><span class="mrow__v" style="color:${it.color}">${it.v}<small style="color:var(--muted2)">${suffix}</small></span>
+        <span class="bar"><i style="width:${ratio.toFixed(0)}%;background:${it.color}"></i></span></div>`;
+    }).join('');
+  }
+
+  function render(){
+    const k=f();
+    $('rangeHint').textContent = `近 ${range} 天 · ${({all:'全部端',app:'APP',mp:'小程序',m:'M站',pc:'PC'})[term]}`;
+    if ($('top10Hint')) $('top10Hint').textContent = `近 ${range} 天 · 按综合转化得分 · 上线腰带数据沉淀`;
+
+    // Top10 排名
+    const top10Body = document.querySelector('#top10Body');
+    if (top10Body) {
+      top10Body.innerHTML = BASE.top10.map((row, i) => {
+        const rk = i + 1;
+        const rkCls = rk === 1 ? 'rank--1' : rk === 2 ? 'rank--2' : rk === 3 ? 'rank--3' : 'rank--n';
+        const trendCls = row.d >= 0 ? 'trendUp' : 'trendDn';
+        const trendTxt = (row.d >= 0 ? '▲ ' : '▼ ') + Math.abs(row.d) + '%';
+        const ctr = (row.ctr * (k > 1 ? 0.98 : 1)).toFixed(1);
+        const conv = (row.conv * k).toFixed(1);
+        const gmv = Math.round(row.gmv * k);
+        const score = Math.round(row.score * Math.min(k, 1.05));
+        return `<tr>
+          <td><span class="rank ${rkCls}">${rk}</span></td>
+          <td><div class="beltMini">
+            <div class="beltMini__bar" style="background:${row.bg};color:${row.fg}">
+              <span>${row.price}</span><span class="beltMini__tag" style="color:${row.bg}">${row.tag}</span>
+            </div>
+            <span style="font-weight:600;font-size:12px">${row.name}</span>
+          </div></td>
+          <td>${row.tpl}</td>
+          <td class="num">${ctr}%</td>
+          <td class="num">${conv}%</td>
+          <td class="num">¥${gmv}万</td>
+          <td class="num">${score}<span class="scoreBar" style="width:${score}px;max-width:48px;opacity:.7"></span></td>
+          <td class="num ${trendCls}">${trendTxt}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    // KPI
+    $('kpiGrid').innerHTML = BASE.kpi.map((m,i)=>{
+      const val = m.dec!=null ? (m.v*k).toFixed(m.dec) : Math.round(m.v*k);
+      const valStr = (m.prefix||'')+ fmtNum(typeof val==='string'?val:val);
+      const dd = (m.d>=0?'+':'')+m.d+(m.k.includes('率')?' pt':'%');
+      return `<div class="card kpi">
+        <div class="kpi__k"><span class="dot" style="background:${m.color}"></span>${m.k}</div>
+        <div class="kpi__v">${valStr}<small>${m.unit}</small></div>
+        <div class="kpi__d ${m.d>=0?'up':'down'}">${m.d>=0?'▲':'▼'} ${dd} <span style="color:var(--muted2);font-weight:500">vs 上周期</span></div>
+        <div class="kpi__spark">${sparkline(trend(i+1), m.color, 220, 40)}</div></div>`;
+    }).join('');
+
+    // ① 曝光占比 donut
+    const expo=BASE.terms.map(t=>({v:t.share,color:t.color,name:t.name}));
+    $('expoDonut').innerHTML=donut(expo, 188);
+    $('expoLegend').innerHTML=expo.map(s=>`<span><span class="dot" style="background:${s.color}"></span>${s.name} ${s.v}%</span>`).join('');
+
+    // ② 点击区域
+    mlist($('clickList'),BASE.click.map(c=>({...c,suffix:'%'})));
+
+    // ③ 转化漏斗
+    const expoUV=Math.round(1265*k);
+    const clickN=(expoUV*0.0864), cartN=clickN*0.41, orderN=cartN*0.62;
+    $('convFunnel').innerHTML=funnel([
+      {k:'曝光人数',v:expoUV,disp:expoUV+'万',color:C.accent},
+      {k:'点击',v:clickN,disp:clickN.toFixed(0)+'万',color:C.green},
+      {k:'加购',v:cartN,disp:cartN.toFixed(1)+'万',color:C.orange},
+      {k:'下单',v:orderN,disp:orderN.toFixed(1)+'万',color:C.pink},
+    ]);
+
+    // ④ 阅读效率 ⑤ 设计质量
+    mlist($('readList'),BASE.read);
+    mlist($('qualityList'),BASE.quality);
+
+    // 转化率环形
+    $('convExpo').innerHTML=ring(+(3.27*k).toFixed(1),C.orange,'曝光转化',160);
+    $('convClick').innerHTML=ring(+(37.8).toFixed(1),C.green,'点击转化',160);
+
+    // 模块二
+    $('termBars').innerHTML=vbars(BASE.terms);
+    $('termBarsX').innerHTML=BASE.terms.map(t=>`<span>${t.name}</span>`).join('');
+    document.querySelector('#termTable tbody').innerHTML=BASE.terms.map(t=>`
+      <tr><td class="tname"><span class="dot" style="background:${t.color}"></span>${t.name}</td>
+      <td class="num">${t.share}%</td><td class="num">${t.ctr.toFixed(1)}%</td><td class="num">${t.conv.toFixed(1)}%</td>
+      <td class="num"><span class="pill ${t.err>3?'pill--r':t.err>2?'pill--o':'pill--g'}">${t.err.toFixed(1)}%</span></td></tr>`).join('');
+
+    // 模块三
+    const planMax=(arr)=>Math.max(...arr.map(x=>x.v));
+    const planList=(el,arr)=>{const mx=planMax(arr);el.innerHTML=arr.map(x=>`
+      <div class="mrow"><span class="mrow__k">${x.k}</span><span class="mrow__v" style="color:${x.color||'#fff'}">${x.v.toFixed(1)}%</span>
+      <span class="bar"><i style="width:${(x.v/mx*100).toFixed(0)}%;background:${x.color||C.accent}"></i></span></div>`).join('');};
+    planList($('planColor'),BASE.planColor);
+    planList($('planTpl'),BASE.planTpl);
+    planList($('planDensity'),BASE.planDensity);
+    planList($('planAtmo'),BASE.planAtmo.map(x=>({...x,color:x.color||'rgba(255,255,255,.3)'})));
+
+    // 模块四
+    $('issueList').innerHTML=BASE.issues.map(it=>`
+      <div class="issue"><div class="issue__l">
+        <div class="issue__ic" style="background:${it.color}22;color:${it.color}">${it.ic}</div>
+        <div><div class="issue__t">${it.t}</div><div class="issue__s">${it.s}</div></div></div>
+        <div class="issue__v" style="color:${it.color}">${Math.round(it.v*k)}<small style="font-size:11px;color:var(--muted2)"> 例</small></div></div>`).join('');
+
+    // 模块五
+    $('adviceList').innerHTML=BASE.advice.map(a=>`
+      <div class="ai"><div class="ai__ic" style="background:${a.bg}">${a.ic}</div>
+      <div><div class="ai__t">${a.t}</div><div class="ai__d">${a.d}</div><div class="ai__tag">▸ ${a.tag}</div></div></div>`).join('');
+  }
+
+  // 交互
+  $('rangeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+    $('rangeSeg').querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');range=b.dataset.range;render();});
+  $('termSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+    $('termSeg').querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');term=b.dataset.term;render();});
+
+  render();
+})();
+</script>
+<script src="./side-nav.js?v=20260604-no-brand"></script>
+</body>
+</html>

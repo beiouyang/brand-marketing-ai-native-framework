@@ -1,0 +1,29 @@
+{
+  "_label": "场景",
+  "strategies": {
+    "label": "玩法",
+    "nationalSubsidy":   { "label": "国补",   "instances": [] },
+    "reserve":           { "label": "预约",   "instances": [] },
+    "preSale":           { "label": "预售",   "instances": [] },
+    "groupBuy":          { "label": "拼购",   "instances": [] },
+    "specialPrice":      { "label": "特价版", "instances": [] },
+    "applianceGroupBuy": { "label": "万人团", "instances": [] }
+  },
+  "bizScene": {
+    "label": "场景",
+    "medicineSetTab":      { "label": "医药套装Tab",   "instances": [] },
+    "medicineDiscountTab": { "label": "购药折扣险Tab", "instances": [] },
+    "regularBuyTab":       { "label": "定期购Tab",     "instances": [] },
+    "planBuyTab":          { "label": "计划购Tab",     "instances": [] },
+    "onlyMakeTab":         { "label": "珠宝定制Tab",   "instances": [] },
+    "tradeInTab":          { "label": "以旧换新Tab",   "instances": [] },
+    "try3Tab":             { "label": "买一试三Tab",   "instances": [] },
+    "householdServiceTab": { "label": "家政服务Tab",   "instances": [] },
+    "homeCabinetCustomTab":{ "label": "家部定制Tab",   "instances": [] },
+    "carMaintenanceTab":   { "label": "汽车保养Tab",   "instances": [] },
+    "regulaSetTab":        { "label": "定期享套装Tab", "instances": [] },
+    "healthPdp":           { "label": "健康商详",      "instances": [] },
+    "simCardPdp":          { "label": "号卡商详",      "instances": [] },
+    "petLivePdp":          { "label": "宠物活体商详",  "instances": [] }
+  }
+}

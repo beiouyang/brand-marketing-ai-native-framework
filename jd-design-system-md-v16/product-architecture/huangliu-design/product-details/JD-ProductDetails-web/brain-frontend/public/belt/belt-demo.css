@@ -1,0 +1,1936 @@
+/* 腰带 demo：对齐 belt-components MobileTwoLineBelt（375×64） */
+@font-face {
+  font-family: JDZH-Bold;
+  src: url("./fonts/JDZHV2.3_Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: JDZH-Regular;
+  src: url("./fonts/JDZHV2.3_Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.beltCanvas.jd-mobile-two-belt {
+  --jd-bold: JDZH-Bold, "JingdongZhengHei", "京东正黑", -apple-system, BlinkMacSystemFont,
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+  --jd-regular: JDZH-Regular, -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  --belt-atmo-img-height: 64px;
+  --belt-atmo-opacity: 1;
+  box-sizing: border-box;
+  position: relative;
+  width: 375px;
+  min-width: 375px;
+  max-width: 375px;
+  height: 64px;
+  min-height: 64px;
+  flex: 0 0 375px;
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: 0;
+  /* JS 未就绪时的占位底色，避免预览区一片黑 */
+  background: linear-gradient(90deg, #c41e12 0%, #db3012 45%, #e83820 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  overflow: hidden;
+  transform: none;
+  zoom: 1;
+}
+
+/* 氛围icon：Figma 两行稿 left 237 / top 0 / 38×54 裁切槽 + object-cover */
+.beltCanvas.jd-mobile-two-belt .beltCanvas__atmosphere {
+  position: absolute;
+  left: var(--belt-atmo-slot-left, 237px);
+  top: var(--belt-atmo-slot-top, 0);
+  z-index: 1;
+  box-sizing: border-box;
+  width: var(--belt-atmo-slot-w, 38px);
+  height: var(--belt-atmo-slot-h, 54px);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCanvas__atmosphereImg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  transform: none;
+  object-fit: cover;
+  object-position: center top;
+  opacity: var(--belt-atmo-opacity, 1);
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCanvas__atmosphereImg.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCanvas__body {
+  /* 对齐两行稿子：pl-4 pr-2，左右列垂直居中 */
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 10px 8px 8px 16px;
+  gap: 0;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__left {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 7px;
+  min-width: 0;
+  max-width: calc(100% - 91px);
+  height: 100%;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__right {
+  display: flex;
+  flex: 0 0 91px;
+  flex-direction: column;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  width: 91px;
+  max-width: 91px;
+  min-width: 91px;
+  text-align: center;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__price-line,
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__sales-info,
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__price-value,
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__deal-group {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__price-line {
+  gap: 4px;
+  height: 20px;
+  width: 100%;
+  max-width: 100%;
+  align-items: flex-end;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__price-value {
+  align-items: flex-end;
+  gap: 0;
+  color: inherit;
+  font-family: var(--jd-bold);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__currency {
+  position: relative;
+  top: 1px;
+  margin-right: 2px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__price-int {
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__price-decimal {
+  position: relative;
+  top: 1px;
+  margin-left: 1px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__price-decimal.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__arrival-tag {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 20px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__arrival-text {
+  color: inherit;
+  font-family: "PingFang SC", Arial, "Microsoft YaHei", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  white-space: nowrap;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__arrival-tag.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__origin {
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--belt-text-secondary, inherit);
+  opacity: 0.7;
+  font-family: "PingFang SC", Arial, "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 13px;
+  white-space: nowrap;
+  text-decoration: line-through;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__origin.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__sales-info {
+  gap: 6px;
+  height: 13px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__deal-group {
+  /* Figma 风格：benefit · | · timer 等距 6px，与外层 sales-info gap 保持一致 */
+  display: flex;
+  align-items: center;
+  flex: 0 1 auto;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__deal-group.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__benefit,
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__timer {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: "PingFang SC", Arial, "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 13px;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__sold {
+  /* Figma 2 行 row2：满减 / 竖线 / 已售 同色 white 100% */
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: "PingFang SC", Arial, "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 13px;
+  color: inherit;
+  opacity: 1;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__benefit.hidden,
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__timer.hidden,
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__sold.hidden,
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__divider.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-two-belt .jd-mobile-two-belt__divider {
+  /* Figma 稿：bg-white scale-x-50 → 0.5×10 white 100% */
+  flex: 0 0 auto;
+  display: block;
+  width: 0.5px;
+  height: 10px;
+  background: currentColor;
+  color: inherit;
+  opacity: 1;
+}
+
+/* 右侧：91px 品牌 IP + 承诺文案（对齐两行稿子 RightOffer） */
+.beltCanvas.jd-mobile-two-belt .beltCoreArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreMain,
+.beltCanvas.jd-mobile-two-belt .beltCoreSub,
+.beltCanvas.jd-mobile-two-belt .beltCoreMini {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreSubWrap {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreSubWrap.hidden,
+.beltCanvas.jd-mobile-two-belt .beltCoreMini.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  line-height: 1;
+  max-width: 100%;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine__text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* 品牌 IP：日常/大促统一字号（对齐大促三行） */
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--row1 .beltCoreLine__text,
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--ip-primary .beltCoreLine__text,
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--ip-primary-enhance .beltCoreLine__text {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--ip-secondary .beltCoreLine__text,
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--ip-secondary-enhance .beltCoreLine__text,
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--ip-cross .beltCoreLine__text {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--benefit-slogan .beltCoreLine__text {
+  font-family: "PingFang SC", Arial, "Microsoft YaHei", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 10px;
+  opacity: 0.92;
+}
+
+/* 优惠信息 / 领券：小于 IP，胶囊标签 */
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--benefit .beltCoreLine__text {
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 10px;
+  opacity: 0.9;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--benefit-coupon .beltCoreLine__text {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  padding: 0 6px 0 5px;
+  border: none;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 10px;
+  color: var(--belt-coupon-text, inherit);
+  background-color: var(--belt-coupon-bg, transparent);
+  background-image: none;
+  opacity: 1;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--benefit-coupon .beltCoreLine__text::after {
+  margin-left: 2px;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  content: "›";
+  opacity: 0.85;
+}
+
+/* 利益点 · 倒计时（对齐 Countdown React：距结束 + timeBlock + 冒号切图） */
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--benefit-countdown {
+  display: flex;
+  justify-content: center;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCountdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  max-width: 100%;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCountdown__label {
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 10px;
+  color: var(--belt-countdown-colon, inherit);
+  white-space: nowrap;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCountdown__timeGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCountdown__timeBlock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 2px;
+  border-radius: 2px;
+  background-color: var(--belt-countdown-block-bg, #ffffff);
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCountdown__timeText {
+  color: var(--belt-countdown-digit, #111111);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCountdown__colon--dot {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 10px;
+  color: var(--belt-countdown-colon, inherit);
+}
+
+/* 两行 / 三行腰带右侧 Logo：统一尺寸（与三行规范一致） */
+.beltCanvas.jd-mobile-two-belt,
+.beltCanvas.jd-mobile-three-belt {
+  --belt-core-logo-h-1: 11px;
+  --belt-core-logo-h-2: 11px;
+  --belt-core-logo-h-3: 10px;
+  --belt-core-logo-max-w: 180px;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine__mount,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine__mount {
+  display: flex;
+  justify-content: center;
+  line-height: 0;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--row1 .beltCoreLine__mount svg,
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--ip-primary .beltCoreLine__mount svg,
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--ip-primary-enhance .beltCoreLine__mount svg,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--row1 .beltCoreLine__mount svg,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--ip-primary .beltCoreLine__mount svg,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--ip-primary-enhance .beltCoreLine__mount svg {
+  height: var(--belt-core-logo-h-1);
+  max-height: var(--belt-core-logo-h-1);
+  max-width: var(--belt-core-logo-max-w);
+  width: auto;
+  display: block;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--ip-secondary .beltCoreLine__mount svg,
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--ip-secondary-enhance .beltCoreLine__mount svg,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--ip-secondary .beltCoreLine__mount svg,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--ip-secondary-enhance .beltCoreLine__mount svg {
+  height: var(--belt-core-logo-h-2);
+  max-height: var(--belt-core-logo-h-2);
+  max-width: var(--belt-core-logo-max-w);
+  width: auto;
+  display: block;
+}
+
+.beltCanvas.jd-mobile-two-belt.beltCanvas--lines3 .beltCoreLine--row1 .beltCoreLine__text,
+.beltCanvas.jd-mobile-two-belt.beltCanvas--lines3 .beltCoreLine--ip-primary .beltCoreLine__text,
+.beltCanvas.jd-mobile-two-belt.beltCanvas--lines3 .beltCoreLine--ip-primary-enhance .beltCoreLine__text {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.beltCanvas.jd-mobile-two-belt.beltCanvas--lines3 .beltCoreLine--ip-secondary .beltCoreLine__text,
+.beltCanvas.jd-mobile-two-belt.beltCanvas--lines3 .beltCoreLine--ip-secondary-enhance .beltCoreLine__text,
+.beltCanvas.jd-mobile-two-belt.beltCanvas--lines3 .beltCoreLine--ip-cross .beltCoreLine__text {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.beltCanvas.jd-mobile-two-belt.beltCanvas--lines3 .beltCoreLine--benefit-slogan .beltCoreLine__text {
+  font-size: 10px;
+  line-height: 10px;
+}
+
+.beltCanvas.jd-mobile-two-belt.beltCanvas--lines3 .beltCoreLine--benefit .beltCoreLine__text,
+.beltCanvas.jd-mobile-two-belt.beltCanvas--lines3 .beltCoreLine--benefit-coupon .beltCoreLine__text {
+  font-size: 10px;
+  line-height: 10px;
+}
+
+.beltCanvas.jd-mobile-two-belt.beltCanvas--lines3 .beltCoreLine--benefit-coupon .beltCoreLine__text {
+  height: 15px;
+}
+
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine__img,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine__img {
+  max-height: var(--belt-core-logo-h-1);
+  max-width: var(--belt-core-logo-max-w);
+  object-fit: contain;
+  display: block;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltChevron--arrow {
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 10px;
+  opacity: 0.85;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltChevron--arrow.hidden {
+  display: none;
+}
+
+/* 三行腰带：对齐 belt-components MobileThreeLineBelt（375×82） */
+.beltCanvas.jd-mobile-three-belt {
+  --jd-bold: JDZH-Bold, "JingdongZhengHei", "京东正黑", -apple-system, BlinkMacSystemFont,
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+  --jd-regular: JDZH-Regular, -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  --belt-three-bottom-safe: 10px;
+  --belt-atmo-img-height: 64px;
+  --belt-atmo-opacity: 1;
+  --belt-coupon-text: #1a1208;
+  --belt-coupon-bg: #e5c191;
+  --belt-coupon-icon: #1a1208;
+  box-sizing: border-box;
+  position: relative;
+  width: 375px;
+  min-width: 375px;
+  max-width: 375px;
+  height: 82px;
+  min-height: 82px;
+  flex: 0 0 375px;
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  overflow: hidden;
+  background: linear-gradient(90deg, #c41e12 0%, #db3012 45%, #e83820 100%);
+}
+
+/* 氛围icon：Figma 三行稿与两行相同 left 237 / top 0 / 38×54 */
+.beltCanvas.jd-mobile-three-belt .beltCanvas__atmosphere {
+  position: absolute;
+  left: var(--belt-atmo-slot-left, 237px);
+  top: var(--belt-atmo-slot-top, 0);
+  z-index: 1;
+  box-sizing: border-box;
+  width: var(--belt-atmo-slot-w, 38px);
+  height: var(--belt-atmo-slot-h, 54px);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCanvas__atmosphereImg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  transform: none;
+  object-fit: cover;
+  object-position: center top;
+  opacity: var(--belt-atmo-opacity, 1);
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCanvas__atmosphereImg.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCanvas__body {
+  /* 对齐 Codex 三行稿：上区 59px + 底栏 23px = 375×82 */
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  gap: 0;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__upper {
+  /* 对齐 Figma：父容器仅左右 padding（pl-16 pr-8），垂直 padding 由左 main 承担 */
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex: 0 0 59px;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  height: 59px;
+  min-height: 59px;
+  padding: 0 8px 0 16px;
+  gap: 0;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__main {
+  /* 对齐 Figma：左 main 内 padding pt-10 pb-8，右侧 IP 区不含 py */
+  display: flex;
+  flex: 0 0 128px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 5px;
+  width: 128px;
+  max-width: 128px;
+  min-width: 128px;
+  min-height: 0;
+  padding: 10px 0 8px;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__price-row,
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__price-value,
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__sub-info,
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__enjoy-row,
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__reduction-tag {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__price-row {
+  /* Figma 稿：gap-4 items-end；高度由内容决定 = max(价格 20, tag 20) = 20px */
+  gap: 4px;
+  height: 20px;
+  width: 100%;
+  max-width: 100%;
+  align-items: flex-end;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__price-value {
+  /* ¥ / 整数 / 小数 改为底部对齐，line-height:1 让 box 底部=字符底部 */
+  align-items: flex-end;
+  color: inherit;
+  font-family: var(--jd-bold);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__currency {
+  position: relative;
+  /* PingFang 12px / 20px 字符 descent 残差约 0.9px，向下偏移 1px 让字符底部齐 */
+  top: 1px;
+  margin-right: 2px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__price-int {
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__price-decimal {
+  position: relative;
+  top: 1px;
+  margin-left: 1px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__price-decimal.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__arrival-tag {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 20px;
+  /* 由 price-row 的 flex-end 控制底部对齐，不再用 margin-top 偏移 */
+  margin-top: 0;
+  padding: 0 8px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__arrival-text {
+  color: inherit;
+  font-family: "PingFang SC", Arial, "Microsoft YaHei", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  white-space: nowrap;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__arrival-tag.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__sub-info {
+  /* Figma 稿：gap-6 items-center，原价 / 竖线 / 已售 统一 13px font-medium white/70 */
+  gap: 6px;
+  height: 13px;
+  width: 100%;
+  max-width: 100%;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 13px;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__origin {
+  color: var(--belt-text-secondary, inherit);
+  opacity: 0.7;
+  font-family: "PingFang SC", Arial, "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 13px;
+  white-space: nowrap;
+  text-decoration: line-through;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__origin::after {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__divider {
+  /* Figma 稿：w-px h-10 bg-white/70 scale-x-50 → 0.5×10 white/70；间距由父 sub-info gap-6 控制 */
+  flex: 0 0 auto;
+  display: block;
+  width: 0.5px;
+  height: 10px;
+  margin: 0;
+  background: currentColor;
+  color: var(--belt-text-secondary, inherit);
+  opacity: 0.7;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__divider.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__sold {
+  color: var(--belt-text-secondary, inherit);
+  opacity: 0.7;
+  font-family: "PingFang SC", Arial, "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 13px;
+  white-space: nowrap;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__footer {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex: 0 0 23px;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  height: 23px;
+  min-height: 23px;
+  padding: 0 16px 10px;
+  gap: 8px;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__footer.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__enjoy-row {
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  gap: 6px;
+  height: 13px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__label,
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__coupon-text,
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__time {
+  color: inherit;
+  font-family: "PingFang SC", Arial, "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 13px;
+  white-space: nowrap;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__label.hidden,
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__reduction-tag.hidden,
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__time.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__reduction-tag {
+  flex: 0 1 auto;
+  flex-shrink: 1;
+  height: 13px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0;
+  border-radius: 0;
+  background-color: transparent;
+  overflow: hidden;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__divider--footer {
+  margin: 0;
+  opacity: 1;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__coupon-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__time {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 底栏右侧 8×8 箭头（对齐 Codex 三行稿 footer） */
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__promo-chevron {
+  position: relative;
+  z-index: 4;
+  flex: 0 0 auto;
+  display: block;
+  width: 8px;
+  height: 8px;
+  color: inherit;
+  font-size: 0;
+  line-height: 0;
+  text-indent: -9999px;
+  pointer-events: none;
+}
+
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__promo-chevron::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: currentColor;
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path d='M2.027 0.664c0.022 0.062 0.055 0.119 0.099 0.168L4.942 4 2.126 7.168c-0.044 0.049-0.077 0.106-0.099 0.168-0.022 0.062-0.031 0.128-0.027 0.193 0.004 0.066 0.021 0.13 0.05 0.189 0.029 0.059 0.069 0.112 0.118 0.156 0.049 0.044 0.106 0.077 0.168 0.099 0.062 0.022 0.128 0.031 0.193 0.027 0.066-0.004 0.13-0.021 0.189-0.05 0.059-0.029 0.112-0.069 0.156-0.118L5.977 4.34c0.034-0.036 0.062-0.077 0.084-0.122 0.029-0.059 0.046-0.124 0.05-0.189V3.971c-0.004-0.066-0.021-0.13-0.05-0.189-0.022-0.045-0.05-0.086-0.084-0.122L2.873 0.168C2.83 0.118 2.777 0.078 2.718 0.05 2.659 0.021 2.595 0.004 2.529 0c-0.066-0.004-0.131 0.006-0.193 0.027C2.274 0.049 2.217 0.082 2.167 0.126 2.118 0.17 2.078 0.222 2.05 0.282 2.021 0.341 2.004 0.405 2 0.47c-0.004 0.066 0.006 0.131 0.027 0.193Z'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path d='M2.027 0.664c0.022 0.062 0.055 0.119 0.099 0.168L4.942 4 2.126 7.168c-0.044 0.049-0.077 0.106-0.099 0.168-0.022 0.062-0.031 0.128-0.027 0.193 0.004 0.066 0.021 0.13 0.05 0.189 0.029 0.059 0.069 0.112 0.118 0.156 0.049 0.044 0.106 0.077 0.168 0.099 0.062 0.022 0.128 0.031 0.193 0.027 0.066-0.004 0.13-0.021 0.189-0.05 0.059-0.029 0.112-0.069 0.156-0.118L5.977 4.34c0.034-0.036 0.062-0.077 0.084-0.122 0.029-0.059 0.046-0.124 0.05-0.189V3.971c-0.004-0.066-0.021-0.13-0.05-0.189-0.022-0.045-0.05-0.086-0.084-0.122L2.873 0.168C2.83 0.118 2.777 0.078 2.718 0.05 2.659 0.021 2.595 0.004 2.529 0c-0.066-0.004-0.131 0.006-0.193 0.027C2.274 0.049 2.217 0.082 2.167 0.126 2.118 0.17 2.078 0.222 2.05 0.282 2.021 0.341 2.004 0.405 2 0.47c-0.004 0.066 0.006 0.131 0.027 0.193Z'/></svg>");
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+          mask-size: contain;
+}
+
+/* 上区右侧 91px 品牌区（对齐 Codex 三行稿 RightOffer） */
+.beltCanvas.jd-mobile-three-belt .jd-mobile-three-belt__right {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex: 0 0 91px;
+  flex-direction: column;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  width: 91px;
+  max-width: 91px;
+  min-width: 91px;
+  margin-top: 0;
+  overflow: visible;
+  text-align: center;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreMain,
+.beltCanvas.jd-mobile-three-belt .beltCoreSub,
+.beltCanvas.jd-mobile-three-belt .beltCoreMini {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreSubWrap {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreSubWrap.hidden,
+.beltCanvas.jd-mobile-three-belt .beltCoreMini.hidden {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreLine {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  line-height: 1;
+  max-width: 100%;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreLine__text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Cross 组合行：IP 文字 + × + IP 文字，单行不换行，× 左右间距固定 2px */
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--ip-cross-split .beltCoreLine__crossWrap,
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--ip-cross-split .beltCoreLine__crossWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 2px;
+  white-space: nowrap;
+  padding: 0;
+  margin: 0;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--ip-cross-split .beltCoreLine__crossWrap {
+  max-width: 140px;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--ip-cross-split .beltCoreLine__crossWrap {
+  max-width: 200px;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--ip-cross-split,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--ip-cross-split {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+/* Cross IP 文字：HTML 文字渲染，glyph 紧贴 × 两侧（无 SVG viewBox 留白）
+ * 字号与同腰带其它 IP 视觉高度一致（multi-IP 场景 SVG 渲染高度 11px） */
+.beltCanvas.jd-mobile-two-belt .beltCoreLine__crossText,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine__crossText {
+  flex: 0 1 auto;
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  font-family: PingFang SC, "Microsoft YaHei", -apple-system, BlinkMacSystemFont,
+    sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine__crossSep,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine__crossSep {
+  flex: 0 0 auto;
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 11px;
+  opacity: 0.9;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--row1 .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--ip-primary .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--ip-primary-enhance .beltCoreLine__text {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--ip-secondary .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--ip-secondary-enhance .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--ip-cross .beltCoreLine__text {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--benefit-slogan .beltCoreLine__text {
+  font-family: "PingFang SC", Arial, "Microsoft YaHei", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 9px;
+  opacity: 1;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--benefit .beltCoreLine__text {
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 10px;
+  opacity: 0.9;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--benefit-coupon .beltCoreLine__text {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  padding: 0 6px 0 5px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 10px;
+  color: var(--belt-coupon-text, inherit);
+  background-color: var(--belt-coupon-bg, transparent);
+  opacity: 1;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--benefit-coupon .beltCoreLine__text::after {
+  margin-left: 2px;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  content: "›";
+  opacity: 0.85;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--benefit-countdown {
+  display: flex;
+  justify-content: center;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCountdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  max-width: 100%;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCountdown__label {
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 10px;
+  color: var(--belt-countdown-colon, inherit);
+  white-space: nowrap;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCountdown__timeGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCountdown__timeBlock {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 2px;
+  border-radius: 2px;
+  background-color: var(--belt-countdown-block-bg, #ffffff);
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCountdown__timeText {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 10px;
+  color: var(--belt-countdown-digit, #111);
+  font-variant-numeric: tabular-nums;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltCountdown__colon--dot {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 10px;
+  color: var(--belt-countdown-colon, inherit);
+}
+
+.beltCanvas.jd-mobile-three-belt.beltCanvas--lines3 .beltCoreLine--row1 .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt.beltCanvas--lines3 .beltCoreLine--ip-primary .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt.beltCanvas--lines3 .beltCoreLine--ip-primary-enhance .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt.beltCanvas--lines3 .beltCoreLine--ip-secondary .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt.beltCanvas--lines3 .beltCoreLine--ip-secondary-enhance .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt.beltCanvas--lines3 .beltCoreLine--ip-cross .beltCoreLine__text {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 13px;
+}
+
+.beltCanvas.jd-mobile-three-belt.beltCanvas--lines3 .beltCoreLine--benefit-slogan .beltCoreLine__text {
+  font-size: 10px;
+  line-height: 9px;
+}
+
+.beltCanvas.jd-mobile-three-belt.beltCanvas--lines3 .beltCoreLine--benefit .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt.beltCanvas--lines3 .beltCoreLine--benefit-coupon .beltCoreLine__text {
+  font-size: 10px;
+  line-height: 10px;
+}
+
+.beltCanvas.jd-mobile-three-belt.beltCanvas--lines3 .beltCoreLine--benefit-coupon .beltCoreLine__text {
+  height: 15px;
+  padding: 0 5px 0 4px;
+}
+
+.beltCanvas.jd-mobile-three-belt .beltChevron--inline {
+  display: none;
+}
+
+.beltCanvas.jd-mobile-three-belt .hidden {
+  display: none !important;
+}
+
+/* PC 运营腰带：Codex 稿 442×52 1:1（品牌 116 + 氛围 275/38 + 利益 313/129） */
+.beltCanvas.jd-pc-belt {
+  --pc-belt-w: 442px;
+  --pc-belt-h: 52px;
+  --pc-belt-ui-scale: 1;
+  --pc-belt-pad-x: 24px;
+  --pc-belt-content-w: calc(var(--pc-belt-w) - 2 * var(--pc-belt-pad-x));
+  --pc-belt-benefit-left: 313px;
+  --pc-belt-benefit-right: var(--pc-belt-pad-x);
+  --pc-belt-atmo-left: 275px;
+  --pc-belt-atmo-bleed-top: 3px;
+  --pc-belt-fallback-bg: #ff6c02;
+  box-sizing: border-box;
+  position: relative;
+  width: var(--pc-belt-w);
+  min-width: var(--pc-belt-w);
+  max-width: var(--pc-belt-w);
+  height: var(--pc-belt-h);
+  min-height: var(--pc-belt-h);
+  flex: 0 0 var(--pc-belt-w);
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif;
+  overflow: visible;
+  background: var(--pc-belt-fallback-bg);
+}
+
+.beltCanvas.jd-pc-belt.jd-pc-belt--empty {
+  min-height: var(--pc-belt-h);
+}
+
+/* 氛围icon：Figma PC 稿 left 275 / top 0 / 38×52 槽，图 top -2.23 / h 54.45 */
+.beltCanvas.jd-pc-belt .jd-pc-belt__atmosphere {
+  position: absolute;
+  left: var(--belt-atmo-slot-left, var(--pc-belt-atmo-left, 275px));
+  top: var(--belt-atmo-slot-top, 0);
+  z-index: 1;
+  box-sizing: border-box;
+  width: var(--belt-atmo-slot-w, 38px);
+  height: var(--belt-atmo-slot-h, 52px);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__atmosphereImg {
+  position: absolute;
+  left: 0;
+  top: var(--belt-atmo-img-top, -2.23px);
+  display: block;
+  width: var(--belt-atmo-img-w, 38px);
+  height: var(--belt-atmo-img-h, 54.45px);
+  max-width: none;
+  max-height: none;
+  transform: none;
+  object-fit: cover;
+  object-position: center top;
+  opacity: var(--belt-atmo-opacity, 1);
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__atmosphereImg.hidden {
+  display: none;
+}
+
+/* PC 端品牌槽：Figma 节点 19:1128 — left:24px / top:17px / 18px 高 / 槽宽 137.24px。
+   竖直方向上当 18px 高时，top:17px 与 bottom:17px 视觉等同居中，故用 align-items:center
+   居中实现，避免在不同 single / double 高度切换时跳动。 */
+.beltCanvas.jd-pc-belt .jd-pc-belt__brandSlot {
+  position: absolute;
+  left: var(--pc-belt-pad-x);
+  top: 0;
+  z-index: 2;
+  box-sizing: border-box;
+  width: 137.24px;
+  max-width: 137.24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  gap: 0;
+  overflow: visible;
+  color: inherit;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__brandSlot--single,
+.beltCanvas.jd-pc-belt .jd-pc-belt__brandSlot--double {
+  width: 137.24px;
+  max-width: 137.24px;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__brandSlot--empty {
+  visibility: hidden;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__ip {
+  position: static;
+  flex: 0 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: calc(18px * var(--pc-belt-ui-scale));
+  min-width: 0;
+  max-width: 46%;
+}
+
+.beltCanvas.jd-pc-belt.jd-pc-belt--ips-1 .jd-pc-belt__ip {
+  max-width: calc(91.2px * var(--pc-belt-ui-scale));
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__ipInner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__ipInner svg,
+.beltCanvas.jd-pc-belt .jd-pc-belt__ipImg {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-height: calc(18px * var(--pc-belt-ui-scale));
+  max-width: 100%;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__ipText {
+  font-size: calc(14px * var(--pc-belt-ui-scale));
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__ip--heart-season .jd-pc-belt__ipInner svg,
+.beltCanvas.jd-pc-belt .jd-pc-belt__ip--heart-season .jd-pc-belt__ipImg {
+  max-height: calc(18px * var(--pc-belt-ui-scale) * 0.85);
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__ip--heart-season .jd-pc-belt__ipText {
+  font-size: calc(14px * var(--pc-belt-ui-scale) * 0.85);
+}
+
+.beltCanvas.jd-pc-belt.jd-pc-belt--ips-2 .jd-pc-belt__ipInner svg,
+.beltCanvas.jd-pc-belt.jd-pc-belt--ips-2 .jd-pc-belt__ipImg {
+  max-height: calc(16px * var(--pc-belt-ui-scale));
+}
+
+.beltCanvas.jd-pc-belt.jd-pc-belt--ips-2 .jd-pc-belt__ipText {
+  font-size: calc(13px * var(--pc-belt-ui-scale));
+}
+
+/* PC slogan：字号 14px / 展示宽度 105px / 高度 14px（Figma 节点 20:1267 PC 端）
+   按业务要求：整体靠右对齐，距腰带右边 24px。 */
+.beltCanvas.jd-pc-belt .jd-pc-belt__promise {
+  position: absolute;
+  left: auto;
+  right: var(--pc-belt-pad-x);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  box-sizing: border-box;
+  width: auto;
+  max-width: 105px;
+  height: 14px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: right;
+  overflow: hidden;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif;
+  font-size: calc(14px * var(--pc-belt-ui-scale));
+  font-weight: 400;
+  line-height: 14px;
+  white-space: nowrap;
+  color: var(--pc-belt-benefit-color, #ffffff);
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__promise--coupon {
+  max-width: 100%;
+  padding-left: calc(6px * var(--pc-belt-ui-scale));
+  padding-right: calc(6px * var(--pc-belt-ui-scale));
+  background-color: var(--belt-coupon-bg, rgba(255, 255, 255, 0.16));
+  border-radius: calc(4px * var(--pc-belt-ui-scale));
+  line-height: calc(14px * var(--pc-belt-ui-scale));
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__promise.hidden {
+  display: none;
+}
+
+/* PC 倒计时同样靠右对齐，距腰带右边 24px */
+.beltCanvas.jd-pc-belt .jd-pc-belt__countdownRow {
+  position: absolute;
+  left: auto;
+  right: var(--pc-belt-pad-x);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  box-sizing: border-box;
+  width: auto;
+  max-width: 105px;
+  height: 18px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+  overflow: visible;
+}
+
+/* PC 端 slogan + 倒计时同时显示：按文档第 188–193 行上下排列、垂直间距 4px。
+   slogan 14 + gap 4 + countdown 18 = 36，组合相对 52px 容器居中（起始 y=8）：
+     · slogan top=8, center=15  → translateY = 15-26 = -11
+     · countdown top=26, center=35 → translateY = 35-26 = +9
+   使用 :has() 兼容 Chrome 105+；同时给根加 .jd-pc-belt--benefit-combo 兜底。 */
+.beltCanvas.jd-pc-belt .jd-pc-belt__promise:not(.hidden):has(~ .jd-pc-belt__countdownRow:not(.jd-pc-belt__countdownRow--empty)),
+.beltCanvas.jd-pc-belt.jd-pc-belt--benefit-combo .jd-pc-belt__promise:not(.hidden) {
+  transform: translateY(calc(-50% - 11px));
+}
+.beltCanvas.jd-pc-belt .jd-pc-belt__promise:not(.hidden) ~ .jd-pc-belt__countdownRow:not(.jd-pc-belt__countdownRow--empty),
+.beltCanvas.jd-pc-belt.jd-pc-belt--benefit-combo .jd-pc-belt__countdownRow:not(.jd-pc-belt__countdownRow--empty) {
+  transform: translateY(calc(-50% + 9px));
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__countdownRow--empty {
+  display: none;
+}
+
+/* PC 倒计时：还剩 + 时间组（文档要求间距：还剩↔时间组 4px、数字块↔冒号 2px） */
+.beltCanvas.jd-pc-belt .beltPcCountdown {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(4px * var(--pc-belt-ui-scale));
+  max-width: 100%;
+}
+
+.beltCanvas.jd-pc-belt .beltPcCountdown__label {
+  flex: 0 0 auto;
+  font-size: calc(13px * var(--pc-belt-ui-scale));
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--belt-countdown-colon, inherit);
+  white-space: nowrap;
+}
+
+.beltCanvas.jd-pc-belt .beltPcCountdown__timeGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(2px * var(--pc-belt-ui-scale));
+}
+
+/* PC 倒计时数字块：按文档要求 18×18 / 字号 12px，圆角 2px，背景跟随主色 */
+.beltCanvas.jd-pc-belt .beltPcCountdown__timeBlock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: calc(18px * var(--pc-belt-ui-scale));
+  width: calc(18px * var(--pc-belt-ui-scale));
+  height: calc(18px * var(--pc-belt-ui-scale));
+  padding: 0;
+  border-radius: calc(2px * var(--pc-belt-ui-scale));
+  background-color: var(--belt-countdown-block-bg, #ffffff);
+}
+
+.beltCanvas.jd-pc-belt .beltPcCountdown__timeText {
+  color: var(--belt-countdown-digit, #e1251b);
+  font-size: calc(12px * var(--pc-belt-ui-scale));
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.beltCanvas.jd-pc-belt .beltPcCountdown__colon--dot {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: calc(4px * var(--pc-belt-ui-scale));
+  font-size: calc(12px * var(--pc-belt-ui-scale));
+  font-weight: 700;
+  line-height: 1;
+  color: var(--belt-countdown-colon, inherit);
+}
+
+/* ===== IP 文字组合（IP 行数 ≥ 2）：仅 IP 文本缩到 0.8 倍（14 → 11.2 ≈ 11px），
+   倒计时/优惠等右侧元素保持原大小，确保其大小不随 IP 数量变化。
+   置于文件末尾，覆盖 lines3 / 大促等默认 14/13px 规则。 ===== */
+.beltCanvas.jd-mobile-two-belt.beltCanvas--multi-ip .beltCoreLine--ip-primary .beltCoreLine__text,
+.beltCanvas.jd-mobile-two-belt.beltCanvas--multi-ip .beltCoreLine--ip-primary-enhance .beltCoreLine__text,
+.beltCanvas.jd-mobile-two-belt.beltCanvas--multi-ip .beltCoreLine--ip-secondary .beltCoreLine__text,
+.beltCanvas.jd-mobile-two-belt.beltCanvas--multi-ip .beltCoreLine--ip-secondary-enhance .beltCoreLine__text,
+.beltCanvas.jd-mobile-two-belt.beltCanvas--multi-ip .beltCoreLine--ip-cross .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt.beltCanvas--multi-ip .beltCoreLine--ip-primary .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt.beltCanvas--multi-ip .beltCoreLine--ip-primary-enhance .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt.beltCanvas--multi-ip .beltCoreLine--ip-secondary .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt.beltCanvas--multi-ip .beltCoreLine--ip-secondary-enhance .beltCoreLine__text,
+.beltCanvas.jd-mobile-three-belt.beltCanvas--multi-ip .beltCoreLine--ip-cross .beltCoreLine__text {
+  font-size: 11px;
+  line-height: 11px;
+}
+
+/* 品牌 IP 自由组合适配：对齐 Figma 规则页 16:146 */
+.beltCanvas.jd-mobile-two-belt,
+.beltCanvas.jd-mobile-three-belt {
+  --belt-core-logo-h-1: 11px;
+  --belt-core-logo-h-2: 11px;
+  --belt-core-logo-h-3: 11px;
+  --belt-core-logo-max-w: 90px;
+  --brand-ip-slot-width: 90px;
+  --brand-ip-single-height: 14px;
+  --brand-ip-row-height: 11px;
+  --brand-ip-combo-height: 27px;
+  --brand-ip-row-gap: 4px;
+  --brand-ip-benefit-gap: 6px;
+  --brand-ip-x-size: 6px;
+  --brand-ip-x-gap: 2px;
+}
+
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--single,
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--single {
+  --belt-core-logo-h-1: var(--brand-ip-single-height);
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreArea,
+.beltCanvas.jd-mobile-three-belt .beltCoreArea {
+  width: 91px;
+  max-width: 91px;
+  align-items: center;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreMain,
+.beltCanvas.jd-mobile-two-belt .beltCoreSubWrap,
+.beltCanvas.jd-mobile-two-belt .beltCoreMini,
+.beltCanvas.jd-mobile-three-belt .beltCoreMain,
+.beltCanvas.jd-mobile-three-belt .beltCoreSubWrap,
+.beltCanvas.jd-mobile-three-belt .beltCoreMini {
+  width: var(--brand-ip-slot-width);
+  max-width: var(--brand-ip-slot-width);
+  justify-content: center;
+}
+
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--single .beltCoreMain,
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--single .beltCoreMain {
+  height: var(--brand-ip-single-height);
+}
+
+/* 文档第 30–39 行：单 logo 时，logo 与下方利益点之间必须保留 6px 垂直间距。
+   利益点节点在不同状态下可能挂在 .beltCoreSubWrap 或 .beltCoreMini 上，二者都要兜底。 */
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--single .beltCoreMain + .beltCoreSubWrap:not(.hidden),
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--single .beltCoreMain + .beltCoreSubWrap:not(.hidden),
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--single .beltCoreMain + .beltCoreMini:not(.hidden),
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--single .beltCoreMain + .beltCoreMini:not(.hidden),
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--single .beltCoreSubWrap.hidden + .beltCoreMini:not(.hidden),
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--single .beltCoreSubWrap.hidden + .beltCoreMini:not(.hidden),
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--single .beltCoreSubWrap:not(.hidden) + .beltCoreMini:not(.hidden),
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--single .beltCoreSubWrap:not(.hidden) + .beltCoreMini:not(.hidden) {
+  margin-top: var(--brand-ip-benefit-gap);
+}
+
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--double .beltCoreMain,
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--double .beltCoreMain,
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--triple .beltCoreMain,
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--triple .beltCoreMain {
+  height: var(--brand-ip-row-height);
+  margin-bottom: var(--brand-ip-row-gap);
+}
+
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--double .beltCoreSubWrap,
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--double .beltCoreSubWrap,
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--triple .beltCoreSubWrap,
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--triple .beltCoreSubWrap {
+  height: var(--brand-ip-row-height);
+}
+
+/* 双/三 logo 模式下：第二行 logo（SubWrap）↔ 利益点（Mini） 6px；
+   当 SubWrap 被隐藏时，第一行 logo（Main）直接对接利益点也要 6px。 */
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--double .beltCoreSubWrap:not(.hidden) + .beltCoreMini:not(.hidden),
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--double .beltCoreSubWrap:not(.hidden) + .beltCoreMini:not(.hidden),
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--triple .beltCoreSubWrap:not(.hidden) + .beltCoreMini:not(.hidden),
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--triple .beltCoreSubWrap:not(.hidden) + .beltCoreMini:not(.hidden),
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--double .beltCoreSubWrap.hidden + .beltCoreMini:not(.hidden),
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--double .beltCoreSubWrap.hidden + .beltCoreMini:not(.hidden),
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--triple .beltCoreSubWrap.hidden + .beltCoreMini:not(.hidden),
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--triple .beltCoreSubWrap.hidden + .beltCoreMini:not(.hidden) {
+  margin-top: var(--brand-ip-benefit-gap);
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine__mount svg,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine__mount svg,
+.beltCanvas.jd-mobile-two-belt .beltCoreLine__img,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine__img {
+  max-width: var(--brand-ip-slot-width);
+  object-fit: contain;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine--ip-cross-split .beltCoreLine__crossWrap,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine--ip-cross-split .beltCoreLine__crossWrap {
+  width: var(--brand-ip-slot-width);
+  max-width: var(--brand-ip-slot-width);
+  height: var(--brand-ip-row-height);
+  gap: 0;
+}
+
+/* 第二行 logo：按文档"保持原始比例、不强制缩小"。
+   宽度由 normalize（必要时百亿补贴降级到 2 字版）保证；超出 91px 时由
+   `.beltCoreLine--ip-cross-overflow` 放开 overflow 并展示文案提示。 */
+.beltCanvas.jd-mobile-two-belt .beltCoreLine__crossLogo,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine__crossLogo {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-width: 0;
+  height: var(--brand-ip-row-height);
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine__crossMount,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine__crossMount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--brand-ip-row-height);
+  line-height: 0;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine__crossMount svg,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine__crossMount svg,
+.beltCanvas.jd-mobile-two-belt .beltCoreLine__crossImg,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine__crossImg {
+  display: block;
+  width: auto;
+  max-width: none;
+  height: var(--brand-ip-row-height);
+  max-height: var(--brand-ip-row-height);
+  object-fit: contain;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine__crossSep,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine__crossSep {
+  /* × 固定与两侧 IP 文字/logo 同高（11px），不随多 logo 组合缩小；
+     左右间距交给 crossWrap 的 gap:2px 控制 */
+  flex: 0 0 auto;
+  width: auto;
+  height: 11px;
+  margin: 0 var(--brand-ip-x-gap);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 11px;
+  text-align: center;
+  opacity: 1;
+}
+
+.beltCanvas.jd-mobile-two-belt .beltCoreLine__crossText,
+.beltCanvas.jd-mobile-three-belt .beltCoreLine__crossText {
+  max-width: 100%;
+  font-size: 11px;
+  line-height: 11px;
+  text-overflow: ellipsis;
+}
+
+/* PC 端不再叠加旧 90/92px 品牌槽规则，统一交给 .jd-pc-belt__brandSlot --single/--double */
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__ipCombo {
+  width: 90px;
+  max-width: 90px;
+  height: 27px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__ipComboLine {
+  width: 90px;
+  max-width: 90px;
+  height: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__ip--combo {
+  flex: 1 1 auto;
+  height: 11px;
+  max-width: 90px;
+  justify-content: center;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__ipComboLine--bottom .jd-pc-belt__ip--combo {
+  max-width: 40px;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__ip--combo .jd-pc-belt__ipInner {
+  justify-content: center;
+  height: 11px;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__ip--combo .jd-pc-belt__ipInner svg,
+.beltCanvas.jd-pc-belt .jd-pc-belt__ip--combo .jd-pc-belt__ipImg {
+  height: 11px;
+  max-height: 11px;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__ipComboSep {
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  margin: 0 3px;
+  font-size: 6px;
+  font-weight: 700;
+  line-height: 6px;
+  text-align: center;
+}
+
+.beltCanvas.jd-pc-belt.jd-pc-belt--ip-combo-single .jd-pc-belt__ip {
+  max-width: 91.2px;
+}
+
+.beltCanvas.jd-pc-belt.jd-pc-belt--ip-combo-single .jd-pc-belt__ipInner,
+.beltCanvas.jd-pc-belt.jd-pc-belt--ip-combo-single .jd-pc-belt__ipInner svg,
+.beltCanvas.jd-pc-belt.jd-pc-belt--ip-combo-single .jd-pc-belt__ipImg {
+  height: 18px;
+  max-height: 18px;
+}
+
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--single .beltCoreArea,
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--double .beltCoreArea,
+.beltCanvas.jd-mobile-two-belt.beltIpCombo--triple .beltCoreArea,
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--single .beltCoreArea,
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--double .beltCoreArea,
+.beltCanvas.jd-mobile-three-belt.beltIpCombo--triple .beltCoreArea {
+  gap: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* 品牌 IP 组合（brand-ip-combo）                                       */
+/* 参考 docs/brand-ip-logo-composition-rules.md：                        */
+/*   - single：14px 单行；最大宽度 90px                                 */
+/*   - double：每行 11px，行距 4px                                      */
+/*   - triple：上 campaign，下两个 brand 用 6×6 x icon 连接              */
+/* ------------------------------------------------------------------ */
+.brand-ip-combo {
+  --brand-ip-slot-width: 90px;
+  --brand-ip-single-height: 14px;
+  --brand-ip-row-height: 11px;
+  --brand-ip-combo-height: 27px;
+  --brand-ip-row-gap: 4px;
+  --brand-ip-x-size: 6px;
+  --brand-ip-x-gap: 2px;
+  box-sizing: border-box;
+  width: var(--brand-ip-slot-width);
+  max-width: var(--brand-ip-slot-width);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--brand-ip-row-gap);
+  color: currentColor;
+}
+
+.brand-ip-combo--empty {
+  visibility: hidden;
+  height: 0;
+}
+
+.brand-ip-combo--single {
+  height: var(--brand-ip-single-height);
+  gap: 0;
+}
+
+.brand-ip-combo--double,
+.brand-ip-combo--triple {
+  height: var(--brand-ip-combo-height);
+}
+
+.brand-ip-combo__line {
+  width: 100%;
+  max-width: var(--brand-ip-slot-width);
+  height: var(--brand-ip-row-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--brand-ip-x-gap);
+  min-width: 0;
+}
+
+.brand-ip-combo--single .brand-ip-combo__svg {
+  height: var(--brand-ip-single-height);
+}
+
+.brand-ip-combo__svg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--brand-ip-row-height);
+  max-width: var(--brand-ip-slot-width);
+  min-width: 0;
+  flex-shrink: 1;
+  overflow: hidden;
+}
+
+/* SVG 自身：高度跟随父容器、宽度按 aspect 自适应；超过 90px 时整体等比缩小 */
+.brand-ip-combo__svg svg {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  max-height: 100%;
+  color: currentColor;
+}
+
+.brand-ip-combo__fallback {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* triple 模式：第二行的两个 brand logo + x icon */
+.brand-ip-combo__line--row2 .brand-ip-combo__svg {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.brand-ip-combo__x {
+  flex: 0 0 var(--brand-ip-x-size);
+  width: var(--brand-ip-x-size);
+  height: var(--brand-ip-x-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+.brand-ip-combo__x svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* PC 端 brand slot 不再走 brand-ip-combo 垂直组合，统一使用 inline combo（横向 logoA × logoB） */
+
+/* 三 logo 溢出策略：百亿补贴先切 2 字版；仍超 91px 时提示，不再同步缩小 */
+.brand-ip-combo--triple.brand-ip-combo--overflow .brand-ip-combo__line--row2,
+.beltCanvas .beltCoreLine--ip-cross-overflow .beltCoreLine__crossWrap {
+  overflow: visible;
+}
+
+.brand-ip-combo--triple.brand-ip-combo--overflow .brand-ip-combo__line--row2 .brand-ip-combo__svg,
+.beltCanvas .beltCoreLine--ip-cross-overflow .beltCoreLine__crossLogo {
+  flex-shrink: 0;
+}
+
+.brand-ip-combo--triple.brand-ip-combo--overflow .brand-ip-combo__line--row2 .brand-ip-combo__svg svg,
+.beltCanvas .beltCoreLine--ip-cross-overflow .beltCoreLine__crossMount svg,
+.beltCanvas .beltCoreLine--ip-cross-overflow .beltCoreLine__crossImg {
+  max-width: none;
+}
+
+.brand-ip-combo--triple.brand-ip-combo--overflow::after {
+  content: attr(data-warning);
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 4px);
+  transform: translateX(-50%);
+  z-index: 10;
+  display: none;
+  width: max-content;
+  max-width: 180px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  font-size: 10px;
+  line-height: 14px;
+  white-space: normal;
+  text-align: center;
+  pointer-events: none;
+}
+
+.brand-ip-combo--triple.brand-ip-combo--overflow:hover::after {
+  display: block;
+}
+
+.brand-ip-combo {
+  position: relative;
+}
+
+.beltCanvas .beltCoreLine--ip-cross-overflow .beltCoreLine__crossLogo {
+  max-width: none;
+}
+
+/* ---------------------------------------------------------------- */
+/* PC 端最多 2 个 logo：横向 logo × logo，按 Figma 节点 19:1128       */
+/*  - 容器：137.24×18，左 24 / 上 17（由 brandSlot align-center 等效）*/
+/*  - logo 高度 18px、保持原始比例不缩                                 */
+/*  - × icon 切图尺寸 10.15×10.65，与 logo 间距各 2px                  */
+/* ---------------------------------------------------------------- */
+.beltCanvas.jd-pc-belt .jd-pc-belt__inlineCombo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  height: 18px;
+  max-width: 137.24px;
+  line-height: 0;
+  white-space: nowrap;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__inlineLogo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 18px;
+  flex: 0 0 auto;
+  line-height: 0;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__inlineLogo .jd-pc-belt__ipInner {
+  height: 18px;
+  justify-content: flex-start;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__inlineLogo .jd-pc-belt__ipInner svg,
+.beltCanvas.jd-pc-belt .jd-pc-belt__inlineLogo .jd-pc-belt__ipImg {
+  display: block;
+  height: 18px;
+  max-height: 18px;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+}
+
+/* × icon：切图（10.15×10.65），跟随 logo 颜色 */
+.beltCanvas.jd-pc-belt .jd-pc-belt__inlineComboSep {
+  flex: 0 0 10.15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 10.15px;
+  height: 10.65px;
+  margin: 0;
+  color: inherit;
+  font-size: 0;
+  line-height: 0;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__inlineComboSep svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  color: currentColor;
+}
+
+/* PC single 模式：单独一个 logo，按 18px 高展示，最大 137.24px */
+.beltCanvas.jd-pc-belt .jd-pc-belt__brandSlot--single .jd-pc-belt__ip {
+  height: 18px;
+  max-width: 137.24px;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__brandSlot--single .jd-pc-belt__ipInner {
+  height: 18px;
+}
+
+.beltCanvas.jd-pc-belt .jd-pc-belt__brandSlot--single .jd-pc-belt__ipInner svg,
+.beltCanvas.jd-pc-belt .jd-pc-belt__brandSlot--single .jd-pc-belt__ipImg {
+  height: 18px;
+  max-height: 18px;
+  max-width: 137.24px;
+}

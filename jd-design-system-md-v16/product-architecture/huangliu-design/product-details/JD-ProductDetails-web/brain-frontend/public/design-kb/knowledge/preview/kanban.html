@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>设计案例库</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#111;--ink2:#555;--ink3:#999;
+  --paper:#F7F6F3;--surface:#fff;--line:rgba(0,0,0,.08);--line2:rgba(0,0,0,.05);
+  --green:#0AAD48;--green-dim:#E1F5EE;
+  --gold:#B5691A;--gold-dim:#FDF0E0;
+  --purple:#6B63D8;--purple-dim:#EEECFB;
+  --red:#E8271B;--amber:#C47B00;--amber-dim:#FDF5E0;
+  --r:10px;--r-sm:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'DM Sans',-apple-system,'PingFang SC',sans-serif;
+  background:var(--paper);color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;
+}
+
+/* TOPBAR */
+.topbar{
+  flex-shrink:0;
+  background:rgba(247,246,243,.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  padding:0 20px;height:52px;
+  display:flex;align-items:center;gap:12px;
+  z-index:100;
+}
+.logo{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;white-space:nowrap}
+.logo-mark{width:22px;height:22px;border-radius:5px;background:var(--ink);display:flex;align-items:center;justify-content:center}
+.logo-mark svg{width:12px;height:12px}
+.divider-v{width:1px;height:18px;background:var(--line);flex-shrink:0}
+.search-wrap{flex:1;max-width:320px;position:relative}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--ink3);pointer-events:none}
+#search{
+  width:100%;height:32px;border:1px solid var(--line);border-radius:8px;
+  padding:0 10px 0 32px;font-family:inherit;font-size:13px;color:var(--ink);
+  background:var(--surface);outline:none;transition:border-color .15s;
+}
+#search:focus{border-color:rgba(0,0,0,.25)}
+#search::placeholder{color:var(--ink3)}
+.filters{display:flex;gap:4px;align-items:center}
+.filter-btn{
+  height:28px;padding:0 12px;border:1px solid var(--line);border-radius:20px;
+  font-family:inherit;font-size:12px;color:var(--ink2);background:transparent;
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.filter-btn:hover{background:var(--surface);border-color:rgba(0,0,0,.2)}
+.filter-btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.count-badge{font-size:12px;color:var(--ink3);font-family:'DM Mono',monospace;margin-left:auto;white-space:nowrap}
+
+/* BODY */
+.body-wrap{flex:1;display:flex;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{
+  width:172px;flex-shrink:0;
+  padding:16px 10px;
+  border-right:1px solid var(--line);
+  overflow-y:auto;
+}
+.sidebar-label{font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:0 8px;margin-bottom:4px;margin-top:12px}
+.sidebar-label:first-child{margin-top:0}
+.sidebar-item{
+  display:flex;align-items:center;gap:7px;
+  padding:5px 8px;border-radius:var(--r-sm);
+  font-size:12px;color:var(--ink2);
+  cursor:pointer;transition:all .12s;
+  border:1px solid transparent;
+}
+.sidebar-item:hover{background:var(--surface);color:var(--ink)}
+.sidebar-item.active{background:var(--surface);color:var(--ink);border-color:var(--line);font-weight:500}
+.s-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.s-count{margin-left:auto;font-size:10px;color:var(--ink3);font-family:'DM Mono',monospace}
+
+/* MAIN SCROLL */
+.main-scroll{flex:1;overflow-y:auto;padding:18px 20px}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.section-title{font-size:12px;font-weight:500;color:var(--ink2);white-space:nowrap}
+.section-line{flex:1;height:1px;background:var(--line)}
+.section-count{font-size:11px;color:var(--ink3);font-family:'DM Mono',monospace}
+.section-wrap{margin-bottom:28px}
+
+/* GRID — 竖向设计稿用更窄的列 */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:10px;
+}
+
+/* CARD */
+.card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  overflow:hidden;
+  cursor:pointer;
+  transition:transform .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s;
+  display:flex;flex-direction:column;
+  animation:fadeUp .25s both;
+}
+.card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* 统一缩略图容器 — 竖向比例 */
+.card-thumb{
+  width:100%;
+  aspect-ratio:4/3;
+  background:var(--paper);
+  position:relative;overflow:hidden;
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.card-thumb img{
+  position:absolute;inset:0;
+  width:100%;height:100%;object-fit:cover;
+  object-position:top left;
+  transition:transform .3s;
+}
+.card:hover .card-thumb img{transform:scale(1.04)}
+/* 无截图占位 — 不显示文字，只显示图标 */
+.no-img-placeholder{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--paper);
+}
+.no-img-placeholder svg{width:28px;height:28px;opacity:.2;color:var(--ink3)}
+/* 平台角标 */
+.card-plat{
+  position:absolute;top:7px;right:7px;
+  font-size:10px;font-weight:500;letter-spacing:.02em;
+  padding:2px 6px;border-radius:20px;
+  backdrop-filter:blur(6px);
+}
+.plat-App{background:rgba(225,245,238,.92);color:#085041}
+.plat-PC{background:rgba(241,239,232,.92);color:#444}
+.plat-Both{background:rgba(238,237,254,.92);color:#3C3489}
+/* NEW角标 */
+.card-new{
+  position:absolute;top:7px;left:7px;
+  font-size:10px;font-weight:500;
+  padding:2px 6px;border-radius:20px;
+  background:var(--ink);color:#fff;
+}
+
+/* 卡片信息区 */
+.card-body{padding:9px 10px 10px;display:flex;flex-direction:column;gap:5px}
+.card-name{font-size:12px;font-weight:500;line-height:1.4;color:var(--ink)}
+.card-area{font-size:10px;color:var(--ink3)}
+.card-tags{display:flex;gap:3px;flex-wrap:wrap}
+.tag{font-size:10px;padding:1px 5px;border-radius:4px;border:1px solid var(--line);color:var(--ink2);background:var(--paper);white-space:nowrap}
+.card-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:6px;border-top:1px solid var(--line2);
+  margin-top:2px;
+}
+.card-date{font-size:9px;color:var(--ink3);font-family:'DM Mono',monospace}
+.card-link{
+  font-size:10px;color:var(--purple);font-weight:500;
+  display:flex;align-items:center;gap:2px;text-decoration:none;
+}
+.card-link:hover{text-decoration:underline}
+
+/* 空状态 */
+.empty-state{grid-column:1/-1;padding:48px 20px;text-align:center;font-size:13px;color:var(--ink3)}
+
+/* ── PANEL ── */
+.overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.25);backdrop-filter:blur(2px);
+}
+.overlay.open{display:block}
+.panel{
+  position:fixed;right:0;top:0;bottom:0;
+  width:min(520px,100vw);
+  background:var(--surface);
+  border-left:1px solid var(--line);
+  z-index:201;
+  transform:translateX(100%);
+  transition:transform .26s cubic-bezier(.2,.8,.2,1);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.panel.open{transform:translateX(0)}
+
+.panel-head{
+  padding:14px 18px;border-bottom:1px solid var(--line);
+  display:flex;align-items:flex-start;gap:10px;flex-shrink:0;
+}
+.panel-head-info{flex:1;min-width:0}
+.panel-name{font-size:15px;font-weight:500;line-height:1.35;margin-bottom:5px}
+.panel-meta{display:flex;gap:5px;flex-wrap:wrap}
+.meta-pill{font-size:10px;padding:2px 8px;border-radius:10px}
+.panel-close{
+  width:28px;height:28px;flex-shrink:0;
+  border:1px solid var(--line);border-radius:var(--r-sm);
+  background:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--ink2);transition:background .12s;
+}
+.panel-close:hover{background:var(--paper)}
+
+/* 面板滚动区 */
+.panel-body{flex:1;overflow-y:auto;padding:16px 18px}
+
+/* 截图容器 — 竖向，支持全屏 */
+.panel-shot-wrap{
+  width:100%;margin-bottom:14px;
+  position:relative;border-radius:var(--r-sm);overflow:hidden;
+  border:1px solid var(--line);background:var(--paper);
+  height:260px;
+  touch-action:none;
+}
+.panel-shot-wrap img{
+  width:100%;height:100%;display:block;
+  object-fit:cover;object-position:top left;
+}
+.shot-fullscreen{
+  position:absolute;bottom:8px;right:8px;
+  width:28px;height:28px;border-radius:6px;
+  background:rgba(255,255,255,.9);backdrop-filter:blur(4px);
+  border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .12s;color:var(--ink2);
+}
+.shot-fullscreen:hover{background:#fff}
+
+.panel-sec{margin-bottom:14px}
+.panel-sec-title{
+  font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:6px;
+}
+.panel-text{font-size:13px;color:var(--ink2);line-height:1.65}
+.panel-relay{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:12px;color:var(--purple);font-weight:500;
+  padding:5px 11px;border:1px solid var(--purple-dim);border-radius:var(--r-sm);
+  text-decoration:none;transition:background .12s;
+}
+.panel-relay:hover{background:var(--purple-dim)}
+.panel-table{width:100%;border-collapse:collapse;font-size:12px}
+.panel-table th{
+  text-align:left;padding:5px 8px;
+  border-bottom:1px solid var(--line);
+  font-size:10px;font-weight:500;color:var(--ink3);letter-spacing:.03em;
+}
+.panel-table td{padding:6px 8px;border-bottom:1px solid var(--line2);color:var(--ink2);vertical-align:top;line-height:1.5}
+.panel-table tr:last-child td{border-bottom:none}
+.star-row td{background:#fffbe6}
+.pattern-row{font-size:12px;padding:5px 0;border-bottom:1px solid var(--line2);color:var(--ink2)}
+.pattern-row:last-child{border-bottom:none}
+.related-chip{
+  display:inline-flex;align-items:center;
+  font-size:11px;padding:3px 9px;
+  border:1px solid var(--line);border-radius:20px;
+  color:var(--ink2);cursor:pointer;margin:2px;
+  transition:all .12s;
+}
+.related-chip:hover{background:var(--paper);border-color:var(--ink3)}
+
+/* 全屏图片查看器 */
+.fullscreen-viewer{
+  display:none;position:fixed;inset:0;z-index:400;
+  background:rgba(0,0,0,.92);
+  align-items:center;justify-content:center;
+  cursor:zoom-out;
+  touch-action:pinch-zoom;
+  overflow:auto;
+}
+.fullscreen-viewer.open{display:flex}
+.fullscreen-viewer img{
+  max-width:90vw;max-height:90vh;
+  object-fit:contain;border-radius:4px;
+  cursor:default;
+  touch-action:pinch-zoom;
+}
+.fv-close{
+  position:fixed;top:20px;right:20px;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#fff;transition:background .15s;
+}
+.fv-close:hover{background:rgba(255,255,255,.25)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 12 12" fill="none">
+        <rect x="1" y="1" width="4" height="4" rx="1" fill="white"/>
+        <rect x="7" y="1" width="4" height="4" rx="1" fill="white" opacity=".6"/>
+        <rect x="1" y="7" width="4" height="4" rx="1" fill="white" opacity=".6"/>
+        <rect x="7" y="7" width="4" height="4" rx="1" fill="white" opacity=".3"/>
+      </svg>
+    </div>
+    设计案例库
+  </div>
+  <div class="divider-v"></div>
+  <div class="search-wrap">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="search" type="text" placeholder="搜索案例、组件、关键词…" oninput="applyFilter()">
+  </div>
+  <div class="filters">
+    <button class="filter-btn on" onclick="setPlatform('all',this)">全部</button>
+    <button class="filter-btn" onclick="setPlatform('App',this)">App</button>
+    <button class="filter-btn" onclick="setPlatform('PC',this)">PC</button>
+    <button class="filter-btn" onclick="setPlatform('Both',this)">双端</button>
+  </div>
+  <span class="count-badge" id="count-badge">14 cases</span>
+</div>
+
+<div class="body-wrap">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-label">功能区</div>
+    <div class="sidebar-item active" onclick="setArea('all',this)">
+      <div class="s-dot" style="background:var(--ink2)"></div>全部<span class="s-count">14</span>
+    </div>
+    <div class="sidebar-item" onclick="setArea('promotion',this)">
+      <div class="s-dot" style="background:var(--green)"></div>促销组件<span class="s-count">13</span>
+    </div>
+    <div class="sidebar-item" onclick="setArea('trade-in',this)">
+      <div class="s-dot" style="background:var(--gold)"></div>以旧换新<span class="s-count">1</span>
+    </div>
+    <div class="sidebar-label">常用标签</div>
+    <div class="sidebar-item" onclick="setTag('国补腰带')">
+      <div class="s-dot" style="background:var(--green)"></div>国补腰带
+    </div>
+    <div class="sidebar-item" onclick="setTag('优惠弹层')">
+      <div class="s-dot" style="background:var(--purple)"></div>优惠弹层
+    </div>
+    <div class="sidebar-item" onclick="setTag('以旧换新')">
+      <div class="s-dot" style="background:var(--gold)"></div>以旧换新
+    </div>
+    <div class="sidebar-item" onclick="setTag('倒计时')">
+      <div class="s-dot" style="background:var(--red)"></div>倒计时
+    </div>
+    <div class="sidebar-item" onclick="setTag('三态')">
+      <div class="s-dot" style="background:var(--amber)"></div>三态状态机
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-scroll" id="main-scroll">
+    <div id="main"></div>
+  </div>
+</div>
+
+<!-- PANEL -->
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div class="panel" id="panel">
+  <div class="panel-head">
+    <div class="panel-head-info">
+      <div class="panel-name" id="p-name"></div>
+      <div class="panel-meta" id="p-meta"></div>
+    </div>
+    <button class="panel-close" onclick="closePanel()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="panel-body" id="p-body"></div>
+</div>
+
+<!-- 全屏查看器 -->
+<div class="fullscreen-viewer" id="fv" onclick="closeFV()">
+  <div class="fv-close" onclick="closeFV()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </div>
+  <img id="fv-img" src="" alt="" onclick="event.stopPropagation()">
+</div>
+
+<script>
+var CASES=[
+  {id:1,name:'PC 国补',area:'promotion',platform:'PC',updated:'2024-12-05',isNew:false,
+   keywords:['国补','PC商详','tooltip','资格判断','促销行','引导行'],
+   relay:'https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:571806&node_id=6:571807',
+   screenshot:'',
+   background:'PC端首次接入国补，用户无法在商详感知到国补利益点，错过领取机会',core:'PC端首次接入国补，资格判断逻辑和去绑定入口，小i tooltip承载政策说明',
+   states:[{n:'有资格·领取前',v:'促销行展示国补引导行，点击跳转领取',s:false},{n:'有资格·已领取',v:'引导行消失，进入已享楼层',s:false},{n:'⭐ 接口异常/兜底',v:'TODO: 待补充',s:true}],
+   patterns:['小i + tooltip承载政策说明（PC端按需展开）','资格判断驱动引导行显示/隐藏'],related:[2,3]},
+  {id:2,name:'App 国补多商品',area:'promotion',platform:'App',updated:'2024-12-19',isNew:false,
+   keywords:['国补腰带','附件弹层','优惠弹层','多商品','政策色','国补说明弹窗'],
+   relay:'https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:569620&node_id=6:569622',
+   screenshot:'',
+   background:'含附件的多商品场景，国补计算基数与展示到手价不一致，用户困惑',core:'多商品场景国补附件价值展示，渐进式两层信息披露模式',
+   states:[{n:'有资格·领取前',v:'绿色腰带+领取入口，「最高减xxx」',s:false},{n:'⭐ 有资格·已领取',v:'按钮消失，「再减xxx」进入已享楼层',s:true},{n:'优惠弹层·附件提示',v:'点击触发国补说明弹窗（295px非全宽）',s:false},{n:'⭐ 商品不含附件',v:'弹层不显示附件提示行',s:true}],
+   patterns:['政策色与品牌色语义分离（绿=国补，红=京东）','渐进式政策说明（两层信息披露）'],related:[1,3,6]},
+  {id:3,name:'国补叠加以旧换新利益点感知提升',area:'promotion',platform:'App',updated:'2026-05-22',isNew:false,
+   keywords:['三态状态机','服务金','聚合利益点','以旧换新','国补腰带'],
+   relay:'https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:329088&node_id=6:355327',
+   screenshot:'https://ling-cdn.s3-cache-accelerate.cn-north-1.jdcloud-oss.com/ling-material-image/1990724210050437121/c61a2d72d137cecdb6264628cb2fce4e.png',
+   background:'国补与以旧换新叠加时，用户需自行心算总优惠，利益点感知弱',core:'三态状态机驱动商详，国补叠加以旧换新双优惠聚合展示，服务金色体系区分语义',
+   states:[{n:'无资格',v:'无腰带，常规到手价',s:false},{n:'⭐ 有资格·未领取',v:'绿色腰带+引导按钮「最高减xxx」',s:true},{n:'⭐ 已领取·叠加以旧换新',v:'聚合利益点区块，服务金色，「再减xxx」按钮消失',s:true},{n:'线下门店降级',v:'TODO: 待补充',s:false}],
+   patterns:['三态状态机驱动促销模块切换','多优惠聚合呈现（确定值「再减」，估算值「最高减」）'],related:[2,6,14]},
+  {id:4,name:'国补资格有效期 & 倒计时',area:'promotion',platform:'Both',updated:'2025-05-25',isNew:false,
+   keywords:['倒计时','24小时阈值','被动解绑','领取弹层','有效期'],
+   relay:'https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:230440&node_id=6:238825',
+   screenshot:'https://img11.360buyimg.com/img/jfs/t1/440702/25/1478/2867495/6a13c1abF3f17759d/0276000000e66227.png',
+   background:'用户不知道国补资格有使用期限，被动失效解绑率高达64%',core:'双阈值时间展示切换——距过期<24h显示倒计时，≥24h显示静态日期',
+   states:[{n:'⭐ 已领·<24h',v:'红色倒计时「仅剩HH:MM:SS」',s:true},{n:'⭐ 已领·≥24h',v:'红色日期「YYYY.MM.DD前有效」',s:true},{n:'无有效期限制',v:'不展示有效期行',s:false},{n:'商详·方案一·腰带',v:'腰带内叠加倒计时（待评审）',s:false},{n:'商详·方案二·黄条',v:'底部黄条展示倒计时（待评审）',s:false}],
+   patterns:['双阈值时间展示切换（倒计时 vs 静态日期）','弹层内资格卡片的条件信息行'],related:[2,3,9]},
+  {id:5,name:'二轮车国补感知强化及能力闭环',area:'promotion',platform:'App',updated:'2026-05-25',isNew:false,
+   keywords:['二轮车','国补','站内闭环','申请信息','旧品类目'],
+   relay:'',screenshot:'',
+   background:'二轮车国补站外申请链路过长（11步），用户流失严重',core:'二轮车国补站内闭环申请，链路从11步缩短至2步，感知强化',
+   states:[{n:'未申请',v:'商详展示国补入口',s:false},{n:'申请中',v:'站内申请信息填写',s:false},{n:'已申请',v:'腰带展示国补资格',s:false}],
+   patterns:['站内闭环替代站外跳转，减少流失'],related:[1,3]},
+  {id:6,name:'国补到手价 / 预估价',area:'promotion',platform:'App',updated:'2026-05-25',isNew:false,
+   keywords:['到手价','预估价','价格行','优惠弹层','横滑'],
+   relay:'',screenshot:'',
+   background:'有旧机和无旧机场景下到手价/预估价混用，用户误以为预估价是最终价格',core:'严格区分「到手价」与「预估价」，优惠弹层超屏时横滑不折叠',
+   states:[{n:'⭐ 已领·有旧机',v:'「换新到手价」（黑色确定态）',s:true},{n:'⭐ 已领·无旧机',v:'「换新预估价」（灰色待确认）',s:true},{n:'未领·有旧机',v:'「换新预估价」带领取入口',s:false}],
+   patterns:['到手价 vs 预估价的文案与视觉区分规则'],related:[3,2,11]},
+  {id:7,name:'国补弹层地址切换',area:'promotion',platform:'App',updated:'2026-05-25',isNew:false,
+   keywords:['弹层','地址切换','国补','收货地址','三态','底部黄条'],
+   relay:'',screenshot:'',
+   background:'用户默认收货地址不在国补补贴范围，弹层内无法切换地址导致放弃购买',core:'国补弹层内支持切换收货地址，解决地址不在补贴范围的感知问题',
+   states:[{n:'默认地址命中',v:'正常展示国补腰带',s:false},{n:'⭐ 切换后命中',v:'弹层内实时更新国补信息',s:true},{n:'⭐ 切换后未命中',v:'底部黄条提示「该地区暂不支持」',s:true}],
+   patterns:['弹层内地址切换与国补状态联动'],related:[2,4]},
+  {id:8,name:'国补弹层·京通资格码4步引导',area:'promotion',platform:'App',updated:'2026-05-25',isNew:false,
+   keywords:['京通','资格码','4步引导','回填','绑定卡片'],
+   relay:'',screenshot:'',
+   background:'京通资格码领取需12步，链路过长，站外跳转流失严重',core:'京通资格码领取简化至4步，站内闭环，资格码绑定卡片设计',
+   states:[{n:'步骤1·确认意向',v:'展示国补权益说明',s:false},{n:'步骤2·跳转京通',v:'跳转京通小程序',s:false},{n:'步骤3·回填资格码',v:'返回站内自动回填',s:false},{n:'步骤4·绑定完成',v:'资格码绑定卡片确认态',s:false}],
+   patterns:['4步引导流程（确认→跳转→回填→完成）'],related:[2,5]},
+  {id:9,name:'国补弹层·云闪付资格码倒计时',area:'promotion',platform:'App',updated:'2026-05-25',isNew:false,
+   keywords:['云闪付','资格码','倒计时','30分钟','弹层倒计时'],
+   relay:'',screenshot:'',
+   background:'云闪付资格码30分钟有效期，用户领取后不知时间限制，资格码过期浪费',core:'云闪付资格码30分钟有效期，弹层+腰带双入口展示倒计时',
+   states:[{n:'⭐ 资格码有效期内',v:'弹层「仅剩MM:SS」红色倒计时',s:true},{n:'⭐ 资格码已过期',v:'弹层提示重新领取',s:true},{n:'腰带倒计时',v:'腰带右侧展示剩余时间',s:false}],
+   patterns:['短时效资格码的双入口倒计时展示'],related:[4,2]},
+  {id:10,name:'国补虚拟组套',area:'promotion',platform:'App',updated:'2026-05-25',isNew:false,
+   keywords:['虚拟组套','套装详情弹层','重决策弹层','组套楼层'],
+   relay:'',screenshot:'',
+   background:'虚拟组套场景下国补计算规则不透明，用户对套装价格和国补抵扣产生疑惑',core:'虚拟组套场景国补展示，套装详情弹层+重决策弹层设计',
+   states:[{n:'组套楼层·默认',v:'展示套装商品+国补入口',s:false},{n:'套装详情弹层',v:'各商品分别展示国补',s:false},{n:'⭐ 重决策弹层',v:'调整套装时国补重新计算',s:true}],
+   patterns:['组套场景下国补与商品绑定的展示规则'],related:[2,6]},
+  {id:11,name:'以旧换新国补大促前台感知强化',area:'promotion',platform:'App',updated:'2026-05-25',isNew:false,
+   keywords:['以旧换新','大促','感知强化','tab','辅助决策','国补弹层'],
+   relay:'',screenshot:'',
+   background:'大促场景以旧换新与国补双入口并存，用户无法感知叠加后的最大优惠',core:'大促场景以旧换新+国补双入口强化，有tab/无tab两套方案，辅助决策信息条',
+   states:[{n:'有tab·以旧换新',v:'独立tab展示换新权益',s:false},{n:'无tab·融合展示',v:'换新信息融入主购买区',s:false},{n:'⭐ 辅助决策信息条',v:'底部固定信息条，展示叠加优惠总结',s:true}],
+   patterns:['大促场景有tab/无tab双方案'],related:[3,6,14]},
+  {id:12,name:'换绑弹层文案规范化 / 小屏适配',area:'promotion',platform:'App',updated:'2026-05-25',isNew:false,
+   keywords:['换绑弹层','文案规范','320px','小屏适配','同省跨市'],
+   relay:'',screenshot:'',
+   background:'换绑弹层文案不规范，同省跨市地址场景下展示信息错误，320px机型文案截断',core:'换绑弹层文案规范化，同省跨市地址展示，320px小屏适配',
+   states:[{n:'同省同城地址',v:'正常展示',s:false},{n:'⭐ 同省跨市地址',v:'展示跨市提示，说明影响',s:true},{n:'320px小屏',v:'弹层内容自适应，文案不截断',s:false}],
+   patterns:['320px小屏弹层排列规则'],related:[7,2]},
+  {id:13,name:'国补商详弹层·摇号模式（单资格）',area:'promotion',platform:'App',updated:'2026-05-31',isNew:true,
+   keywords:['摇号','单资格','国补弹层','摇号全状态','报名Toast','步骤条'],
+   relay:'',screenshot:'',
+   background:'部分城市国补采用摇号模式，原有弹层不支持摇号全状态流程设计',core:'摇号模式下国补弹层全状态，报名→等待→中签/未中签完整流程',
+   states:[{n:'⭐ 未报名',v:'展示摇号入口和规则',s:true},{n:'⭐ 等待摇号',v:'倒计时+报名提醒Toast',s:true},{n:'⭐ 中签',v:'领取流程步骤条',s:true},{n:'⭐ 未中签',v:'友好告知+引导查看其他补贴',s:true},{n:'已中签·已领取',v:'腰带展示国补资格确认',s:false}],
+   patterns:['摇号全状态流程步骤条','Toast报名提醒时机与样式'],related:[2,4,8]},
+  {id:14,name:'以旧换新 v15.0 样式升级',area:'trade-in',platform:'App',updated:'2025-01-14',isNew:false,
+   keywords:['旧机估价','自动识别','历史标签','运行情况','换新流程'],
+   relay:'',screenshot:'',
+   background:'以旧换新选旧机流程繁琐，用户需手动输入品牌型号，历史换新记录无法复用',core:'选旧机弹层自动识别+历史标签，旧机估价弹层运行情况选项组',
+   states:[{n:'选旧机·自动识别',v:'自动填充品牌型号，可手动修改',s:false},{n:'⭐ 选旧机·历史标签',v:'展示历史选择记录，快速复选',s:true},{n:'旧机估价·运行情况',v:'选项组（正常/有瑕疵/损坏）',s:false}],
+   patterns:['历史标签加速重复操作','自动识别+人工确认双保险'],related:[3,11]}
+];
+
+var curPlat='all',curArea='all',curTag='',curSearch='';
+
+function filtered(){
+  return CASES.filter(function(c){
+    var p=curPlat==='all'||c.platform===curPlat;
+    var a=curArea==='all'||(curArea==='promotion'&&c.area==='promotion')||(curArea==='trade-in'&&c.area==='trade-in');
+    var t=!curTag||c.keywords.some(function(k){return k.includes(curTag)});
+    var s=!curSearch||c.name.includes(curSearch)||c.keywords.some(function(k){return k.includes(curSearch)});
+    return p&&a&&t&&s;
+  });
+}
+
+function renderCard(c,idx){
+  var thumb=c.screenshot
+    ?'<img src="'+c.screenshot+'" alt="" loading="lazy">'
+    :'<div class="no-img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>';
+  var tags=c.keywords.slice(0,3).map(function(k){return'<span class="tag">'+k+'</span>'}).join('');
+  var link=c.relay
+    ?'<a class="card-link" href="'+c.relay+'" target="_blank" onclick="event.stopPropagation()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>设计稿</a>'
+    :'';
+  return'<div class="card" onclick="openPanel('+c.id+')" style="animation-delay:'+idx*.025+'s">'
+    +'<div class="card-thumb">'
+      +thumb
+      +(c.isNew?'<div class="card-new">NEW</div>':'')
+      +'<div class="card-plat plat-'+c.platform+'">'+c.platform+'</div>'
+    +'</div>'
+    +'<div class="card-body">'
+      +'<div class="card-name">'+c.name+'</div>'
+      +'<div class="card-area">pdp / '+c.area+'</div>'
+      +'<div class="card-tags">'+tags+'</div>'
+      +'<div class="card-footer">'
+        +'<span class="card-date">'+c.updated+'</span>'
+        +link
+      +'</div>'
+    +'</div>'
+  +'</div>';
+}
+
+function renderGrid(){
+  var items=filtered();
+  document.getElementById('count-badge').textContent=items.length+' cases';
+  var promo=items.filter(function(c){return c.area==='promotion'});
+  var trade=items.filter(function(c){return c.area==='trade-in'});
+  var html='';
+  var idx=0;
+  if(promo.length){
+    html+='<div class="section-wrap"><div class="section-hd"><span class="section-title">商详 · 促销组件</span><div class="section-line"></div><span class="section-count">'+promo.length+'</span></div>';
+    html+='<div class="grid">'+promo.map(function(c){return renderCard(c,idx++)}).join('')+'</div></div>';
+  }
+  if(trade.length){
+    html+='<div class="section-wrap"><div class="section-hd"><span class="section-title">商详 · 以旧换新</span><div class="section-line"></div><span class="section-count">'+trade.length+'</span></div>';
+    html+='<div class="grid">'+trade.map(function(c){return renderCard(c,idx++)}).join('')+'</div></div>';
+  }
+  if(!items.length) html='<div class="empty-state">没有找到匹配的案例</div>';
+  document.getElementById('main').innerHTML=html;
+}
+
+function openPanel(id){
+  var c=CASES.find(function(x){return x.id===id});if(!c)return;
+  document.getElementById('p-name').textContent=c.name;
+  var meta='<span class="meta-pill" style="background:'+(c.platform==='App'?'var(--green-dim);color:#085041':c.platform==='PC'?'var(--paper);color:var(--ink2)':'var(--purple-dim);color:var(--purple)')+'">'+c.platform+'</span>';
+  meta+='<span class="meta-pill" style="background:var(--paper);color:var(--ink2)">pdp / '+c.area+'</span>';
+  meta+='<span class="meta-pill" style="background:var(--paper);color:var(--ink3)">'+c.updated+'</span>';
+  document.getElementById('p-meta').innerHTML=meta;
+  var body='';
+  if(c.screenshot){
+    body+='<div class="panel-shot-wrap"><img src="'+c.screenshot+'" alt="">'
+      +'<div class="shot-fullscreen" onclick="openFV(\''+c.screenshot+'\')" title="全屏查看">'
+        +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>'
+      +'</div></div>';
+  }
+  if(c.relay){
+    body+='<div class="panel-sec"><a class="panel-relay" href="'+c.relay+'" target="_blank"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>在 Relay 中查看设计稿</a></div>';
+  }
+  if(c.background){
+    body+='<div class="panel-sec"><div class="panel-sec-title">需求背景</div><div class="panel-text" style="color:var(--ink3)">'+c.background+'</div></div>';
+  }
+  body+='<div class="panel-sec"><div class="panel-sec-title">核心举措</div><div class="panel-text">'+c.core+'</div></div>';
+  if(c.states&&c.states.length){
+    body+='<div class="panel-sec"><div class="panel-sec-title">状态覆盖</div><table class="panel-table"><tr><th>状态</th><th>视觉处理</th></tr>';
+    c.states.forEach(function(s){body+='<tr'+(s.s?' class="star-row"':'')+'><td>'+s.n+'</td><td>'+s.v+'</td></tr>'});
+    body+='</table></div>';
+  }
+  if(c.patterns&&c.patterns.length){
+    body+='<div class="panel-sec"><div class="panel-sec-title">可复用模式</div>';
+    c.patterns.forEach(function(p){body+='<div class="pattern-row">'+p+'</div>'});
+    body+='</div>';
+  }
+  if(c.keywords&&c.keywords.length){
+    body+='<div class="panel-sec"><div class="panel-sec-title">关键词</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:2px">';
+    c.keywords.forEach(function(k){body+='<span class="tag">'+k+'</span>'});
+    body+='</div></div>';
+  }
+  if(c.related&&c.related.length){
+    body+='<div class="panel-sec"><div class="panel-sec-title">关联案例</div><div style="margin-top:4px">';
+    c.related.forEach(function(rid){
+      var r=CASES.find(function(x){return x.id===rid});
+      if(r)body+='<span class="related-chip" onclick="openPanel('+rid+')">'+r.name+'</span>';
+    });
+    body+='</div></div>';
+  }
+  document.getElementById('p-body').innerHTML=body;
+  document.getElementById('p-body').scrollTop=0;
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('panel').classList.add('open');
+  // 锁定主页滚动
+  document.getElementById('main-scroll').style.overflow='hidden';
+}
+
+function closePanel(){
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('panel').classList.remove('open');
+  document.getElementById('main-scroll').style.overflow='auto';
+}
+
+function openFV(src){
+  document.getElementById('fv-img').src=src;
+  document.getElementById('fv').classList.add('open');
+}
+function closeFV(){document.getElementById('fv').classList.remove('open')}
+
+function setPlatform(p,btn){
+  curPlat=p;
+  document.querySelectorAll('.filters .filter-btn').forEach(function(b){b.classList.remove('on')});
+  btn.classList.add('on');renderGrid();
+}
+function setArea(a,el){
+  curArea=a;curTag='';
+  document.querySelectorAll('.sidebar-item').forEach(function(b){b.classList.remove('active')});
+  el.classList.add('active');renderGrid();
+}
+function setTag(t){
+  curTag=curTag===t?'':t;curArea='all';
+  document.querySelectorAll('.sidebar-item').forEach(function(b){b.classList.remove('active')});
+  renderGrid();
+}
+function applyFilter(){curSearch=document.getElementById('search').value.trim();renderGrid();}
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    if(document.getElementById('fv').classList.contains('open'))closeFV();
+    else closePanel();
+  }
+});
+renderGrid();
+</script>
+</body>
+</html>

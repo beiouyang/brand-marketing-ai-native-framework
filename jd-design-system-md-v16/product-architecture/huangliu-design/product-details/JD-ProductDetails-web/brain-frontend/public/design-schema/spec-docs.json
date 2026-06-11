@@ -1,0 +1,47 @@
+[
+  {
+    "docId": "pdp-display-rule-general",
+    "title": "通用楼层默认展示规则",
+    "docType": "displayRule",
+    "mdPath": "",
+    "summary": "默认进入商详场域组件阅览工具时，仅展示 ytype = general 的通用楼层。",
+    "relatedSchemaIds": ["general"],
+    "relatedRuleIds": ["display-general-default"],
+    "relatedInstanceIds": [],
+    "relatedSceneIds": [],
+    "version": "1.0.0",
+    "status": "active",
+    "owner": "design-schema",
+    "updatedAt": "2026-06-05"
+  },
+  {
+    "docId": "pdp-display-rule-business",
+    "title": "事业群楼层展示规则",
+    "docType": "displayRule",
+    "mdPath": "",
+    "summary": "选择具体事业群后，在保留通用楼层基础上追加展示当前事业群 ytype 且 xtype = 0 的楼层。",
+    "relatedSchemaIds": ["general", "$selectedBusiness"],
+    "relatedRuleIds": ["display-business-with-general"],
+    "relatedInstanceIds": [],
+    "relatedSceneIds": [],
+    "version": "1.0.0",
+    "status": "active",
+    "owner": "design-schema",
+    "updatedAt": "2026-06-05"
+  },
+  {
+    "docId": "pdp-display-rule-xtype",
+    "title": "横切类型过滤规则",
+    "docType": "displayRule",
+    "mdPath": "",
+    "summary": "xtype = 1 的事业群楼层不进入当前阅览区展示，但需要在索引和详情中说明隐藏原因。",
+    "relatedSchemaIds": ["xtype:1"],
+    "relatedRuleIds": ["hide-business-xtype-cross"],
+    "relatedInstanceIds": [],
+    "relatedSceneIds": [],
+    "version": "1.0.0",
+    "status": "active",
+    "owner": "design-schema",
+    "updatedAt": "2026-06-05"
+  }
+]

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>云闪付浙江资格码倒计时 · 设计决策</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC",sans-serif;background:#f5f4f0;color:#1a1a1a;padding:2rem}
+.wrap{max-width:720px;margin:0 auto}
+.hd{background:#E1251B;color:#fff;border-radius:8px;padding:1.2rem 1.5rem;margin-bottom:1.5rem}
+.hd h1{font-size:18px;font-weight:500;margin-bottom:4px}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.2);margin-right:4px}
+.screenshot .empty{background:#f0f0ee;border-radius:8px;padding:1.5rem;font-size:12px;color:#aaa;text-align:center;border:.5px solid #e5e5e5;margin-bottom:1.5rem}
+.sec{background:#fff;border-radius:8px;border:.5px solid #e5e5e5;margin-bottom:12px;overflow:hidden}
+.sec-hd{padding:12px 16px;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center;border-bottom:.5px solid #f0f0ee}
+.sec-hd.toggle{cursor:pointer}
+.sec-body{padding:12px 16px;font-size:13px;line-height:1.7}
+.sec-body.hidden{display:none}
+.decision{background:#f7f7f5;border-radius:6px;padding:10px 12px;margin-bottom:10px}
+.decision:last-child{margin-bottom:0}
+.decision-title{font-weight:500;margin-bottom:6px}
+.countdown-demo{display:inline-flex;align-items:center;background:#FF0F23;color:#fff;border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600;letter-spacing:1px;margin:8px 0}
+.warn{background:#fff3cd;border-left:3px solid #EF9F27;padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-weight:500;padding:6px 8px;border-bottom:.5px solid #e5e5e5;color:#888;background:#fafafa}
+td{padding:8px;border-bottom:.5px solid #f0f0ee;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.star td{background:#fffbe6}
+.threshold{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.threshold-card{border-radius:6px;padding:8px 10px;font-size:12px}
+.tc-a{background:#fee;border:.5px solid #ffb3b3}
+.tc-b{background:#f0f0ee;border:.5px solid #ddd}
+.tc-label{font-weight:500;margin-bottom:3px;font-size:11px}
+.pattern{background:#f0f4ff;border-radius:6px;padding:10px 12px}
+.pattern-title{font-weight:500;margin-bottom:6px}
+.principle{background:#e8f4e8;border-left:3px solid #0AAD48;padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;margin-top:8px}
+.related-case{display:block;font-size:12px;color:#3C84C4;text-decoration:none;padding:6px 0;border-bottom:.5px solid #f0f0ee}
+.related-case:last-child{border-bottom:none}
+.related-note{color:#888;font-size:11px;margin-top:2px}
+.back{display:inline-block;font-size:12px;color:#888;text-decoration:none;margin-bottom:1rem}
+.todo{display:inline-block;background:#fff8e6;border:.5px solid #EF9F27;padding:1px 6px;font-size:11px;border-radius:3px;color:#b07800}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="index.html">← 返回知识库</a>
+<div class="hd">
+  <h1>云闪付浙江资格码倒计时</h1>
+  <div style="margin-top:6px;font-size:12px;opacity:.8">
+    <span class="tag">App</span><span class="tag">pdp/promotion</span>
+    <span style="opacity:.7;margin-left:4px">最后更新 2026-05-25</span>
+  </div>
+  <div style="margin-top:6px;font-size:11px;opacity:.7">UX：阮蓝蝶 / 产品：王金 / 2025.02.18 · 节点 6:542851 + 6:540996</div>
+</div>
+
+<div class="screenshot"><div class="empty">📎 暂无设计稿截图 · 可在 reasoning.md frontmatter 的 screenshots 字段填入 CDN 链接</div></div>
+
+<div class="sec">
+  <div class="sec-hd">需求背景</div>
+  <div class="sec-body">
+    <p style="margin-bottom:8px">浙江省云闪付国补资格码仅 <strong>30 分钟</strong>内有效，站内领取完成后未告知有效期，导致大量被动解绑。</p>
+    <p style="background:#fff3cd;border-radius:4px;padding:6px 10px;font-size:13px;margin-bottom:8px">📊 浙江被动解绑率：<strong>67.77%</strong>（资格有效期 30 分钟内）</p>
+    <p style="font-size:12px;color:#666">本 Case 是 <a href="app-national-subsidy-validity-countdown.html" style="color:#3C84C4">国补资格增加有效期&倒计时</a> 的扩展，聚焦浙江 30 分钟场景——30 分钟永远 &lt; 24h，始终展示倒计时，不触发静态日期分支。</p>
+    <p style="margin-top:6px;font-size:12px;color:#888">来源：PRD §4.1.1 支付立减·浙江8大类 / app-national-subsidy-validity-countdown-reasoning §0</p>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">核心设计决策</div>
+  <div class="sec-body">
+
+    <div class="decision">
+      <div class="decision-title">Decision 1 · 倒计时使用红色块 #FF0F23 突出展示</div>
+      <div class="countdown-demo">仅剩 29:59:08</div>
+      <p style="margin-bottom:6px">红色背景块（<code>#FF0F23</code>），白色文字，传达紧迫感，与国补绿色语义独立。</p>
+      <div class="warn">⚠️ 格式待统一：设计稿使用「仅剩 HH:MM:SS」，现有知识库方案规定「距失效还剩 HH:MM:SS」，两套格式并存会产生认知断裂，建议产品评审后统一</div>
+      <p style="margin-top:6px;font-size:12px;color:#888">来源：设计稿颜色数据 + 区块「领取后」标注</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 2 · 区分「默认态」（未领取）和「领取后态」（倒计时展示）</div>
+      <ul style="padding-left:1.2em">
+        <li><strong>默认态</strong>：弹层展示正常领取入口，无倒计时</li>
+        <li><strong>领取后态</strong>：弹层内显示倒计时红色块 + 已领标签；腰带同步展示（节点 6:540996）</li>
+      </ul>
+      <p style="margin-top:4px;font-size:12px;color:#888">来源：设计稿子画板标注「默认」/「领取后」</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 3 · 倒计时归零后展示「重新领取」按钮</div>
+      <p>倒计时归零（资格码过期）后，「立即领取」按钮切换为「重新领取」，引导用户重新发起领取流程。</p>
+      <p style="margin-top:4px;font-size:12px;color:#888">来源：设计稿「领取后」区块内「重新领取」按钮标注</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 4 · Toast 提示「领取成功，30分钟内下单有效哦」</div>
+      <p>领取成功后即时 Toast 提示，时间字段（「30分钟」）随活动配置动态下发，不硬编码。</p>
+      <p style="margin-top:4px;font-size:12px;color:#888">来源：设计稿文案标注 / 继承自 app-national-subsidy-validity-countdown-reasoning §6</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">状态覆盖表</div>
+  <div class="sec-body" style="padding:0">
+    <table>
+      <tr><th>状态 / 场景</th><th>视觉处理</th><th>备注</th></tr>
+      <tr><td>弹层 · 默认态（未领取）</td><td>正常领取入口，无倒计时</td><td style="color:#888;font-size:11px">子画板「默认」</td></tr>
+      <tr><td>弹层 · 领取后 · 倒计时内</td><td>红色块「仅剩 HH:MM:SS」+ 已领标签</td><td style="color:#888;font-size:11px">子画板「领取后」</td></tr>
+      <tr><td>腰带 · 领取后 · 倒计时内</td><td>腰带同步展示倒计时状态</td><td style="color:#888;font-size:11px">节点 6:540996 商详视角</td></tr>
+      <tr><td>Toast · 领取成功</td><td>「领取成功，30分钟内下单有效哦」（时间动态）</td><td style="color:#888;font-size:11px">设计稿文案标注</td></tr>
+      <tr class="star"><td>⭐ 倒计时归零 · 已过期</td><td>展示「重新领取」按钮</td><td style="color:#b07800;font-size:11px">来源：设计稿「重新领取」标注；是否有次数限制待确认</td></tr>
+      <tr class="star"><td>⭐ 无有效期限制的地区</td><td>不渲染倒计时行，组件支持此状态</td><td style="color:#b07800;font-size:11px">继承自 validity-countdown Case §5</td></tr>
+      <tr><td>接口异常 / 过期时间获取失败</td><td><span class="todo">TODO 待补充</span></td><td style="color:#888;font-size:11px">继承遗留问题</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">可复用设计模式</div>
+  <div class="sec-body">
+    <div class="pattern">
+      <div class="pattern-title">Pattern 1 · 短时效资格码的倒计时展示</div>
+      <p style="font-size:12px;color:#666;margin-bottom:8px">适用：资格/券码有效期极短（分钟级），用户领取后必须立即使用</p>
+      <p style="font-size:12px;margin-bottom:6px"><strong>时间阈值规则（继承自现有框架）：</strong></p>
+      <div class="threshold">
+        <div class="threshold-card tc-a"><div class="tc-label">< 24h → 实时倒计时</div>格式：「距失效还剩 HH:MM:SS」（⚠️ 待统一）</div>
+        <div class="threshold-card tc-b"><div class="tc-label">≥ 24h → 静态日期</div>格式：「YYYY.MM.DD HH:MM 前有效」</div>
+      </div>
+      <p style="font-size:12px;color:#666">30分钟场景始终满足「&lt; 24h」条件，始终展示倒计时，不需要判断日期展示分支。</p>
+      <div class="principle">核心原则：领取成功 Toast 即时提示有效期 → 弹层内实时倒计时 → 腰带同步 → 归零后「重新领取」入口</div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd toggle" onclick="toggle(this)">遗留问题 <span>▾</span></div>
+  <div class="sec-body hidden" style="padding:0">
+    <table>
+      <tr><th>问题</th><th>负责人</th><th>状态</th></tr>
+      <tr><td>倒计时文案格式是否统一到「距失效还剩 HH:MM:SS」</td><td>产品（王金）</td><td>⏳ 优先确认（影响组件实现）</td></tr>
+      <tr><td>重新领取是否有次数限制（浙江政府政策）</td><td>产品（王金）</td><td>⏳ 待确认</td></tr>
+      <tr><td>倒计时由前端本地计时还是服务端同步</td><td>研发</td><td>⏳ 待确认</td></tr>
+      <tr><td>接口异常/过期时间获取失败时的兜底方案</td><td>研发</td><td>⏳ 待确认</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">关联历史 Case</div>
+  <div class="sec-body">
+    <a class="related-case" href="app-national-subsidy-validity-countdown.html">国补资格增加有效期&倒计时<div class="related-note">直接前身；24h 阈值规则已建立；本 Case 是 30 分钟场景的扩展录入</div></a>
+    <a class="related-case" href="app-national-subsidy-multisku.html">App 国补多商品<div class="related-note">国补弹层及腰带基础框架来源</div></a>
+  </div>
+</div>
+
+</div>
+<script>function toggle(hd){hd.classList.toggle('open');var b=hd.nextElementSibling;b.classList.toggle('hidden');var a=hd.querySelector('span');if(a)a.textContent=b.classList.contains('hidden')?'▾':'▴'}</script>
+</body></html>

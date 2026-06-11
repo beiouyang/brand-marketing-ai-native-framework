@@ -1,0 +1,253 @@
+{
+  "designSources": {
+    "tagDesign": "标签设计方案 Relay node 37:7",
+    "detailDesign": "商详设计方案 Relay node 37:747"
+  },
+  "tagStyleLibrary": [
+    {
+      "styleId": "STYLE_PROMO_RED_CAPSULE",
+      "styleName": "红底白字促销胶囊",
+      "tagType": "促销",
+      "shape": "胶囊",
+      "backgroundColor": "#E1251B",
+      "textColor": "#FFFFFF",
+      "fontSize": 12,
+      "radius": 4,
+      "height": 22,
+      "padding": "2px 7px",
+      "useScenes": ["商详价格区域", "商详促销区域"],
+      "source": "标签设计方案 Relay node 37:7"
+    },
+    {
+      "styleId": "STYLE_PRICE_RED_OUTLINE",
+      "styleName": "红色描边价格标签",
+      "tagType": "价格",
+      "shape": "描边",
+      "backgroundColor": "#E1251B",
+      "textColor": "#E1251B",
+      "fontSize": 12,
+      "radius": 4,
+      "height": 22,
+      "padding": "2px 7px",
+      "useScenes": ["商详价格区域"],
+      "source": "标签设计方案 Relay node 37:7"
+    },
+    {
+      "styleId": "STYLE_MEMBER_BLACK_GOLD",
+      "styleName": "黑金会员权益标签",
+      "tagType": "会员",
+      "shape": "胶囊",
+      "backgroundColor": "#2B2118",
+      "textColor": "#FFD18A",
+      "fontSize": 12,
+      "radius": 4,
+      "height": 22,
+      "padding": "2px 7px",
+      "useScenes": ["商详价格区域", "服务保障区域"],
+      "source": "标签设计方案 Relay node 37:7"
+    },
+    {
+      "styleId": "STYLE_SERVICE_GRAY",
+      "styleName": "灰底服务保障标签",
+      "tagType": "服务",
+      "shape": "胶囊",
+      "backgroundColor": "#F2F4F7",
+      "textColor": "#465366",
+      "fontSize": 12,
+      "radius": 4,
+      "height": 22,
+      "padding": "2px 7px",
+      "useScenes": ["服务保障区域"],
+      "source": "标签设计方案 Relay node 37:7"
+    },
+    {
+      "styleId": "STYLE_ATMOS_ORANGE_CORNER",
+      "styleName": "橙色氛围角标",
+      "tagType": "氛围",
+      "shape": "角标",
+      "backgroundColor": "#FF7A00",
+      "textColor": "#FFFFFF",
+      "fontSize": 12,
+      "radius": 2,
+      "height": 22,
+      "padding": "2px 7px",
+      "useScenes": ["主图区域", "推荐区域"],
+      "source": "标签设计方案 Relay node 37:7"
+    },
+    {
+      "styleId": "STYLE_SERVICE_BLUE",
+      "styleName": "蓝色服务能力标签",
+      "tagType": "服务",
+      "shape": "胶囊",
+      "backgroundColor": "#EAF2FF",
+      "textColor": "#2F6FED",
+      "fontSize": 12,
+      "radius": 4,
+      "height": 22,
+      "padding": "2px 7px",
+      "useScenes": ["促销区域", "服务保障区域"],
+      "source": "标签设计方案 Relay node 37:7"
+    }
+  ],
+  "detailPageStructure": [
+    {
+      "moduleId": "IMAGE_MODULE",
+      "moduleName": "主图区域",
+      "touchPoint": "主图区域",
+      "maxTags": 2,
+      "currentTags": 1,
+      "supportedTagTypes": ["氛围", "运营"],
+      "riskLevel": "低",
+      "desc": "适合活动氛围、首发、新品等视觉角标。",
+      "source": "商详设计方案 Relay node 37:747"
+    },
+    {
+      "moduleId": "TITLE_MODULE",
+      "moduleName": "标题区域",
+      "touchPoint": "标题区域",
+      "maxTags": 2,
+      "currentTags": 1,
+      "supportedTagTypes": ["服务", "运营"],
+      "riskLevel": "低",
+      "desc": "适合自营、官方、商品身份和服务承诺。",
+      "source": "商详设计方案 Relay node 37:747"
+    },
+    {
+      "moduleId": "PRICE_MODULE",
+      "moduleName": "价格区域",
+      "touchPoint": "价格区域",
+      "maxTags": 2,
+      "currentTags": 2,
+      "supportedTagTypes": ["价格", "促销", "会员"],
+      "riskLevel": "高",
+      "desc": "最适合强化价格心智，但容量敏感，需要冲突检测。",
+      "source": "商详设计方案 Relay node 37:747"
+    },
+    {
+      "moduleId": "PROMO_MODULE",
+      "moduleName": "促销区域",
+      "touchPoint": "促销区域",
+      "maxTags": 5,
+      "currentTags": 3,
+      "supportedTagTypes": ["促销", "服务", "价格"],
+      "riskLevel": "中",
+      "desc": "承载优惠券、满减、换新等权益，可作为价格区降级位置。",
+      "source": "商详设计方案 Relay node 37:747"
+    },
+    {
+      "moduleId": "SERVICE_MODULE",
+      "moduleName": "服务保障区域",
+      "touchPoint": "服务保障区域",
+      "maxTags": 4,
+      "currentTags": 2,
+      "supportedTagTypes": ["服务", "会员"],
+      "riskLevel": "低",
+      "desc": "适合价保、赔付、履约、售后保障。",
+      "source": "商详设计方案 Relay node 37:747"
+    },
+    {
+      "moduleId": "SHOP_MODULE",
+      "moduleName": "店铺区域",
+      "touchPoint": "店铺区域",
+      "maxTags": 3,
+      "currentTags": 1,
+      "supportedTagTypes": ["服务", "运营"],
+      "riskLevel": "低",
+      "desc": "承载店铺身份、服务能力、评分相关标签。",
+      "source": "商详设计方案 Relay node 37:747"
+    },
+    {
+      "moduleId": "RECOMMEND_MODULE",
+      "moduleName": "推荐区域",
+      "touchPoint": "推荐区域",
+      "maxTags": 4,
+      "currentTags": 2,
+      "supportedTagTypes": ["氛围", "价格", "促销"],
+      "riskLevel": "中",
+      "desc": "适合推荐商品卡片上的外显标签。",
+      "source": "商详设计方案 Relay node 37:747"
+    },
+    {
+      "moduleId": "BOTTOM_BAR",
+      "moduleName": "底部购买区域",
+      "touchPoint": "底部购买区域",
+      "maxTags": 1,
+      "currentTags": 0,
+      "supportedTagTypes": ["运营"],
+      "riskLevel": "低",
+      "desc": "靠近转化按钮，谨慎承载强运营提醒。",
+      "source": "商详设计方案 Relay node 37:747"
+    }
+  ],
+  "touchPointRules": [
+    {
+      "touchPoint": "价格区域",
+      "maxTags": 2,
+      "preferredTypes": ["价格", "促销", "会员"],
+      "fallbackTouchPoint": "促销区域",
+      "conflictPolicy": "容量满时按优先级排序，命中互斥标签时展示高优先级标签。",
+      "source": "商详设计方案 Relay node 37:747"
+    },
+    {
+      "touchPoint": "促销区域",
+      "maxTags": 5,
+      "preferredTypes": ["促销", "价格", "服务"],
+      "fallbackTouchPoint": "服务保障区域",
+      "conflictPolicy": "权益类标签可共存，但优惠券、满减、补贴需按业务优先级排序。",
+      "source": "商详设计方案 Relay node 37:747"
+    },
+    {
+      "touchPoint": "服务保障区域",
+      "maxTags": 4,
+      "preferredTypes": ["服务", "会员"],
+      "fallbackTouchPoint": "店铺区域",
+      "conflictPolicy": "只承载服务保障表达，不建议放置价格促销类强营销标签。",
+      "source": "商详设计方案 Relay node 37:747"
+    },
+    {
+      "touchPoint": "主图区域",
+      "maxTags": 2,
+      "preferredTypes": ["氛围", "运营"],
+      "fallbackTouchPoint": "推荐区域",
+      "conflictPolicy": "角标类标签需避免遮挡商品主体。",
+      "source": "商详设计方案 Relay node 37:747"
+    },
+    {
+      "touchPoint": "标题区域",
+      "maxTags": 2,
+      "preferredTypes": ["服务", "运营"],
+      "fallbackTouchPoint": "服务保障区域",
+      "conflictPolicy": "身份类标签优先于活动氛围标签。",
+      "source": "商详设计方案 Relay node 37:747"
+    }
+  ],
+  "previewProducts": [
+    {
+      "sceneId": "NORMAL_SKU",
+      "sceneName": "普通商品",
+      "skuName": "京东自营 智能恒温电热水壶 1.7L",
+      "price": "199",
+      "activityPrice": "199",
+      "tags": ["京东自营", "价保 30 天"],
+      "source": "商详设计方案 Relay node 37:747"
+    },
+    {
+      "sceneId": "PROMO_SKU",
+      "sceneName": "促销活动商品",
+      "skuName": "京东自营 家用智能空气净化器 高效除醛低噪音",
+      "price": "1299",
+      "activityPrice": "1099",
+      "tags": ["限时低价", "店铺券", "价保 30 天"],
+      "source": "商详设计方案 Relay node 37:747"
+    },
+    {
+      "sceneId": "PLUS_SKU",
+      "sceneName": "会员权益商品",
+      "skuName": "PLUS 专享 无线降噪蓝牙耳机 长续航",
+      "price": "899",
+      "activityPrice": "799",
+      "tags": ["PLUS 专享价", "买贵双倍赔"],
+      "source": "商详设计方案 Relay node 37:747"
+    }
+  ]
+}

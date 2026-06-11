@@ -1,0 +1,1308 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>京东商详腰带AI改造工具</title>
+    <link rel="stylesheet" href="./styles.css?v=20260603-leftnav" />
+    <link rel="stylesheet" href="./belt-demo.css?v=20260603-leftnav" />
+    <link rel="stylesheet" href="./pdp-preview.css?v=20260603-leftnav" />
+    <link rel="stylesheet" href="./belt-audit-page.css?v=20260603-leftnav" />
+    <link rel="stylesheet" href="./side-nav.css?v=20260603-leftnav" />
+  </head>
+  <body>
+    <main class="layout layout--split layout--expanded">
+      <div class="layout__main">
+      <section class="card card--brandSources">
+        <div class="card__title">1) 品牌色来源（三选一）</div>
+        <div class="brandSourceTabs" role="tablist" aria-label="品牌色来源切换">
+          <button type="button" class="brandSourceTab brandSourceTab--active" data-brand-source="input" role="tab" aria-selected="true">颜色输入</button>
+          <button type="button" class="brandSourceTab" data-brand-source="image" role="tab" aria-selected="false">图片取色</button>
+          <button type="button" class="brandSourceTab" data-brand-source="beltBg" role="tab" aria-selected="false">自定义腰带背景</button>
+        </div>
+
+        <div class="inputSources">
+          <div class="inputSource inputSource--color" data-brand-source-panel="input">
+            <div class="inputSource__head">
+              <span class="inputSource__title">颜色输入</span>
+              <span class="inputSource__desc">HEX · 场景推荐 · OKLCH 微调</span>
+            </div>
+
+            <div class="brandRow">
+              <div class="field field--grow">
+                <label class="label" for="brandHexInput">品牌色（HEX）</label>
+                <input
+                  id="brandHexInput"
+                  class="input mono"
+                  type="text"
+                  placeholder="#F70000 或 F70000、#F60"
+                  spellcheck="false"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="field field--btnNarrow">
+                <label class="label">&nbsp;</label>
+                <button id="applyBrandBtn" class="btn btn--primary" type="button">应用并映射</button>
+              </div>
+            </div>
+
+            <div class="subTitle subTitle--tight">多业务颜色规范（可选）</div>
+            <p class="scenarioHint scenarioHint--compact scenarioHint--scenarioGrid">
+              按业务 OKLCH 安全区间（H/L/C）选色 · 选中后可微调 L、C · 输出 HEX
+            </p>
+            <div id="scenarioGrid" class="scenarioGrid" role="list">
+              <button type="button" class="scenarioChip scenarioChip--redBox" data-scenario-id="h-red-promo" aria-label="促销 · 秒杀">
+                <div class="scenarioChip__swatch" style="background:#DB2C2F"></div>
+                <div class="scenarioChip__body">
+                  <div class="scenarioChip__hue">H 0°–20° / 340°–360°</div>
+                  <div class="scenarioChip__mind">促销 · 秒杀</div>
+                  <div class="scenarioChip__use">心动购物季、国家补贴、限时直降</div>
+                  <div class="scenarioChip__range">L 0.52–0.6 · C 0.18–0.24 · 可调</div>
+                </div>
+              </button>
+              <button type="button" class="scenarioChip" data-scenario-id="h-orange-activity" aria-label="特配 · 团买">
+                <div class="scenarioChip__swatch" style="background:#DB3012"></div>
+                <div class="scenarioChip__body">
+                  <div class="scenarioChip__hue">H 20°–45°</div>
+                  <div class="scenarioChip__mind">特配 · 团买</div>
+                  <div class="scenarioChip__use">满减、优惠券、补贴</div>
+                  <div class="scenarioChip__range">L 0.54–0.62 · C 0.18–0.24 · 可调</div>
+                </div>
+              </button>
+              <button type="button" class="scenarioChip" data-scenario-id="h-yellow-biz" aria-label="外卖">
+                <div class="scenarioChip__swatch" style="background:#FFD44C"></div>
+                <div class="scenarioChip__body">
+                  <div class="scenarioChip__hue">H 60°–80° · 14 亮黄类</div>
+                  <div class="scenarioChip__mind">外卖</div>
+                  <div class="scenarioChip__use">京东外卖（亮黄底 · 黑字）</div>
+                  <div class="scenarioChip__range">L 0.6–0.9 · C 0.14–0.18 · 可调</div>
+                </div>
+              </button>
+              <button type="button" class="scenarioChip" data-scenario-id="h-green-activity" aria-label="超市 · 生鲜 · 健康">
+                <div class="scenarioChip__swatch" style="background:#008629"></div>
+                <div class="scenarioChip__body">
+                  <div class="scenarioChip__hue">H 140°–160°</div>
+                  <div class="scenarioChip__mind">超市 · 生鲜 · 健康</div>
+                  <div class="scenarioChip__use">饮料、鲜花、医药</div>
+                  <div class="scenarioChip__range">L 0.48–0.58 · C 0.14–0.22 · 可调</div>
+                </div>
+              </button>
+              <button type="button" class="scenarioChip" data-scenario-id="h-cyan-travel" aria-label="酒旅 · 度假">
+                <div class="scenarioChip__swatch" style="background:#009382"></div>
+                <div class="scenarioChip__body">
+                  <div class="scenarioChip__hue">H 170°–200°</div>
+                  <div class="scenarioChip__mind">酒旅 · 度假</div>
+                  <div class="scenarioChip__use">酒店、机票</div>
+                  <div class="scenarioChip__range">L 0.52–0.6 · C 0.14–0.22 · 可调</div>
+                </div>
+              </button>
+              <button type="button" class="scenarioChip" data-scenario-id="h-blue-enterprise" aria-label="企业 · 信任">
+                <div class="scenarioChip__swatch" style="background:#0088C6"></div>
+                <div class="scenarioChip__body">
+                  <div class="scenarioChip__hue">H 210°–240°</div>
+                  <div class="scenarioChip__mind">企业 · 信任</div>
+                  <div class="scenarioChip__use">企业服务、酒旅</div>
+                  <div class="scenarioChip__range">L 0.54–0.6 · C 0.14–0.22 · 可调</div>
+                </div>
+              </button>
+              <button type="button" class="scenarioChip" data-scenario-id="h-purple-night" aria-label="强营销 · 夜间">
+                <div class="scenarioChip__swatch" style="background:#6861F1"></div>
+                <div class="scenarioChip__body">
+                  <div class="scenarioChip__hue">H 260°–300°</div>
+                  <div class="scenarioChip__mind">强营销 · 夜间</div>
+                  <div class="scenarioChip__use">旅游、深夜大促</div>
+                  <div class="scenarioChip__range">L 0.54–0.62 · C 0.18–0.24 · 可调</div>
+                </div>
+              </button>
+              <button type="button" class="scenarioChip" data-scenario-id="h-pink-special" aria-label="丽人 · 特惠">
+                <div class="scenarioChip__swatch" style="background:#B449CC"></div>
+                <div class="scenarioChip__body">
+                  <div class="scenarioChip__hue">H 300°–340°</div>
+                  <div class="scenarioChip__mind">丽人 · 特惠</div>
+                  <div class="scenarioChip__use">奥莱、母亲节、520</div>
+                  <div class="scenarioChip__range">L 0.56–0.64 · C 0.18–0.24 · 可调</div>
+                </div>
+              </button>
+              <button type="button" class="scenarioChip" data-scenario-id="achromatic-luxury" aria-label="高端 · 会员 · 礼盒">
+                <div class="scenarioChip__swatch" style="background:#020000"></div>
+                <div class="scenarioChip__body">
+                  <div class="scenarioChip__hue">H 40°–60° · 13 棕金类</div>
+                  <div class="scenarioChip__mind">高端 · 会员 · 礼盒</div>
+                  <div class="scenarioChip__use">尊享会员（深黑底 · 香槟金字）</div>
+                  <div class="scenarioChip__range">L 0.04–0.14 · C 0–0.06 · 可调</div>
+                </div>
+              </button>
+            </div>
+
+            <div id="scenarioTunePanel" class="scenarioTune scenarioTune--panel">
+              <div class="scenarioTune__head">
+                <span class="subTitle subTitle--tight scenarioTune__title">OKLCH 微调（安全区间内）</span>
+                <span id="tunePreviewHex" class="tunePreviewHex mono" title="当前业务色 HEX">-</span>
+              </div>
+              <p id="scenarioTuneMeta" class="scenarioTuneMeta"></p>
+              <div class="tuneGrid">
+                <div class="tuneRow">
+                  <label class="tuneLabel" for="tuneL">亮度 L <span id="tuneLVal" class="mono">-</span></label>
+                  <input id="tuneL" class="tuneRangeInput" type="range" />
+                  <span id="tuneLRange" class="tuneRangeHint"></span>
+                </div>
+                <div class="tuneRow">
+                  <label class="tuneLabel" for="tuneC">色度 C <span id="tuneCVal" class="mono">-</span></label>
+                  <input id="tuneC" class="tuneRangeInput" type="range" />
+                  <span id="tuneCRange" class="tuneRangeHint"></span>
+                </div>
+              </div>
+              <button id="tuneResetBtn" class="btn btn--ghost btn--sm" type="button">恢复默认 L / C</button>
+            </div>
+          </div>
+
+          <div class="inputSource inputSource--image" data-brand-source-panel="image" hidden>
+            <div class="inputSource__head">
+              <span class="inputSource__title">从图片取色（可选）</span>
+              <span class="inputSource__desc">上传图片并聚类提取品牌色 · OKLCH/OKLab 计算 · 输出 HEX</span>
+            </div>
+
+            <div class="imageModule">
+              <div class="imageModule__work">
+                <div class="imageModule__preview">
+                  <div class="preview preview--module">
+                    <div class="preview__frame" id="previewFrame">
+                      <label class="preview__pickBtn btn btn--sm">
+                        选择图片
+                        <input id="fileInput" type="file" accept="image/*" />
+                      </label>
+                      <span class="preview__pickHint">JPG / PNG / WebP</span>
+                      <img id="previewImg" alt="图片预览" />
+                    </div>
+                    <div class="preview__imageActions" id="previewImgToolbar" hidden>
+                      <button id="replaceImageBtn" class="btn btn--sm btn--ghost preview__imageActionBtn" type="button">替换</button>
+                      <button id="cancelImageBtn" class="btn btn--sm btn--ghost preview__imageActionBtn" type="button">取消</button>
+                    </div>
+                    <div class="preview__info preview__info--module" aria-live="polite">
+                      <div class="preview__infoTitle">图片说明</div>
+                      <p id="imgInfoSummary" class="preview__infoSummary">
+                        选择图片后，下方展示文件信息与采样说明。
+                      </p>
+                      <dl class="preview__infoList">
+                        <div class="preview__infoItem">
+                          <dt>文件</dt>
+                          <dd id="imgFileName" class="mono">-</dd>
+                        </div>
+                        <div class="preview__infoItem">
+                          <dt>尺寸</dt>
+                          <dd id="imgSize" class="mono">-</dd>
+                        </div>
+                        <div class="preview__infoItem">
+                          <dt>采样</dt>
+                          <dd id="sampleInfo" class="mono">-</dd>
+                        </div>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+                <div class="imageModule__side">
+                  <div class="extractParams">
+                    <div class="field">
+                      <label class="label">聚类数量</label>
+                      <input id="kInput" class="input" type="number" min="3" max="12" step="1" value="7" />
+                    </div>
+                    <div class="field">
+                      <label class="label">采样像素（上限）</label>
+                      <input id="maxSamplesInput" class="input" type="number" min="2000" max="50000" step="1000" value="12000" />
+                    </div>
+                    <div class="field">
+                      <label class="label">色度 C 下限</label>
+                      <input id="minSatInput" class="input" type="number" min="0" max="100" step="1" value="18" />
+                    </div>
+                    <div class="field">
+                      <label class="label">亮度 L 区间</label>
+                      <div class="rangeRow">
+                        <input id="minLightInput" class="input" type="number" min="0" max="100" step="1" value="18" />
+                        <span class="rangeSep">-</span>
+                        <input id="maxLightInput" class="input" type="number" min="0" max="100" step="1" value="92" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="imageModule__pick imageModule__pick--row">
+                <div class="imageModule__pickTitle">提取结果 · 点选作为品牌色</div>
+                <div id="palette" class="palette palette--module" aria-live="polite"></div>
+                <div class="note note--module">
+                  当前选中品牌色：<span id="selectedHex" class="mono">-</span>
+                  <button id="copyBrandBtn" class="linkBtn" type="button" disabled>复制</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="inputSource inputSource--beltBg" data-brand-source-panel="beltBg" hidden>
+            <div class="inputSource__head">
+              <span class="inputSource__title">腰带背景图（可选）</span>
+              <span class="inputSource__desc">上传自定义图片作为腰带底图 · 颜色与背景图叠加 · 单张</span>
+            </div>
+            <div class="beltBgModule">
+              <label class="beltBgModule__zone" id="beltBgUploadZone" for="beltBgFileInput" title="点击或拖入图片">
+                <span class="beltBgModule__icon" aria-hidden="true">+</span>
+                <span class="beltBgModule__label">上传腰带背景图</span>
+                <span class="beltBgModule__hint" id="beltBgHint">JPG / PNG / WebP · 建议宽度 ≥ 750px</span>
+                <img id="beltBgPreviewImg" class="beltBgModule__previewImg" alt="腰带背景图预览" />
+                <input id="beltBgFileInput" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+              </label>
+              <div class="beltBgModule__actions" id="beltBgActions" hidden>
+                <button id="beltBgReplaceBtn" class="btn btn--sm btn--ghost" type="button">替换</button>
+                <button id="beltBgClearBtn" class="btn btn--sm btn--ghost" type="button">取消</button>
+              </div>
+              <div class="beltBgTextColor">
+                <div class="beltBgTextColor__head">
+                  <span class="beltBgTextColor__title">内容颜色</span>
+                  <span class="beltBgTextColor__desc">影响价促信息、品牌 IP 及腰带文字</span>
+                </div>
+                <div class="beltBgTextColor__options" role="radiogroup" aria-label="内容颜色">
+                  <label class="beltBgTextColor__option" id="beltBgContentColorAutoRow">
+                    <input
+                      id="beltBgContentColorModeAuto"
+                      class="beltBgTextColor__radio"
+                      type="radio"
+                      name="beltBgContentColorMode"
+                      value="auto"
+                      checked
+                    />
+                    <span class="beltBgTextColor__optionMain">
+                      <span class="beltBgTextColor__optionLabel">自动生成</span>
+                      <span class="beltBgTextColor__optionValue">
+                        <span id="beltBgTextColorAutoSwatch" class="beltBgTextColor__swatch" aria-hidden="true"></span>
+                        <span id="beltBgTextColorAutoHex" class="beltBgTextColor__hexDisplay mono">-</span>
+                      </span>
+                    </span>
+                  </label>
+                  <label class="beltBgTextColor__option" id="beltBgContentColorCustomRow">
+                    <input
+                      id="beltBgContentColorModeCustom"
+                      class="beltBgTextColor__radio"
+                      type="radio"
+                      name="beltBgContentColorMode"
+                      value="custom"
+                    />
+                    <span class="beltBgTextColor__optionMain">
+                      <span class="beltBgTextColor__optionLabel">自定义</span>
+                      <span class="beltBgTextColor__optionValue beltBgTextColor__optionValue--custom">
+                        <input id="beltBgTextColorPicker" class="beltBgTextColor__picker" type="color" value="#ffffff" title="选择颜色" />
+                        <input id="beltBgTextColorHex" class="input mono beltBgTextColor__hex" type="text" maxlength="7" placeholder="#FFFFFF" spellcheck="false" />
+                      </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card card--leftPrice">
+        <div class="card__title">2) 价促信息</div>
+        <p class="scenarioHint scenarioHint--compact">配置腰带左侧文案 · 与「品牌色来源」同级 · 预览实时同步</p>
+        <div class="subTitle">价促信息（必现）</div>
+        <div class="leftPriceGrid inputSources leftPriceGrid--required">
+          <div class="inputSource leftPriceCard">
+            <div class="inputSource__head">
+              <span class="inputSource__title">价格</span>
+              <span class="inputSource__desc">必填 · 到手价</span>
+            </div>
+            <input
+              id="leftPriceValue"
+              class="input mono leftPriceCard__input"
+              type="text"
+              placeholder="996.58"
+              spellcheck="false"
+              autocomplete="off"
+              required
+            />
+          </div>
+          <div class="inputSource leftPriceCard">
+            <div class="inputSource__head">
+              <span class="inputSource__title">划线价格</span>
+              <span class="inputSource__desc">必填 · 日常价/原价</span>
+            </div>
+            <input
+              id="leftOriginPrice"
+              class="input mono leftPriceCard__input"
+              type="text"
+              placeholder="1080"
+              spellcheck="false"
+              autocomplete="off"
+              required
+            />
+          </div>
+          <div class="inputSource leftPriceCard">
+            <div class="inputSource__head">
+              <span class="inputSource__title">优惠信息1</span>
+              <span class="inputSource__desc">必填 · 文案最多 9 字</span>
+            </div>
+            <div class="leftMetaField leftMetaField--inCard">
+              <input
+                id="leftDiscountText"
+                class="input leftMetaField__input leftPriceCard__input"
+                type="text"
+                placeholder="官方立减12元"
+                maxlength="9"
+                autocomplete="off"
+                required
+              />
+              <span id="leftDiscountCount" class="leftMetaField__count mono">0/9</span>
+            </div>
+          </div>
+        </div>
+        <div class="leftMetaModules leftMetaModules--optional leftMetaModules--beltRequired">
+          <div class="inputSource leftMetaModule leftMetaModule--optional">
+            <div class="inputSource__head">
+              <span class="inputSource__title">优惠信息2</span>
+              <span class="inputSource__desc">必填 · 文案最多 9 字</span>
+            </div>
+            <div class="leftMetaField">
+              <input
+                id="leftCountdownText"
+                class="input leftMetaField__input"
+                type="text"
+                placeholder="立减5元"
+                maxlength="9"
+                autocomplete="off"
+              />
+              <span id="leftCountdownCount" class="leftMetaField__count mono">0/9</span>
+            </div>
+          </div>
+          <div class="inputSource leftMetaModule leftMetaModule--optional">
+            <div class="inputSource__head">
+              <span class="inputSource__title">已售</span>
+              <span class="inputSource__desc">必现 · 文案可改</span>
+            </div>
+            <div class="leftMetaField">
+              <input
+                id="leftSoldText"
+                class="input leftMetaField__input"
+                type="text"
+                placeholder="已售999+"
+                maxlength="12"
+                autocomplete="off"
+              />
+              <span id="leftSoldCount" class="leftMetaField__count mono">0/12</span>
+            </div>
+          </div>
+        </div>
+        <div class="note note--leftPrice">
+          左侧展示：<span id="leftPriceSummary" class="mono">-</span>
+        </div>
+      </section>
+
+      <section class="card card--atmosphere">
+        <div class="card__title">3) 氛围icon（透明 PNG · 背景之上 / 文字之下）</div>
+        <p class="scenarioHint scenarioHint--compact">
+          图库中上传或点选氛围icon · 上方 AI 按提示词生成
+        </p>
+        <div id="atmoCardsGrid" class="atmoSectionStack" role="list">
+          <div class="inputSource atmoCard atmoCard--entry atmoCard--entryAi atmoCard--full" id="atmoStudioCard">
+            <div class="inputSource__head">
+              <span class="inputSource__title">AI 生成氛围icon</span>
+              <span class="inputSource__desc">编辑提示词 · 本地示意生成</span>
+            </div>
+            <p class="atmoPromptComposer__legend">
+              <span class="atmoPromptComposer__legendFixed">固定模板</span>
+              <span class="atmoPromptComposer__legendVar">灰色标签可编辑</span>
+            </p>
+            <div class="atmoPromptShell">
+            <div
+              id="atmoPromptComposer"
+              class="atmoPromptComposer"
+              role="group"
+              aria-label="AI 提示词模板"
+            >
+              <div class="atmoPromptComposer__refBar">
+                <label class="atmoPromptComposer__refUpload" for="atmoAiRefFileInput" title="上传参考图，支持多选">
+                  <span class="atmoPromptComposer__refUploadIcon" aria-hidden="true">+</span>
+                  <span>参考图</span>
+                  <span class="atmoPromptComposer__refUploadHint">多图</span>
+                  <input
+                    id="atmoAiRefFileInput"
+                    type="file"
+                    accept="image/png,image/webp,image/jpeg,image/svg+xml"
+                    multiple
+                  />
+                </label>
+                <div id="atmoAiRefList" class="atmoAiRefList" role="list" aria-label="AI 参考图"></div>
+              </div>
+              <p class="atmoPromptComposer__p atmoPromptComposer__p--static">
+                根据上传的品牌图，生成一个用于电商商品详情页价格腰带的氛围icon。
+              </p>
+              <p class="atmoPromptComposer__p">
+                <span class="atmoPromptComposer__static">以 </span>
+                <span class="atmoPromptVarWrap" title="可编辑：品牌元素">
+                  <input
+                    class="atmoPromptVar"
+                    type="text"
+                    data-atmo-var="brandElement"
+                    placeholder="{品牌元素}"
+                    spellcheck="false"
+                    autocomplete="off"
+                  />
+                </span>
+                <span class="atmoPromptComposer__static"
+                  > 为核心造型灵感，进行抽象化、符号化、几何化重绘，形成一个 </span
+                >
+                <span class="atmoPromptVarWrap" title="可编辑：图形风格">
+                  <input
+                    class="atmoPromptVar"
+                    type="text"
+                    data-atmo-var="graphicStyle"
+                    placeholder="{图形风格}"
+                    spellcheck="false"
+                    autocomplete="off"
+                  />
+                </span>
+                <span class="atmoPromptComposer__static"> 的装饰图形。</span>
+              </p>
+              <p class="atmoPromptComposer__p atmoPromptComposer__p--static">
+                图形用于腰带中部偏右区域，尺寸较大，但透明度低，不遮挡文字。
+              </p>
+              <p class="atmoPromptComposer__p">
+                <span class="atmoPromptComposer__static">色彩使用 </span>
+                <span class="atmoPromptVarWrap" title="可编辑：主色">
+                  <input
+                    class="atmoPromptVar atmoPromptVar--color mono"
+                    type="text"
+                    data-atmo-var="primaryColor"
+                    placeholder="{主色}"
+                    spellcheck="false"
+                    autocomplete="off"
+                  />
+                </span>
+                <span class="atmoPromptComposer__static">、</span>
+                <span class="atmoPromptVarWrap" title="可编辑：辅助色">
+                  <input
+                    class="atmoPromptVar atmoPromptVar--color mono"
+                    type="text"
+                    data-atmo-var="secondaryColor"
+                    placeholder="{辅助色}"
+                    spellcheck="false"
+                    autocomplete="off"
+                  />
+                </span>
+                <span class="atmoPromptComposer__static"> 的同色系渐变或单色明度变化。</span>
+              </p>
+              <p class="atmoPromptComposer__p atmoPromptComposer__p--static">
+                整体要求：半透明、弱装饰、轻氛围、扁平化、矢量感、促销氛围、电商 UI 风格。
+              </p>
+              <p class="atmoPromptComposer__p atmoPromptComposer__p--static">
+                不要复杂细节，不要真实插画，不要 3D，不要完整 logo 复刻，不要喧宾夺主。
+              </p>
+            </div>
+            <div class="atmoPromptShell__footer">
+              <button id="atmoAiBtn" class="btn btn--primary btn--sm" type="button">AI 生成</button>
+            </div>
+            </div>
+            <p class="atmoEntryAi__tip">仅灰色标签可改；固定句式不可编辑。可根据品牌色与 IP 自动填充标签内容。</p>
+          </div>
+          <div class="inputSource atmoCard atmoCard--gallery">
+            <div class="inputSource__head">
+              <span class="inputSource__title">氛围icon库</span>
+              <span class="inputSource__desc">上传或 AI 生成后在此切换 · 点击卡片应用到腰带</span>
+            </div>
+            <div id="atmoItemCardsMount" class="atmoItemCardsMount" role="list" aria-label="氛围icon库">
+              <div class="inputSource atmoCard atmoCard--item atmoCard--upload" id="atmoUploadCard">
+                <label
+                  class="atmoGalleryUpload__zone"
+                  for="atmoFileInput"
+                  title="上传氛围icon · 透明 PNG / WebP / SVG · 单张"
+                >
+                  <span class="atmoGalleryUpload__icon" aria-hidden="true">+</span>
+                  <span class="atmoGalleryUpload__label">上传氛围icon</span>
+                  <span class="atmoGalleryUpload__hint">透明 PNG / WebP / SVG · 单张</span>
+                  <input
+                    id="atmoFileInput"
+                    type="file"
+                    accept="image/png,image/webp,image/svg+xml"
+                  />
+                </label>
+              </div>
+              <div
+                id="atmoBuiltinLightningCard"
+                class="inputSource atmoCard atmoCard--item atmoCard--builtin"
+                data-atmo-id="atmo-builtin-lightning"
+                role="listitem"
+                aria-label="闪电氛围 内置示例"
+              >
+                <div class="inputSource__head">
+                  <span class="inputSource__title">闪电氛围</span>
+                  <span class="inputSource__desc">内置示例 · 默认展示</span>
+                </div>
+                <div class="atmoCard__preview">
+                  <div class="atmoPreview__frame">
+                    <img
+                      class="atmoPreview__img"
+                      alt="闪电氛围"
+                      loading="lazy"
+                      src="./assets/belt-atmosphere-lightning.png"
+                    />
+                  </div>
+                </div>
+                <div class="atmoCard__actions">
+                  <button type="button" class="btn btn--sm atmoCard__useBtn">使用</button>
+                </div>
+              </div>
+            </div>
+            <p id="atmoGalleryEmpty" class="atmoGalleryEmpty hidden" aria-hidden="true">暂无氛围icon，请在图库中上传或使用 AI 生成</p>
+          </div>
+          <div class="inputSource atmoCard atmoCard--layout">
+            <div class="atmoLayout" aria-label="氛围icon位置">
+              <div class="atmoLayout__head">
+                <span class="atmoLayout__title">腰带内位置</span>
+                <button id="atmoLayoutResetBtn" class="btn btn--ghost btn--xs" type="button">恢复示意图</button>
+                <button id="atmoClearBtn" class="btn btn--ghost btn--xs" type="button">清除当前</button>
+              </div>
+              <label class="atmoLayout__row">
+                <span class="atmoLayout__label">水平</span>
+                <input id="atmoPosX" type="range" min="0" max="100" step="0.1" value="63.2" />
+                <span id="atmoPosXVal" class="atmoLayout__val mono">63.2%</span>
+              </label>
+              <label class="atmoLayout__row">
+                <span class="atmoLayout__label">垂直</span>
+                <input id="atmoPosY" type="range" min="0" max="100" value="0" />
+                <span id="atmoPosYVal" class="atmoLayout__val mono">0%</span>
+              </label>
+              <label class="atmoLayout__row">
+                <span class="atmoLayout__label">缩放</span>
+                <input id="atmoScale" type="range" min="30" max="150" value="100" />
+                <span id="atmoScaleVal" class="atmoLayout__val mono">100%</span>
+              </label>
+              <label class="atmoLayout__row">
+                <span class="atmoLayout__label">透明度</span>
+                <input id="atmoOpacity" type="range" min="0" max="100" value="100" />
+                <span id="atmoOpacityVal" class="atmoLayout__val mono">100%</span>
+              </label>
+            </div>
+            <p class="note note--atmo">图层在腰带底色之上、价格与右侧文案之下。默认贴顶部、水平偏右。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card card--beltAtmosphere">
+        <div class="card__title">4) 腰带右侧氛围区（展示规范）</div>
+        <p class="scenarioHint scenarioHint--compact">IP≤3 · 利益点 1 个 · 右侧≤3 行 · 增强心智≤1</p>
+        <div class="logoLayoutPicker" role="radiogroup" aria-label="档期">
+          <label class="logoLayoutOption">
+            <input type="radio" name="beltPeriod" value="promo" checked />
+            <span>大促期（IP≤3）</span>
+          </label>
+          <label class="logoLayoutOption">
+            <input type="radio" name="beltPeriod" value="daily" />
+            <span>日常（IP≤2）</span>
+          </label>
+        </div>
+        <details class="rulesFold" open>
+          <summary>组合规范 01/02/03</summary>
+          <div class="rightCoreSpec beltRulesDoc">
+            <div class="rightCoreSpec__row"><span class="rightCoreSpec__tag">01</span>大促IP / 增强心智</div>
+            <div class="rightCoreSpec__row"><span class="rightCoreSpec__tag">02</span>单IP · 交叉× · IP+氛围</div>
+            <div class="rightCoreSpec__row"><span class="rightCoreSpec__tag rightCoreSpec__tag--benefit">03</span>Slogan / 倒计时 / 领券</div>
+          </div>
+        </details>
+        <div class="subTitle">① 品牌 IP（分大促活动 / 平台 IP · 多选）</div>
+        <div id="logoLibrary" class="logoLibrary logoLibrary--grouped" role="list"></div>
+        <div class="subTitle">② 利益点（单选 · 仅 1 个 · 领券最多 9 字 · 口号最多 7 字）</div>
+        <div id="benefitLibrary" class="benefitLibrary" role="list">
+          <div class="benefitChip benefitChip--editable" data-benefit-id="benefit-countdown" role="button" tabindex="0" aria-label="倒计时">
+            <span class="benefitChip__cat">限时功能 · P1</span>
+            <input type="text" class="discountChip__input" value="距结束 14:05:06" maxlength="16" placeholder="距结束 14:05:06" aria-label="倒计时文案" />
+            <span class="discountChip__count">12/16</span>
+          </div>
+          <div class="benefitChip benefitChip--editable" data-benefit-id="benefit-coupon" role="button" tabindex="0" aria-label="多件优惠">
+            <span class="benefitChip__cat">核心优惠 · P2</span>
+            <input type="text" class="discountChip__input" value="领¥80补贴" maxlength="9" placeholder="领¥80补贴" aria-label="多件优惠文案" />
+            <span class="discountChip__count">6/9</span>
+          </div>
+          <div class="benefitChip benefitChip--editable benefitChip--active" data-benefit-id="benefit-slogan-good" role="button" tabindex="0" aria-label="又好又便宜">
+            <span class="benefitChip__cat">营销口号 · P3</span>
+            <input type="text" class="discountChip__input" value="又好又便宜" maxlength="7" placeholder="又好又便宜" aria-label="又好又便宜文案" />
+            <span class="discountChip__count">5/7</span>
+          </div>
+        </div>
+        <div class="note">
+          已选 IP：<span id="selectedLogoName" class="mono">-</span>
+          · 利益点：<span id="selectedBenefitName" class="mono">-</span>
+          · 展示 <span id="selectedLineCount" class="mono">0</span>/3 行
+        </div>
+
+        <div id="appToast" class="appToast hidden" role="status" aria-live="polite"></div>
+      </section>
+      </div>
+
+      <div class="layout__asideCol">
+      <aside class="layout__aside card card--previewSticky">
+        <div class="card__title card__title--preview">腰带预览</div>
+        <div class="previewBeltBlock">
+          <div class="previewBeltBlock__label">两行样式（375×64）</div>
+        <div class="beltScaleWrap">
+          <div
+            id="beltPreview"
+            class="beltCanvas jd-belt jd-mobile-two-belt"
+            aria-label="腰带 375×64"
+          >
+            <div id="beltAtmosphereLayer" class="beltCanvas__atmosphere" aria-hidden="true">
+              <img id="beltAtmosphereImg" class="beltCanvas__atmosphereImg hidden" alt="" />
+            </div>
+            <div class="beltCanvas__body">
+            <div class="beltCanvas__left jd-mobile-two-belt__left">
+              <div class="jd-mobile-two-belt__price-line">
+                <div class="jd-mobile-two-belt__price-value">
+                  <span class="jd-mobile-two-belt__currency">¥</span>
+                  <span class="jd-mobile-two-belt__price-int">996</span>
+                  <span class="jd-mobile-two-belt__price-decimal">.58</span>
+                </div>
+                <div class="jd-mobile-two-belt__arrival-tag">
+                  <span class="jd-mobile-two-belt__arrival-text">到手价</span>
+                </div>
+                <span class="jd-mobile-two-belt__origin hidden">¥1080</span>
+              </div>
+              <div class="jd-mobile-two-belt__sales-info" id="beltLeftSubLine">
+                <div class="jd-mobile-two-belt__deal-group">
+                  <span class="jd-mobile-two-belt__benefit hidden">官方立减12元</span>
+                  <span class="jd-mobile-two-belt__divider hidden" data-divider="mid" aria-hidden="true"></span>
+                  <span class="jd-mobile-two-belt__timer hidden">14:05:06</span>
+                </div>
+                <span class="jd-mobile-two-belt__divider hidden" data-divider="1" aria-hidden="true"></span>
+                <span class="jd-mobile-two-belt__sold hidden">已售999+</span>
+              </div>
+            </div>
+            <div class="beltCanvas__right jd-mobile-two-belt__right">
+              <div class="beltCoreArea" id="beltCoreArea">
+                <div id="beltCoreMain" class="beltCoreMain"></div>
+                <div class="beltCoreSubWrap" id="beltCoreSubWrap">
+                  <div id="beltCoreSub" class="beltCoreSub"></div>
+                </div>
+                <div id="beltCoreMini" class="beltCoreMini hidden"></div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="previewBeltBlock previewBeltBlock--three">
+          <div class="previewBeltBlock__label">三行样式（375×82）</div>
+          <div class="beltScaleWrap">
+            <div
+              id="beltPreview3"
+              class="beltCanvas jd-belt jd-mobile-three-belt"
+              aria-label="腰带 375×82 三行"
+            >
+              <div id="beltAtmosphereLayer3" class="beltCanvas__atmosphere" aria-hidden="true">
+                <img id="beltAtmosphereImg3" class="beltCanvas__atmosphereImg hidden" alt="" />
+              </div>
+              <div class="beltCanvas__body">
+                <div class="jd-mobile-three-belt__upper">
+                  <div class="jd-mobile-three-belt__main">
+                    <div class="jd-mobile-three-belt__price-row">
+                      <div class="jd-mobile-three-belt__price-value">
+                        <span class="jd-mobile-three-belt__currency">¥</span>
+                        <span class="jd-mobile-three-belt__price-int">996</span>
+                        <span class="jd-mobile-three-belt__price-decimal">.58</span>
+                      </div>
+                      <div class="jd-mobile-three-belt__arrival-tag">
+                        <span class="jd-mobile-three-belt__arrival-text">到手价</span>
+                      </div>
+                    </div>
+                    <div class="jd-mobile-three-belt__sub-info">
+                      <span class="jd-mobile-three-belt__origin hidden">¥1080</span>
+                      <span class="jd-mobile-three-belt__divider hidden" data-divider="1" aria-hidden="true"></span>
+                      <span class="jd-mobile-three-belt__sold hidden">已售999+</span>
+                    </div>
+                  </div>
+                  <div class="jd-mobile-three-belt__right">
+                    <div class="beltCoreArea" id="beltCoreArea3">
+                      <div id="beltCoreMain3" class="beltCoreMain"></div>
+                      <div id="beltCoreSubWrap3" class="beltCoreSubWrap">
+                        <div id="beltCoreSub3" class="beltCoreSub"></div>
+                      </div>
+                      <div id="beltCoreMini3" class="beltCoreMini hidden"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="jd-mobile-three-belt__footer hidden">
+                  <div class="jd-mobile-three-belt__enjoy-row">
+                    <span class="jd-mobile-three-belt__label hidden">已享受:</span>
+                    <div class="jd-mobile-three-belt__reduction-tag hidden">
+                      <span class="jd-mobile-three-belt__coupon-text"></span>
+                    </div>
+                    <span class="jd-mobile-three-belt__divider jd-mobile-three-belt__divider--footer hidden" data-divider="footer" aria-hidden="true"></span>
+                    <span class="jd-mobile-three-belt__time hidden"></span>
+                  </div>
+                  <span class="jd-mobile-three-belt__promo-chevron" aria-hidden="true">›</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="previewBeltBlock previewBeltBlock--pc">
+          <div class="previewBeltBlock__label">PC 端（442×52 · 1:1 稿 · 品牌 IP≤2 / 利益点 / 氛围）</div>
+          <div class="beltScaleWrap beltScaleWrap--pc">
+            <div
+              id="beltPreviewPc"
+              class="beltCanvas jd-belt jd-pc-belt"
+              aria-label="PC 腰带 442×52（品牌 IP / 利益点 / 氛围）"
+            >
+              <div id="beltAtmosphereLayerPc" class="jd-pc-belt__atmosphere" aria-hidden="true">
+                <img id="beltAtmosphereImgPc" class="jd-pc-belt__atmosphereImg hidden" alt="" />
+              </div>
+              <div class="jd-pc-belt__brandSlot" id="beltPcBrandSlot" aria-label="品牌 IP"></div>
+              <p class="jd-pc-belt__promise hidden" id="beltPcPromise" aria-label="利益点"></p>
+              <div class="jd-pc-belt__countdownRow jd-pc-belt__countdownRow--empty" id="beltPcCountdownRow" aria-label="利益点倒计时"></div>
+            </div>
+          </div>
+        </div>
+        <div class="kv kv--compact">
+          <div class="kvRow"><span class="kvKey">atmosphere</span><span id="atmoExportMeta" class="kvVal mono">-</span></div>
+          <div class="kvRow"><span class="kvKey">beltBg</span><span id="beltBg" class="kvVal mono">-</span></div>
+          <div class="kvRow"><span class="kvKey">textPrimary</span><span id="beltText1" class="kvVal mono">-</span></div>
+          <div class="kvRow"><span class="kvKey">textSecondary</span><span id="beltText2" class="kvVal mono">-</span></div>
+          <div class="kvRow"><span class="kvKey">logoColor</span><span id="beltLogo" class="kvVal mono">-</span></div>
+        </div>
+        <div class="actions actions--compact">
+          <button id="pdpPreviewBtn" class="btn btn--ghost btn--sm btn--pdp" type="button">商详预览</button>
+          <button id="onlinePreviewBtn" class="btn btn--ghost btn--sm btn--pdp" type="button" disabled>上线效果预览</button>
+          <button id="exportFileBtn" class="btn btn--ghost btn--sm" type="button" disabled>文件导出</button>
+          <button id="copyBeltJsonBtn" class="btn btn--ghost btn--sm" type="button" disabled>复制 JSON</button>
+          <button id="exportAllBtn" class="btn btn--primary btn--sm" type="button" disabled>进入AI审核流程</button>
+        </div>
+        <div class="exportHint mono" id="exportHint">-</div>
+      </aside>
+      </div>
+    </main>
+
+    <div id="pdpPreviewModal" class="pdpModal hidden" role="dialog" aria-modal="true" aria-labelledby="pdpModalTitle">
+      <div class="pdpModal__backdrop" id="pdpModalBackdrop" aria-hidden="true"></div>
+      <div id="pdpModalPanel" class="pdpModal__panel">
+        <div class="pdpModal__head">
+          <h2 id="pdpModalTitle" class="pdpModal__title">商详页面预览</h2>
+          <button id="pdpModalClose" class="pdpModal__close" type="button" aria-label="关闭">×</button>
+        </div>
+        <div class="pdpModal__body">
+          <div class="pdpTerminalTabs" role="tablist" aria-label="商详终端">
+            <button
+              type="button"
+              class="pdpTerminalTabs__btn pdpTerminalTabs__btn--active"
+              role="tab"
+              id="pdpTabApp"
+              data-pdp-terminal="app"
+              aria-selected="true"
+              aria-controls="pdpPanelApp"
+            >
+              App端
+            </button>
+            <button
+              type="button"
+              class="pdpTerminalTabs__btn"
+              role="tab"
+              id="pdpTabMp"
+              data-pdp-terminal="mp"
+              aria-selected="false"
+              aria-controls="pdpPanelMp"
+            >
+              小程序
+            </button>
+            <button
+              type="button"
+              class="pdpTerminalTabs__btn"
+              role="tab"
+              id="pdpTabWeb"
+              data-pdp-terminal="web"
+              aria-selected="false"
+              aria-controls="pdpPanelWeb"
+            >
+              Web端
+            </button>
+          </div>
+          <p id="pdpBeltVariantHint" class="pdpModal__variant">-</p>
+          <div class="pdpTerminalPanels">
+          <div
+            id="pdpPanelApp"
+            class="pdpTerminalPanel pdpTerminalPanel--active"
+            role="tabpanel"
+            aria-labelledby="pdpTabApp"
+            data-pdp-terminal="app"
+          >
+          <div class="pdpPhone" aria-label="京东 App 商详示意">
+            <div class="pdpPhone__gallery">
+              <nav class="pdpPhone__nav pdpPhone__nav--float" aria-label="商详导航">
+                <span class="pdpPhone__navBack" aria-hidden="true">‹</span>
+                <div class="pdpPhone__navActions" aria-hidden="true">
+                  <span class="pdpPhone__navIcon">☆</span>
+                  <span class="pdpPhone__navIcon">⎋</span>
+                  <span class="pdpPhone__navIcon">⋯</span>
+                </div>
+              </nav>
+              <div class="pdpPhone__galleryVisual" aria-hidden="true">
+                <div class="pdpPhone__device"></div>
+                <div class="pdpPhone__stylus"></div>
+              </div>
+              <div class="pdpPhone__galleryFoot" aria-hidden="true">
+                <div class="pdpPhone__galleryTabs">
+                  <span class="pdpPhone__galleryTab">口碑</span>
+                  <span class="pdpPhone__galleryTab">搭配</span>
+                </div>
+                <span class="pdpPhone__galleryIndex">图集 1/3</span>
+              </div>
+            </div>
+            <div class="pdpPhone__swatchRow" aria-label="颜色款式">
+              <button type="button" class="pdpPhone__swatchCard pdpPhone__swatchCard--active" tabindex="-1">
+                <span class="pdpPhone__swatchThumb pdpPhone__swatchThumb--green"></span>
+                <span class="pdpPhone__swatchName">黛影绿</span>
+              </button>
+              <button type="button" class="pdpPhone__swatchCard" tabindex="-1">
+                <span class="pdpPhone__swatchThumb pdpPhone__swatchThumb--black"></span>
+                <span class="pdpPhone__swatchName">水墨黑</span>
+              </button>
+              <button type="button" class="pdpPhone__swatchCard" tabindex="-1">
+                <span class="pdpPhone__swatchThumb pdpPhone__swatchThumb--gray"></span>
+                <span class="pdpPhone__swatchName">雅岩灰</span>
+              </button>
+              <button type="button" class="pdpPhone__swatchCard pdpPhone__swatchCard--more" tabindex="-1">
+                <span class="pdpPhone__swatchMoreTxt">8款可选 ›</span>
+              </button>
+            </div>
+            <div id="pdpBeltMount" class="pdpPhone__belt"></div>
+            <section class="pdpPhone__promo" aria-label="优惠权益">
+              <div class="pdpPhone__promoRow">
+                <span class="pdpPhone__promoLabel">已享受:</span>
+                <span class="pdpPhone__promoTag">官方直降12元</span>
+                <span class="pdpPhone__promoTag">限时立减15元 <em>29:20</em></span>
+              </div>
+              <div class="pdpPhone__promoRow">
+                <span class="pdpPhone__promoLabel">可再享:</span>
+                <span class="pdpPhone__promoCoupon">满10000立减800</span>
+                <span class="pdpPhone__promoCoupon">满500减50</span>
+              </div>
+              <div class="pdpPhone__promoRow pdpPhone__promoRow--plus">
+                <span class="pdpPhone__promoLabel">开通享:</span>
+                <span class="pdpPhone__promoPlus">开通PLUS等，再省¥91.58，享24期免息</span>
+              </div>
+            </section>
+            <section class="pdpPhone__info">
+              <h1 class="pdpPhone__title">
+                <span class="pdpPhone__tagZiying">自营</span>
+                三星 Samsung Galaxy S25 AI手机 5000万拍照像素 256GB 黛影绿 支持移动联通电信5G双待
+              </h1>
+              <div class="pdpPhone__rank" aria-hidden="true">
+                <span class="pdpPhone__rankBadge">旗舰手机金榜 · 第2名 ›</span>
+                <span class="pdpPhone__rankMeta">7天加保</span>
+                <span class="pdpPhone__rankMeta pdpPhone__rankMeta--red">闪电退款</span>
+              </div>
+            </section>
+            <div class="pdpPhone__trust" aria-hidden="true">
+              <span class="pdpPhone__trustIcon">✓</span>
+              <span class="pdpPhone__trustTxt"><strong>品质认证</strong> 官方检测认证 · 安心首选</span>
+            </div>
+            <div class="pdpPhone__bar" aria-hidden="true">
+              <button type="button" class="pdpPhone__barBtn" tabindex="-1">加入购物车</button>
+              <button type="button" class="pdpPhone__barBtn pdpPhone__barBtn--primary" tabindex="-1">立即购买</button>
+            </div>
+          </div>
+          </div>
+          <div
+            id="pdpPanelMp"
+            class="pdpTerminalPanel hidden"
+            role="tabpanel"
+            aria-labelledby="pdpTabMp"
+            data-pdp-terminal="mp"
+            hidden
+          >
+          <div class="pdpMp" aria-label="京东小程序商详示意">
+            <div class="pdpMp__gallery">
+              <nav class="pdpMp__nav pdpMp__nav--float" aria-label="商详导航">
+                <span class="pdpMp__navBack" aria-hidden="true">‹</span>
+                <span class="pdpMp__navTitle">商品详情</span>
+                <div class="pdpMp__capsule" aria-hidden="true">
+                  <span class="pdpMp__capsuleDot"></span>
+                  <span class="pdpMp__capsuleSep"></span>
+                  <span class="pdpMp__capsuleMore">⋯</span>
+                </div>
+              </nav>
+              <div class="pdpMp__galleryVisual" aria-hidden="true">
+                <div class="pdpMp__device"></div>
+                <div class="pdpMp__stylus"></div>
+              </div>
+              <div class="pdpMp__galleryFoot" aria-hidden="true">
+                <span class="pdpMp__galleryIndex">图集 1/3</span>
+              </div>
+            </div>
+            <div class="pdpMp__swatchRow" aria-label="颜色款式">
+              <button type="button" class="pdpMp__swatchCard pdpMp__swatchCard--active" tabindex="-1">
+                <span class="pdpMp__swatchThumb pdpMp__swatchThumb--green"></span>
+                <span class="pdpMp__swatchName">黛影绿</span>
+              </button>
+              <button type="button" class="pdpMp__swatchCard" tabindex="-1">
+                <span class="pdpMp__swatchThumb pdpMp__swatchThumb--black"></span>
+                <span class="pdpMp__swatchName">水墨黑</span>
+              </button>
+              <button type="button" class="pdpMp__swatchCard pdpMp__swatchCard--more" tabindex="-1">
+                <span class="pdpMp__swatchMoreTxt">8款可选 ›</span>
+              </button>
+            </div>
+            <div id="pdpBeltMountMp" class="pdpMp__belt"></div>
+            <section class="pdpMp__promo" aria-label="优惠权益">
+              <div class="pdpMp__promoRow">
+                <span class="pdpMp__promoLabel">已享受:</span>
+                <span class="pdpMp__promoTag">官方直降12元</span>
+                <span class="pdpMp__promoTag">限时立减15元 <em>29:20</em></span>
+              </div>
+              <div class="pdpMp__promoRow">
+                <span class="pdpMp__promoLabel">可再享:</span>
+                <span class="pdpMp__promoCoupon">满10000立减800</span>
+              </div>
+            </section>
+            <section class="pdpMp__info">
+              <h1 class="pdpMp__title">
+                <span class="pdpMp__tagZiying">自营</span>
+                三星 Samsung Galaxy S25 AI手机 5000万拍照像素 256GB 黛影绿
+              </h1>
+            </section>
+            <div class="pdpMp__bar" aria-hidden="true">
+              <button type="button" class="pdpMp__barBtn" tabindex="-1">加入购物车</button>
+              <button type="button" class="pdpMp__barBtn pdpMp__barBtn--primary" tabindex="-1">立即购买</button>
+            </div>
+          </div>
+          </div>
+          <div
+            id="pdpPanelWeb"
+            class="pdpTerminalPanel hidden"
+            role="tabpanel"
+            aria-labelledby="pdpTabWeb"
+            data-pdp-terminal="web"
+            hidden
+          >
+          <div class="pdpWebScale">
+          <div class="pdpWeb" aria-label="Web 商详示意">
+            <header class="pdpWeb__header" aria-hidden="true">
+              <div class="pdpWeb__headerMain">
+                <span class="pdpWeb__logo">京东</span>
+                <div class="pdpWeb__search">
+                  <span class="pdpWeb__searchTxt">HUEWREI NBOOK 笔记本</span>
+                  <span class="pdpWeb__searchBtn">搜索</span>
+                </div>
+              </div>
+              <nav class="pdpWeb__nav">
+                <span>首页</span><span>我的京东</span><span>企业购</span><span>商家服务</span>
+              </nav>
+            </header>
+            <p class="pdpWeb__crumb" aria-hidden="true">
+              电脑、办公 &gt; 电脑整机 &gt; 笔记本 &gt; HUEWREI NBOOK
+            </p>
+            <div class="pdpWeb__shop" aria-hidden="true">
+              <span class="pdpWeb__shopName">HUEWREI NBOOK 笔记本旗舰店</span>
+              <span class="pdpWeb__shopBtn">关注店铺</span>
+              <span class="pdpWeb__shopBtn pdpWeb__shopBtn--ghost">联系客服</span>
+            </div>
+            <div class="pdpWeb__core">
+              <div class="pdpWeb__thumbs" aria-hidden="true">
+                <span class="pdpWeb__thumb pdpWeb__thumb--active"></span>
+                <span class="pdpWeb__thumb"></span>
+                <span class="pdpWeb__thumb"></span>
+                <span class="pdpWeb__thumb pdpWeb__thumb--video">▶</span>
+                <span class="pdpWeb__thumb"></span>
+              </div>
+              <div class="pdpWeb__stage">
+                <div class="pdpWeb__mainImg">
+                  <div class="pdpWeb__mainImgShine" aria-hidden="true"></div>
+                  <div class="pdpWeb__mainImgDevice" aria-hidden="true"></div>
+                </div>
+              </div>
+              <div class="pdpWeb__detail">
+                <div id="pdpBeltMountWeb" class="pdpWeb__beltSlot"></div>
+                <h1 class="pdpWeb__title">
+                  <span class="pdpWeb__tagZiying">自营</span>
+                  <span class="pdpWeb__titleTxt">HUEWREI NBOOK 笔记本电脑 酷睿 i7 高性能金属轻薄本 32G+1TB 抗蓝光/4K/指纹背光</span>
+                </h1>
+                <div class="pdpWeb__priceBlock" aria-hidden="true">
+                  <div class="pdpWeb__priceMain">
+                    <span class="pdpWeb__priceLabel">京东价</span>
+                    <span class="pdpWeb__priceSym">¥</span>
+                    <span class="pdpWeb__priceNum">3730.9</span>
+                  </div>
+                  <p class="pdpWeb__promoLine">限时特惠 · 国行官方补贴 30% · 配置价以腰带为准</p>
+                </div>
+                <div class="pdpWeb__skuBlock" aria-hidden="true">
+                  <div class="pdpWeb__skuRow">
+                    <span class="pdpWeb__skuLabel">配置</span>
+                    <span class="pdpWeb__skuOpt pdpWeb__skuOpt--active">32G+1TB</span>
+                    <span class="pdpWeb__skuOpt">16G+512G</span>
+                  </div>
+                  <div class="pdpWeb__skuRow pdpWeb__skuRow--style">
+                    <span class="pdpWeb__skuLabel">颜色</span>
+                    <span class="pdpWeb__skuStyle pdpWeb__skuStyle--active">
+                      <span class="pdpWeb__skuStyleThumb"></span>
+                      <span class="pdpWeb__skuStyleTxt">银色 32G+1TB</span>
+                    </span>
+                    <span class="pdpWeb__skuStyle">
+                      <span class="pdpWeb__skuStyleThumb pdpWeb__skuStyleThumb--alt"></span>
+                      <span class="pdpWeb__skuStyleTxt">粉色 16G+512G</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="pdpWeb__service" aria-hidden="true">
+                  <span>送至</span><span class="pdpWeb__serviceEm">北京朝阳区</span>
+                  <span class="pdpWeb__serviceSep">|</span>
+                  <span>京东发货 · 包邮</span>
+                </div>
+                <div class="pdpWeb__buyBar" aria-hidden="true">
+                  <div class="pdpWeb__qty">
+                    <button type="button" tabindex="-1">−</button>
+                    <span>1</span>
+                    <button type="button" tabindex="-1">+</button>
+                  </div>
+                  <button type="button" class="pdpWeb__btnCart" tabindex="-1">加入购物车</button>
+                  <button type="button" class="pdpWeb__btnBuy" tabindex="-1">立即购买</button>
+                </div>
+              </div>
+            </div>
+            <div class="pdpWeb__tabs" aria-hidden="true">
+              <span class="pdpWeb__tab">买家评价</span>
+              <span class="pdpWeb__tab">店铺</span>
+              <span class="pdpWeb__tab pdpWeb__tab--active">商品详情</span>
+              <span class="pdpWeb__tab">售后保障</span>
+            </div>
+            <aside class="pdpWeb__rail" aria-hidden="true">
+              <span>首页</span>
+              <span>购物车</span>
+              <span>客服</span>
+              <span>顶部</span>
+            </aside>
+          </div>
+          </div>
+          </div>
+          </div>
+        </div>
+        <div class="pdpModal__foot">
+          <span class="pdpModal__hint">App/小程序为京东商详原生布局示意 · 腰带为当前配置实时嵌入</span>
+          <button id="pdpModalCloseFoot" class="btn btn--primary btn--sm" type="button">关闭</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="beltAuditModal" class="beltAuditPage hidden" role="dialog" aria-modal="true" aria-labelledby="beltAuditModalTitle">
+      <div id="beltAuditModalBackdrop" class="beltAuditPage__backdrop" aria-hidden="true"></div>
+      <div id="beltAuditModalPanel" class="beltAuditPage__panel">
+        <header class="beltAuditPage__head">
+          <div>
+            <div class="beltAuditPage__badge"><span class="beltAuditPage__badgeDot"></span>商详腰带 AI 审核 v0.21</div>
+            <h2 id="beltAuditModalTitle" class="beltAuditPage__title">腰带审核工作台</h2>
+            <p class="beltAuditPage__sub">AI + 规则引擎完成基础审核；通过或存在风险时自动进入设计师复审核（演示流程，无真实后端）。</p>
+          </div>
+          <button id="beltAuditModalClose" class="pdpModal__close" type="button" aria-label="关闭">×</button>
+        </header>
+        <section class="beltAuditTimeline" aria-label="审核流程">
+          <div id="beltAuditFlow" class="beltAuditFlow beltAuditFlow--timeline" role="list"></div>
+        </section>
+        <div class="beltAuditPage__body">
+          <div class="beltAuditPage__grid">
+            <aside class="beltAuditPage__side">
+              <section class="beltAuditCard beltAuditCard--meta" data-audit-max-stage="audit">
+                <div class="beltAuditCard__head">
+                  <span class="beltAuditCard__title">提审基础信息</span>
+                </div>
+                <p class="scenarioHint scenarioHint--compact beltAuditCard__hint">
+                  提交 AI 审核前填写 · 审核记录与设计师复审核通知将引用以下字段
+                </p>
+                <div class="auditMetaGrid">
+                  <div class="field field--full">
+                    <label class="label" for="auditProjectName">项目名称</label>
+                    <input id="auditProjectName" class="input" type="text" placeholder="如：618心动购物季腰带" maxlength="50" />
+                  </div>
+                  <div class="field">
+                    <label class="label" for="auditBusinessLine">业务线</label>
+                    <select id="auditBusinessLine" class="input">
+                      <option value="">请选择</option>
+                      <option value="全品类">全品类</option>
+                      <option value="3C数码">3C数码</option>
+                      <option value="家电">家电</option>
+                      <option value="超市">超市</option>
+                      <option value="时尚">时尚</option>
+                      <option value="健康">健康</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="auditActivityType">活动类型</label>
+                    <select id="auditActivityType" class="input">
+                      <option value="">请选择</option>
+                      <option value="大促">大促</option>
+                      <option value="平台S级">平台S级</option>
+                      <option value="品类日">品类日</option>
+                      <option value="事业部S级">事业部S级</option>
+                      <option value="平台A级">平台A级</option>
+                      <option value="平台B级">平台B级</option>
+                      <option value="品类S级">品类S级</option>
+                      <option value="品类A级">品类A级</option>
+                      <option value="品类B级">品类B级</option>
+                    </select>
+                  </div>
+                  <div class="field field--full">
+                    <label class="label">上线端（可多选）</label>
+                    <div class="auditTerminalChecks">
+                      <label><input type="checkbox" name="auditTerminal" value="mobile2" checked /> 移动端 2 行</label>
+                      <label><input type="checkbox" name="auditTerminal" value="mobile3" checked /> 移动端 3 行</label>
+                      <label><input type="checkbox" name="auditTerminal" value="pc" checked /> PC</label>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="auditLaunchDate">上线日期</label>
+                    <input id="auditLaunchDate" class="input" type="date" />
+                  </div>
+                  <div class="field">
+                    <label class="label" for="auditSubmitterErp">提审人 ERP</label>
+                    <input id="auditSubmitterErp" class="input mono" type="text" spellcheck="false" />
+                  </div>
+                </div>
+              </section>
+              <section class="beltAuditCard" data-audit-min-stage="result" data-audit-max-stage="manual">
+                <div class="beltAuditCard__head">
+                  <span class="beltAuditCard__title">审核结果</span>
+                  <span id="beltAuditResultBadge" class="beltAuditBadge beltAuditBadge--muted">未检测</span>
+                </div>
+                <div id="beltAuditMetricGrid" class="beltAuditMetricGrid"></div>
+                <p id="beltAuditNextAction" class="scenarioHint scenarioHint--compact" style="margin-top:10px">-</p>
+              </section>
+              <section class="beltAuditCard" data-audit-min-stage="result" data-audit-max-stage="manual">
+                <div class="beltAuditCard__head">
+                  <span class="beltAuditCard__title">问题原因</span>
+                  <button
+                    type="button"
+                    class="beltAuditSpecEntry"
+                    aria-disabled="true"
+                    title="规范文档制作中"
+                  >
+                    查看规范
+                  </button>
+                </div>
+                <ul id="beltAuditIssues" class="beltAuditIssueList"></ul>
+              </section>
+              <section class="beltAuditCard" data-audit-min-stage="result" data-audit-max-stage="manual">
+                <div class="beltAuditCard__head">
+                  <span class="beltAuditCard__title">修改建议</span>
+                </div>
+                <ul id="beltAuditAdvice" class="beltAuditAdviceList"></ul>
+              </section>
+            </aside>
+            <div class="beltAuditPage__previewCol" data-audit-min-stage="result">
+              <section class="beltAuditCard" data-audit-max-stage="manual">
+                <div class="beltAuditCard__head">
+                  <span class="beltAuditCard__title">多端预览</span>
+                </div>
+                <div class="beltAuditPreviewStack">
+                  <div class="beltAuditPreviewBlock">
+                    <div class="beltAuditPreviewBlock__label">移动端 2 行（375×64）</div>
+                    <div id="beltAuditMount2" class="beltAuditPreviewMount"></div>
+                  </div>
+                  <div class="beltAuditPreviewBlock">
+                    <div class="beltAuditPreviewBlock__label">移动端 3 行（375×82）</div>
+                    <div id="beltAuditMount3" class="beltAuditPreviewMount"></div>
+                  </div>
+                  <div class="beltAuditPreviewBlock">
+                    <div class="beltAuditPreviewBlock__label">PC（442×52）</div>
+                    <div id="beltAuditMountPc" class="beltAuditPreviewMount"></div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="beltAuditCard beltAuditOnline" data-audit-only-stage="publish">
+                <div class="beltAuditCard__head">
+                  <span class="beltAuditCard__title">线上预览效果</span>
+                  <span class="beltAuditBadge beltAuditBadge--good beltAuditOnline__live">● LIVE 已上线</span>
+                </div>
+                <p class="scenarioHint scenarioHint--compact beltAuditCard__hint">
+                  腰带已发布至商详页，以下为 App / 小程序 / Web 三端商详的线上真实展示（与「商详预览」完全一致）
+                </p>
+                <div class="beltAuditOnline__multi">
+                  <figure class="beltAuditOnline__device beltAuditOnline__device--phone">
+                    <figcaption class="beltAuditOnline__cap"><span class="beltAuditOnline__capDot"></span>App 端 · 商详</figcaption>
+                    <div class="beltAuditOnline__frame" id="beltOnlineApp"></div>
+                  </figure>
+                  <figure class="beltAuditOnline__device beltAuditOnline__device--phone">
+                    <figcaption class="beltAuditOnline__cap"><span class="beltAuditOnline__capDot"></span>小程序 · 商详</figcaption>
+                    <div class="beltAuditOnline__frame" id="beltOnlineMini"></div>
+                  </figure>
+                  <figure class="beltAuditOnline__device beltAuditOnline__device--web">
+                    <figcaption class="beltAuditOnline__cap"><span class="beltAuditOnline__capDot"></span>Web 端 · 商详</figcaption>
+                    <div class="beltAuditOnline__frame beltAuditOnline__frame--web" id="beltOnlineWeb"></div>
+                  </figure>
+                </div>
+                <div class="beltAuditOnline__foot">
+                  <span class="beltAuditOnline__url" id="beltOnlineUrl">线上地址：http://111.228.7.174/</span>
+                  <a class="beltAuditOnline__open" href="http://111.228.7.174/" target="_blank" rel="noopener">打开线上 ↗</a>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+        <div class="beltAuditPage__ctaBar">
+          <button id="beltAuditStartBtn" class="btn btn--primary" type="button" data-audit-max-stage="audit" disabled>进入 AI 自动审核</button>
+          <button id="beltAuditManualBtn" class="btn btn--primary" type="button" data-audit-min-stage="result" data-audit-max-stage="manual">人工审核</button>
+        </div>
+        <footer class="beltAuditPage__foot">
+          <span class="beltAuditPage__hint">规则文档 v0.21 · 本地演示</span>
+        </footer>
+      </div>
+    </div>
+
+    <div id="beltAuditManualModal" class="beltAuditSubModal hidden" role="dialog" aria-modal="true">
+      <div class="beltAuditSubModal__card">
+        <div class="beltAuditSubModal__head">
+          <h3 class="beltAuditCard__title">人工审核</h3>
+          <button type="button" class="pdpModal__close beltAuditSubModalClose" aria-label="关闭">×</button>
+        </div>
+        <div class="beltAuditSubModal__body">
+          <div class="beltAuditAuditor">
+            <div class="beltAuditAuditor__avatar">李</div>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <strong style="color:#fff">李设计</strong>
+                <span class="beltAuditBadge beltAuditBadge--good">在线</span>
+              </div>
+              <p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.5)">商详审核组 · 腰带视觉规范</p>
+            </div>
+          </div>
+          <div class="beltAuditMetricGrid" style="margin-top:12px">
+            <div class="beltAuditMetric"><p class="beltAuditMetric__key">员工姓名</p><p class="beltAuditMetric__val">李设计</p></div>
+            <div class="beltAuditMetric"><p class="beltAuditMetric__key">ERP 账号</p><p class="beltAuditMetric__val">lidesign01</p></div>
+            <div class="beltAuditMetric"><p class="beltAuditMetric__key">所属团队</p><p class="beltAuditMetric__val">商详审核组</p></div>
+            <div class="beltAuditMetric"><p class="beltAuditMetric__key">当前状态</p><p class="beltAuditMetric__val">在线</p></div>
+          </div>
+        </div>
+        <div class="beltAuditSubModal__foot">
+          <button id="beltAuditContactBtn" type="button" class="btn btn--primary btn--sm">发起审批流程</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="beltAuditDesignerModal" class="beltAuditSubModal hidden" role="dialog" aria-modal="true">
+      <div class="beltAuditSubModal__card" style="width:min(640px,100%)">
+        <div class="beltAuditSubModal__head">
+          <h3 class="beltAuditCard__title">发送设计师复审核</h3>
+          <button type="button" class="pdpModal__close beltAuditSubModalClose" aria-label="关闭">×</button>
+        </div>
+        <div class="beltAuditSubModal__body">
+          <div class="beltAuditDesignerLayout">
+            <div id="beltAuditDesignerThumb" class="beltAuditThumb"></div>
+            <div id="beltAuditDesignerSummary"></div>
+          </div>
+        </div>
+        <div class="beltAuditSubModal__foot">
+          <button type="button" class="btn btn--ghost btn--sm beltAuditSubModalClose">取消</button>
+          <button id="beltAuditSendDesignerBtn" type="button" class="btn btn--primary btn--sm">发送审核结果</button>
+        </div>
+      </div>
+    </div>
+
+    <canvas id="workCanvas" class="hidden" width="1" height="1"></canvas>
+    <script src="./belt-audit.js?v=20260602-online-btn"></script>
+    <script src="./app.js?v=20260602-online-btn"></script>
+    <script src="./side-nav.js?v=20260604-no-brand"></script>
+  </body>
+</html>

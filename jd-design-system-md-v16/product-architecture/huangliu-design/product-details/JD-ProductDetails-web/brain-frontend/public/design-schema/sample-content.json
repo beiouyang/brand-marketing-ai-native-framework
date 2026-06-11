@@ -1,0 +1,34 @@
+[
+  {
+    "sampleId": "sample-price-default",
+    "instanceId": "price",
+    "title": "价格楼层真实内容样例",
+    "contentType": "text",
+    "content": "到手价 ¥3499，叠加国补、以旧换新与限时优惠。",
+    "updatedAt": "2026-06-05"
+  },
+  {
+    "sampleId": "sample-belt-default",
+    "instanceId": "belt",
+    "title": "腰带真实内容样例",
+    "contentType": "text",
+    "content": "618限时补贴，最高立减 300 元。",
+    "updatedAt": "2026-06-05"
+  },
+  {
+    "sampleId": "sample-chat-widget",
+    "instanceId": "chatWidget",
+    "title": "问东东挂件内容样例",
+    "contentType": "text",
+    "content": "问东东：帮你总结商品亮点、优惠和选购建议。",
+    "updatedAt": "2026-06-05"
+  },
+  {
+    "sampleId": "sample-contract-phone",
+    "instanceId": "contractPhoneFormula",
+    "title": "京补合约公式样例",
+    "contentType": "text",
+    "content": "合约机补贴计算公式，当前为 3C 垂类横切项。",
+    "updatedAt": "2026-06-05"
+  }
+]

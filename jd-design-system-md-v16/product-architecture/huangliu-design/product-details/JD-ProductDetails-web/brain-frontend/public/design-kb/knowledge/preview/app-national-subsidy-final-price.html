@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>国补到手价 · 设计决策</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC",sans-serif;background:#f5f4f0;color:#1a1a1a;padding:2rem}
+.wrap{max-width:720px;margin:0 auto}
+.hd{background:#E1251B;color:#fff;border-radius:8px;padding:1.2rem 1.5rem;margin-bottom:1.5rem}
+.hd h1{font-size:18px;font-weight:500;margin-bottom:4px}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.2);margin-right:4px}
+.screenshot .empty{background:#f0f0ee;border-radius:8px;padding:1.5rem;font-size:12px;color:#aaa;text-align:center;border:.5px solid #e5e5e5;margin-bottom:1.5rem}
+.sec{background:#fff;border-radius:8px;border:.5px solid #e5e5e5;margin-bottom:12px;overflow:hidden}
+.sec-hd{padding:12px 16px;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center;border-bottom:.5px solid #f0f0ee}
+.sec-hd.toggle{cursor:pointer}
+.sec-body{padding:12px 16px;font-size:13px;line-height:1.7}
+.sec-body.hidden{display:none}
+.decision{background:#f7f7f5;border-radius:6px;padding:10px 12px;margin-bottom:10px}
+.decision:last-child{margin-bottom:0}
+.decision-title{font-weight:500;margin-bottom:6px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-weight:500;padding:6px 8px;border-bottom:.5px solid #e5e5e5;color:#888;background:#fafafa}
+td{padding:8px;border-bottom:.5px solid #f0f0ee;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.star td{background:#fffbe6}
+.warn{background:#fff3cd;border-left:3px solid #EF9F27;padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;margin-top:6px}
+.pattern{background:#f0f4ff;border-radius:6px;padding:10px 12px;margin-bottom:8px}
+.pattern-title{font-weight:500;margin-bottom:6px}
+.principle{background:#e8f4e8;border-left:3px solid #0AAD48;padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;margin-top:8px}
+.related-case{display:block;font-size:12px;color:#3C84C4;text-decoration:none;padding:6px 0;border-bottom:.5px solid #f0f0ee}
+.related-case:last-child{border-bottom:none}
+.related-note{color:#888;font-size:11px;margin-top:2px}
+.back{display:inline-block;font-size:12px;color:#888;text-decoration:none;margin-bottom:1rem}
+.todo{display:inline-block;background:#fff8e6;border:.5px solid #EF9F27;padding:1px 6px;font-size:11px;border-radius:3px;color:#b07800}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="index.html">← 返回知识库</a>
+<div class="hd">
+  <h1>国补到手价</h1>
+  <div style="margin-top:6px;font-size:12px;opacity:.8">
+    <span class="tag">App</span><span class="tag">pdp/promotion</span>
+    <span style="opacity:.7;margin-left:4px">最后更新 2026-05-25</span>
+  </div>
+  <div style="margin-top:6px;font-size:11px;opacity:.7">UX：阮蓝蝶 / 产品：王金 / 2025.02.18</div>
+</div>
+
+<div class="screenshot"><div class="empty">📎 暂无设计稿截图 · 可在 reasoning.md frontmatter 的 screenshots 字段填入 CDN 链接</div></div>
+
+<div class="sec">
+  <div class="sec-hd">需求背景</div>
+  <div class="sec-body">
+    <ul style="padding-left:1.2em;margin-bottom:10px">
+      <li style="margin-bottom:4px">商详无「国补到手价」标签，用户不清楚叠加国补后实际支付多少</li>
+      <li style="margin-bottom:4px">优惠弹层内国补行与其他优惠混排，无法快速识别国补减价金额</li>
+      <li>以旧换新场景下，国补计算基数依赖旧机估价，「预估价」和「到手价」无区分展示</li>
+    </ul>
+    <p style="font-size:12px;color:#666">来源：PRD §4.1.2.1 全链路国补「价格力」感知强化</p>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">核心设计决策</div>
+  <div class="sec-body">
+
+    <div class="decision">
+      <div class="decision-title">Decision 1 · 以旧换新场景严格区分「到手价」与「预估价」</div>
+      <ul style="padding-left:1.2em;margin-bottom:8px">
+        <li><strong>购新场景</strong>：已领取 → 到手价；未领取 → 预估价</li>
+        <li><strong>以旧换新·已领取 + 有旧机</strong> → 「国补换新到手价」</li>
+        <li><strong>以旧换新·其余所有状态</strong>（已领取无旧机 / 未领取）→ 「国补换新预估价」</li>
+      </ul>
+      <div class="warn">⚠️ 高风险：研发容易简化为「已领取就显示到手价」，需在标注中显式声明状态判断优先级树</div>
+      <p style="margin-top:6px;font-size:12px;color:#888">来源：设计稿标注「购新场景」「以旧换新场景」分支说明</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 2 · 优惠弹层超出屏宽时横滑，不折叠</div>
+      <p>优惠条目（国家补贴/满减/京东支付立减/云闪付立减/政府消费券）横向排列，总宽 ≤ 屏宽时居中展示；超出时支持左右横滑。</p>
+      <p style="margin-top:4px;font-size:12px;color:#888">来源：设计稿标注「未超出居中展示/超出横滑」</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 3 · 政府消费券区分「已达门槛」与「未达门槛」</div>
+      <p>已达门槛：正常展示可用金额；未达门槛：展示降级样式（具体样式 <span class="todo">TODO 待补充</span>）。</p>
+      <p style="margin-top:4px;font-size:12px;color:#888">来源：设计稿标注「政府消费券-已达门槛」「政府消费券-未达门槛」</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 4 · 价格行增加「近90天最低」双重锚点标签</div>
+      <p>价格行展示「近90天最低」+ 「国补换新预估价/到手价」双标签，建立价格锚点。</p>
+      <p style="margin-top:4px;font-size:12px;color:#888">来源：PRD §4.1.2.1 + 设计稿价格行区块</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">状态覆盖表</div>
+  <div class="sec-body" style="padding:0">
+    <table>
+      <tr><th>状态 / 场景</th><th>视觉处理</th><th>备注</th></tr>
+      <tr><td>购新 · 已领取</td><td>到手价标签 + 弹层「已领 ¥xxx」+ 使用按钮</td><td style="color:#888;font-size:11px">设计稿「已领国补」弹层区块</td></tr>
+      <tr><td>购新 · 未领取</td><td>预估价标签 + 弹层展示可领金额 + 领取入口</td><td style="color:#888;font-size:11px">—</td></tr>
+      <tr><td>以旧换新 · 已领取 · 有旧机</td><td>展示「国补换新到手价」</td><td style="color:#888;font-size:11px">来源：设计稿分支标注</td></tr>
+      <tr class="star"><td>⭐ 以旧换新 · 已领取 · 无旧机</td><td>降级展示「国补换新预估价」</td><td style="color:#b07800;font-size:11px">高风险易漏：需在标注中显式声明</td></tr>
+      <tr><td>以旧换新 · 未领取</td><td>展示「国补换新预估价」</td><td style="color:#888;font-size:11px">—</td></tr>
+      <tr><td>云闪付优惠行</td><td>「云闪付已减 ¥xxx」独立一行</td><td style="color:#888;font-size:11px">—</td></tr>
+      <tr><td>政府消费券 · 已达门槛</td><td>正常展示可用金额</td><td style="color:#888;font-size:11px">—</td></tr>
+      <tr class="star"><td>⭐ 政府消费券 · 未达门槛</td><td><span class="todo">TODO 待补充</span>具体降级样式</td><td style="color:#b07800;font-size:11px">待产品确认是否显示差额</td></tr>
+      <tr><td>优惠条目超出屏宽</td><td>横滑容器，不折叠</td><td style="color:#888;font-size:11px">设计稿标注「超出横滑」</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">可复用设计模式</div>
+  <div class="sec-body">
+    <div class="pattern">
+      <div class="pattern-title">Pattern 1 · 「预估价 → 到手价」的条件触发切换</div>
+      <p style="font-size:12px;color:#666;margin-bottom:6px">适用：价格依赖用户某个额外操作才能确定（以旧换新选机估价、地址影响政策匹配等），需在完成前置条件前展示吸引力价格</p>
+      <ol style="padding-left:1.2em;font-size:13px">
+        <li>未满足条件：展示「预估价」，文案包含「预估」字样明确非最终</li>
+        <li>用户完成前置操作后：切换为「到手价」，移除「预估」字样</li>
+      </ol>
+      <div class="principle">核心原则：「预估」和「到手」的切换必须严格对应状态，不可提前展示「到手价」——结算页出现价格差会引发投诉</div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd toggle" onclick="toggle(this)">约束条件 <span>▾</span></div>
+  <div class="sec-body hidden">
+    <table>
+      <tr><th>类型</th><th>约束内容</th></tr>
+      <tr><td>业务</td><td>以旧换新到手价仅在「已领取 + 有旧机」下展示；实名要求：「该活动需实名，具体以规则为准」</td></tr>
+      <tr><td>设计系统</td><td>国补绿 <code>#0AAD48</code>；有效期红 <code>#FF0F23</code></td></tr>
+      <tr><td>平台</td><td>App 375px；优惠条目超宽横滑，不折叠</td></tr>
+      <tr><td>技术</td><td><span class="todo">TODO</span> 到手价接口字段名及下发规则</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd toggle" onclick="toggle(this)">遗留问题 <span>▾</span></div>
+  <div class="sec-body hidden" style="padding:0">
+    <table>
+      <tr><th>问题</th><th>负责人</th><th>状态</th></tr>
+      <tr><td>政府消费券未达门槛的具体降级样式</td><td>产品（王金）</td><td>⏳ 待确认</td></tr>
+      <tr><td>以旧换新「已领取·无旧机」状态下底部价格 bar 展示规则</td><td>UX（阮蓝蝶）</td><td>⏳ 待补充</td></tr>
+      <tr><td>实名验证失败时弹层内的展示处理</td><td>研发</td><td>⏳ 待确认</td></tr>
+      <tr><td>到手价接口字段名及下发规则</td><td>研发</td><td>⏳ 待确认</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">关联历史 Case</div>
+  <div class="sec-body">
+    <a class="related-case" href="app-national-subsidy-tradein.html">国补叠加以旧换新利益点感知提升<div class="related-note">三态状态机及已领取态下的价格分支逻辑来源</div></a>
+    <a class="related-case" href="app-national-subsidy-multisku.html">App 国补多商品<div class="related-note">国补腰带及优惠弹层基础框架来源</div></a>
+  </div>
+</div>
+
+</div>
+<script>function toggle(hd){hd.classList.toggle('open');var b=hd.nextElementSibling;b.classList.toggle('hidden');var a=hd.querySelector('span');if(a)a.textContent=b.classList.contains('hidden')?'▾':'▴'}</script>
+</body></html>

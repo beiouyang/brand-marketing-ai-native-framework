@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>App国补多商品 · 设计决策</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC",sans-serif;background:#f5f4f0;color:#1a1a1a;padding:2rem}
+.wrap{max-width:720px;margin:0 auto}
+.hd{background:#E1251B;color:#fff;border-radius:8px;padding:1.2rem 1.5rem;margin-bottom:1.5rem}
+.hd h1{font-size:18px;font-weight:500;margin-bottom:4px}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.2);margin-right:4px}
+.screenshot .empty{background:#f0f0ee;border-radius:8px;padding:1.5rem;font-size:12px;color:#aaa;text-align:center;border:.5px solid #e5e5e5;margin-bottom:1.5rem}
+.sec{background:#fff;border-radius:8px;border:.5px solid #e5e5e5;margin-bottom:12px;overflow:hidden}
+.sec-hd{padding:12px 16px;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center;border-bottom:.5px solid #f0f0ee}
+.sec-hd.toggle{cursor:pointer}
+.sec-body{padding:12px 16px;font-size:13px;line-height:1.7}
+.sec-body.hidden{display:none}
+.decision{background:#f7f7f5;border-radius:6px;padding:10px 12px;margin-bottom:10px}
+.decision:last-child{margin-bottom:0}
+.decision-title{font-weight:500;margin-bottom:6px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-weight:500;padding:6px 8px;border-bottom:.5px solid #e5e5e5;color:#888;background:#fafafa}
+td{padding:8px;border-bottom:.5px solid #f0f0ee;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.star td{background:#fffbe6}
+.pattern{background:#f0f4ff;border-radius:6px;padding:10px 12px;margin-bottom:8px}
+.pattern-title{font-weight:500;margin-bottom:6px}
+.principle{background:#e8f4e8;border-left:3px solid #0AAD48;padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;margin-top:8px}
+.related-case{display:block;font-size:12px;color:#3C84C4;text-decoration:none;padding:6px 0;border-bottom:.5px solid #f0f0ee}
+.related-case:last-child{border-bottom:none}
+.related-note{color:#888;font-size:11px;margin-top:2px}
+.back{display:inline-block;font-size:12px;color:#888;text-decoration:none;margin-bottom:1rem}
+.todo{display:inline-block;background:#fff8e6;border:.5px solid #EF9F27;padding:1px 6px;font-size:11px;border-radius:3px;color:#b07800}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="index.html">← 返回知识库</a>
+<div class="hd">
+  <h1>App国补多商品</h1>
+  <div style="margin-top:6px;font-size:12px;opacity:.8">
+    <span class="tag">App</span><span class="tag">pdp/promotion</span>
+    <span style="opacity:.7;margin-left:4px">最后更新 2024-12-19</span>
+  </div>
+  <div style="margin-top:6px;font-size:11px;opacity:.7">UX：阮蓝蝶 / UE：刘迎 / 产品：马兰 / 2024-12-19</div>
+</div>
+
+<div class="screenshot"><div class="empty">📎 暂无设计稿截图 · 可在 reasoning.md frontmatter 的 screenshots 字段填入 CDN 链接</div></div>
+
+<div class="sec">
+  <div class="sec-hd">需求背景</div>
+  <div class="sec-body">
+    <p style="margin-bottom:8px">App 商详页国补信息展示不支持「含附件」的多商品场景：当用户购买捆绑了附件的商品时，国补计算基数（扣除附件价值后的主商品价格）与页面展示的到手价不一致，用户困惑。</p>
+    <p style="margin-bottom:8px">国家政策要求：部分附件不可享受国补，国补计算基数须扣除附件价值，而非直接使用商详展示的到手价。</p>
+    <p style="background:#fff3cd;border-radius:4px;padding:6px 10px;font-size:12px;margin-bottom:6px">⚠️ 本需求仅覆盖用户已具备国补资格的场景，不涉及无资格态。</p>
+    <p style="font-size:12px;color:#888">来源：设计稿需求背景标注</p>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">核心设计决策</div>
+  <div class="sec-body">
+
+    <div class="decision">
+      <div class="decision-title">Decision 1 · 国补腰带作为商详主页的国补入口，独立于已享楼层</div>
+      <p style="margin-bottom:6px">全宽绿色渐变腰带（375×64px），背景色 <code>linear-gradient(180deg, #0AAD48 0%, #14BA57 100%)</code>，承载：到手价、划线价、销量、国家补贴活动 logo、领取入口。</p>
+      <p style="margin-bottom:6px">绿色（<code>#0AAD48</code>）为国补专属色，与品牌红色（<code>#FF0F23</code>）语义独立：红色 = 京东全场景通用；绿色 = 国补命中专用。</p>
+      <p style="font-size:12px;color:#888">排除：并入已享楼层 —— 已享楼层定位是福利确认，腰带目标是引导领取，并入会淡化引导权重</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 2 · 领取前与领取后共用腰带框架，核心差异在按钮与文案</div>
+      <ul style="padding-left:1.2em;margin-bottom:6px">
+        <li><strong>领取前</strong>：文案「京东支付最高减 xxx」，右侧带箭头按钮引导领取</li>
+        <li><strong>领取后</strong>：文案变更为「京东支付再减 xxx」，<strong>按钮消失</strong>；已领取优惠同步进入已享楼层</li>
+      </ul>
+      <p style="font-size:12px;color:#888">「最高减」= 潜在上限；「再减」= 已到手确定减额；按钮消失 = 入口使命完成</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 3 · 优惠弹层国补行增加附件提示，触发国补说明弹窗</div>
+      <p style="margin-bottom:6px">已享优惠模块的国补优惠行下方增加提示「下单包含附件（部分附件价值不享国补优惠）」，点击触发国补说明弹窗（295px，非全宽）。</p>
+      <p style="font-size:12px;background:#f0f0ee;padding:6px 10px;border-radius:4px;margin-bottom:6px">弹窗说明：应补贴政策要求，部分附件不可享受国补，所以国补计算基数为扣除掉附件价值，非使用展示到手价进行计算。可于附件楼层查看附件价值</p>
+      <p style="font-size:12px;color:#888">排除：在主页腰带处展开说明 —— 主页信息密度高，用户未进决策路径时此为干扰</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 4 · 附件弹层展示具体附件价值与国补权益说明</div>
+      <p>附件弹层列出每件附件名称、价值金额，并标注「附件价值¥XXX，不享受国补优惠」，底部「确定」CTA 关闭弹层。</p>
+      <p style="margin-top:6px;font-size:12px;color:#888">两层拆分：国补说明弹窗解释「为什么」，附件弹层解释「具体是什么」，符合渐进式信息披露</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">状态覆盖表</div>
+  <div class="sec-body" style="padding:0">
+    <table>
+      <tr><th>状态 / 场景</th><th>视觉处理</th><th>备注</th></tr>
+      <tr><td>有资格·领取前（默认）</td><td>国补腰带绿色，「京东支付最高减 xxx」，右侧带箭头按钮</td><td style="color:#888;font-size:11px">「最高减」表示潜在上限</td></tr>
+      <tr class="star"><td>⭐ 有资格·领取后</td><td>同一腰带框架，「京东支付再减 xxx」，<strong>按钮消失</strong>；国补优惠进入已享楼层</td><td style="color:#b07800;font-size:11px">按钮消失是关键，入口使命完成</td></tr>
+      <tr><td>优惠弹层·国补卡片</td><td>粉色背景卡片（#FFF6F7，边框 #FFD6E1），附件提示文案</td><td style="color:#888;font-size:11px">粉色区分普通优惠券行</td></tr>
+      <tr><td>优惠弹层·点击附件提示</td><td>触发国补说明弹窗，半透明遮罩 rgba(0,0,0,0.70)</td><td style="color:#888;font-size:11px">弹窗宽 295px，非全宽</td></tr>
+      <tr><td>国补说明弹窗</td><td>政策说明文案 + 「我知道了」红色渐变按钮</td><td style="color:#888;font-size:11px">信息型弹窗，非操作型</td></tr>
+      <tr><td>附件弹层</td><td>附件名称 + 附件价值 + 「不享受国补优惠」标注 + 「确定」按钮</td><td style="color:#888;font-size:11px">由优惠弹层附件 section 触发</td></tr>
+      <tr class="star"><td>⭐ 商品不含附件</td><td>优惠弹层不显示附件提示行，国补说明弹窗不可触发</td><td style="color:#b07800;font-size:11px">此状态由开发逻辑控制</td></tr>
+      <tr><td>资格接口异常 / 兜底</td><td><span class="todo">TODO 未覆盖</span></td><td style="color:#888;font-size:11px">后续迭代</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">可复用设计模式</div>
+  <div class="sec-body">
+    <div class="pattern">
+      <div class="pattern-title">Pattern 1 · 政策色与品牌色语义分离</div>
+      <p style="font-size:12px;color:#666;margin-bottom:6px">适用：同一页面需同时展示「政府/政策类补贴」和「平台促销优惠」，需用户快速区分权益来源</p>
+      <div class="principle">核心原则：绿色（#0AAD48）为国补专属活动色，品牌红色（#FF0F23）为平台全场景通用色。两者语义独立，非对比关系，不可互换使用</div>
+    </div>
+    <div class="pattern">
+      <div class="pattern-title">Pattern 2 · 渐进式政策说明（两层信息披露）</div>
+      <p style="font-size:12px;color:#666;margin-bottom:6px">适用：优惠规则涉及复杂政策条件，在主流程展示完整规则会增加认知负担</p>
+      <ol style="padding-left:1.2em;font-size:12px;color:#666;margin-bottom:6px">
+        <li>主页/弹层：一句话提示（「部分附件价值不享国补优惠」）</li>
+        <li>用户主动点击 → 信息型弹窗（政策解释）</li>
+        <li>弹窗内引导链接 → 详情弹层（具体数据）</li>
+      </ol>
+      <div class="principle">核心原则：每一层信息只回答用户当前的一个问题；不在主流程中预防性展示用户大概率不关心的信息</div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd toggle" onclick="toggle(this)">遗留问题 <span>▾</span></div>
+  <div class="sec-body hidden" style="padding:0">
+    <table>
+      <tr><th>问题</th><th>负责人</th><th>状态</th></tr>
+      <tr><td>商品不含附件时，优惠弹层国补行是否保留附件提示</td><td>产品（马兰）</td><td>⏳ 联调时确认</td></tr>
+      <tr><td>多件附件时附件弹层的展示规则（滚动/折叠）</td><td>UI（阮蓝蝶）</td><td>⏳ 后续补充</td></tr>
+      <tr><td>资格接口异常时的兜底展示方案</td><td>UI + 开发</td><td>⏳ 后续迭代</td></tr>
+      <tr><td>国补腰带「领取前」和「领取后」的触发事件定义</td><td>产品（马兰）</td><td>⏳ 联调时提供</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">关联历史 Case</div>
+  <div class="sec-body">
+    <span style="font-size:12px;color:#aaa">PC 端国补（pc-national-subsidy）参考本 App 方案的入口逻辑后独立落地，适配行列布局；App 先做，PC 后跟进</span>
+  </div>
+</div>
+
+</div>
+<script>function toggle(hd){hd.classList.toggle('open');var b=hd.nextElementSibling;b.classList.toggle('hidden');var a=hd.querySelector('span');if(a)a.textContent=b.classList.contains('hidden')?'▾':'▴'}</script>
+</body></html>

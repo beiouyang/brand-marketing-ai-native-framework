@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>以旧换新国补促销 v15.0样式升级 · 设计决策记录</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #F5F5F5; color: #333; }
+
+  .header { background: #E1251B; color: white; padding: 24px 32px; }
+  .header h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .header-meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; opacity: 0.9; }
+  .header-meta span { display: flex; align-items: center; gap: 4px; }
+  .platform-badge { background: rgba(255,255,255,0.25); padding: 2px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; }
+  .back-link { display: inline-block; margin-bottom: 12px; color: rgba(255,255,255,0.8); font-size: 13px; text-decoration: none; }
+  .back-link:hover { color: white; }
+
+  .breadcrumb { background: white; padding: 10px 32px; font-size: 12px; color: #999; border-bottom: 1px solid #E8E8E8; }
+  .breadcrumb a { color: #E1251B; text-decoration: none; }
+
+  .main { max-width: 960px; margin: 0 auto; padding: 24px 32px; }
+
+  /* Screenshot */
+  .screenshots-section { background: white; border-radius: 8px; border: 1px solid #E8E8E8; padding: 20px 24px; margin-bottom: 20px; }
+  .section-heading { font-size: 14px; font-weight: 600; color: #555; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .screenshots-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; }
+  .screenshot-item { flex-shrink: 0; text-align: center; }
+  .screenshot-item img { display: block; width: 220px; height: 140px; object-fit: cover; border-radius: 6px; border: 1px solid #E8E8E8; cursor: pointer; transition: box-shadow 0.2s; }
+  .screenshot-item img:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .screenshot-item .screenshot-label { font-size: 11px; color: #999; margin-top: 6px; }
+  .no-screenshot { background: #F8F8F8; border: 1px dashed #DDD; border-radius: 6px; padding: 28px 40px; text-align: center; color: #BBB; font-size: 13px; }
+
+  /* Keywords */
+  .meta-row { background: white; border-radius: 8px; border: 1px solid #E8E8E8; padding: 16px 24px; margin-bottom: 20px; display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+  .meta-item { }
+  .meta-label { font-size: 11px; color: #999; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .keywords { display: flex; flex-wrap: wrap; gap: 4px; }
+  .kw { padding: 2px 8px; background: #F5F5F5; border-radius: 10px; font-size: 11px; color: #666; }
+  .meta-text { font-size: 13px; color: #555; }
+
+  /* Content sections */
+  .content-section { background: white; border-radius: 8px; border: 1px solid #E8E8E8; padding: 20px 24px; margin-bottom: 16px; }
+  .content-section h2 { font-size: 16px; font-weight: 600; color: #1A1A1A; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #F0F0F0; }
+  .content-section h3 { font-size: 14px; font-weight: 600; color: #333; margin: 16px 0 10px; }
+  .content-section h3:first-child { margin-top: 0; }
+  .content-section p { font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 10px; }
+  .content-section ul, .content-section ol { padding-left: 20px; margin-bottom: 10px; }
+  .content-section li { font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 4px; }
+  .content-section strong { color: #333; }
+  .content-section code { background: #F5F5F5; padding: 1px 5px; border-radius: 3px; font-family: monospace; font-size: 12px; color: #E1251B; }
+
+  /* Decision cards */
+  .decision-card { border: 1px solid #E8E8E8; border-radius: 6px; padding: 16px 18px; margin-bottom: 14px; }
+  .decision-card:last-child { margin-bottom: 0; }
+  .decision-title { font-size: 14px; font-weight: 600; color: #1A1A1A; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .decision-num { width: 22px; height: 22px; background: #E1251B; color: white; border-radius: 50%; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .decision-row { display: grid; grid-template-columns: 80px 1fr; gap: 8px 12px; margin-bottom: 8px; }
+  .decision-row-label { font-size: 12px; color: #999; padding-top: 2px; }
+  .decision-row-content { font-size: 13px; color: #555; line-height: 1.6; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 8px; }
+  th { background: #F8F8F8; color: #555; font-weight: 600; padding: 8px 12px; text-align: left; border: 1px solid #E8E8E8; }
+  td { padding: 8px 12px; border: 1px solid #E8E8E8; color: #555; line-height: 1.6; vertical-align: top; }
+  tr:hover td { background: #FAFAFA; }
+  .star-row td { background: #FFFDE7; }
+  .star-row:hover td { background: #FFF9C4; }
+
+  /* Related cases */
+  .related-list { display: flex; flex-direction: column; gap: 8px; }
+  .related-item { border: 1px solid #E8E8E8; border-radius: 6px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+  .related-item .related-name { font-size: 13px; font-weight: 500; color: #333; }
+  .related-item .related-note { font-size: 12px; color: #999; margin-top: 2px; }
+  .related-item a { font-size: 13px; color: #E1251B; text-decoration: none; white-space: nowrap; }
+  .related-item a:hover { text-decoration: underline; }
+
+  /* Relay link */
+  .relay-link { font-size: 13px; color: #E1251B; text-decoration: none; }
+  .relay-link:hover { text-decoration: underline; }
+
+  /* Lightbox */
+  .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; align-items: center; justify-content: center; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 4px; }
+  .lightbox-close { position: fixed; top: 20px; right: 24px; color: white; font-size: 28px; cursor: pointer; opacity: 0.7; }
+  .lightbox-close:hover { opacity: 1; }
+
+  /* TODO badge */
+  .todo { display: inline-block; background: #FFF3CD; color: #856404; border-radius: 3px; font-size: 11px; padding: 1px 6px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a class="back-link" href="index.html">← 返回知识库</a>
+  <h1>以旧换新国补促销 v15.0样式升级</h1>
+  <div class="header-meta">
+    <span><span class="platform-badge">App</span></span>
+    <span>商详 · 以旧换新</span>
+    <span>最后更新 2025-01-14</span>
+    <span>UX：马培娜 / 产品：王亚欧</span>
+  </div>
+</div>
+
+<div class="breadcrumb">
+  <a href="index.html">设计知识库</a> / 商详 · 以旧换新 / 以旧换新国补促销 v15.0样式升级
+</div>
+
+<div class="main">
+
+  <!-- Screenshots -->
+  <div class="screenshots-section">
+    <div class="section-heading">设计稿截图</div>
+    <div class="no-screenshot">暂无截图 · 请设计师补充 CDN 链接后通过 /knowledge-update --fill 写入</div>
+  </div>
+
+  <!-- Meta -->
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="meta-label">关键词</div>
+      <div class="keywords">
+        <span class="kw">以旧换新</span><span class="kw">旧机估价</span><span class="kw">选旧机</span><span class="kw">国补</span><span class="kw">自动识别</span><span class="kw">v15.0样式升级</span><span class="kw">购买时间</span><span class="kw">运行情况</span><span class="kw">换新利益点</span><span class="kw">暗黑适配</span><span class="kw">历史标签</span>
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Relay 来源</div>
+      <div class="meta-text">
+        <a class="relay-link" href="https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:568752&node_id=6:568753" target="_blank">打开设计稿 →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 需求背景 -->
+  <div class="content-section">
+    <h2>0. 需求背景</h2>
+    <h3>用户问题</h3>
+    <p>App 以旧换新流程（选旧机弹层 + 旧机估价弹层）的视觉语言停留在 v12.0 规范，与整体 App v15.0 样式体系存在断层；同时，旧机估价环节缺乏智能辅助填写机制，用户需手动逐项选择，填写效率低、选项判断不确定性高。</p>
+    <h3>业务影响</h3>
+    <p><span class="todo">TODO: 待补充</span> PRD 文档无法读取，需补充换新流程转化率数据和国补接入后的 GMV 影响。</p>
+    <h3>根本原因</h3>
+    <ul>
+      <li>以旧换新流程是分期迭代的老功能，视觉规范未随 App 大版本升级同步对齐</li>
+      <li>v12.0 估价弹层无自动识别机制，用户需手动选择设备规格和使用情况，耗时且容易出错</li>
+      <li>国补政策接入后，购买时间信息与换新利益点的展示规则需要明确化</li>
+    </ul>
+  </div>
+
+  <!-- 设计目标 -->
+  <div class="content-section">
+    <h2>1. 设计目标与边界</h2>
+    <p><strong>目标：</strong>在保持 v12.0 以旧换新核心交互逻辑不变的前提下，将视觉样式对齐 v15.0 规范，同时通过自动识别机制降低用户填写负担，提升估价流程完成率。</p>
+    <h3>明确不做的事</h3>
+    <ul>
+      <li>不修改以旧换新的核心选机 → 估价 → 下单流程（仅做样式升级和智能填写增强）</li>
+      <li>不在本期实现暗黑模式完整规范（全链路规范库尚未搭建，作为遗留问题）</li>
+      <li>不修改国补促销入口的 PDP 展示逻辑（见 App国补多商品 Case）</li>
+    </ul>
+  </div>
+
+  <!-- Before After -->
+  <div class="content-section">
+    <h2>3. Before → After</h2>
+    <table>
+      <tr><th>问题（Before · v12.0）</th><th>设计决策</th><th>结果（After · v15.0）</th></tr>
+      <tr><td>视觉样式停留在 v12.0 规范，与 App 整体体系断层</td><td>全量对齐 v15.0 视觉语言（字体/间距/组件形态/颜色体系）</td><td>以旧换新流程与 App 整体视觉保持一致</td></tr>
+      <tr><td>旧机规格字段需用户手动逐项选择</td><td>引入自动识别机制，识别结果折叠置顶，标记「自动识别」badge</td><td>用户无需逐项选择，识别准确时可直接跳过，填写效率显著提升</td></tr>
+      <tr><td>运行情况选项缺乏参考依据，用户判断不确定</td><td>每个选项附带大盘选择百分比（72%/9%/19%）</td><td>用户有数据参考，选择更有信心，减少迟疑</td></tr>
+      <tr><td>历史选择过的旧机无标记，列表扫描成本高</td><td>历史设备打「历史」标签，列表排序：本机 > 历史 > 排行榜</td><td>回头用户快速定位历史选择，降低重复选择成本</td></tr>
+    </table>
+  </div>
+
+  <!-- 核心设计决策 -->
+  <div class="content-section">
+    <h2>4. 核心设计决策</h2>
+
+    <div class="decision-card">
+      <div class="decision-title"><span class="decision-num">1</span>v12.0 → v15.0 全量样式升级，交互逻辑保持不变</div>
+      <div class="decision-row"><span class="decision-row-label">决策</span><span class="decision-row-content">以 v12.0 旧机估价弹层和选旧机弹层为基础，将视觉元素（字号、字重、间距、圆角、颜色、分隔线、按钮样式）全量替换为 v15.0 规范，不改变核心交互路径和选项内容。</span></div>
+      <div class="decision-row"><span class="decision-row-label">原因</span><span class="decision-row-content">以旧换新是成熟流程，用户已有操作习惯，避免因视觉升级带来交互认知断裂；样式升级与功能增强解耦，降低上线风险。</span></div>
+      <div class="decision-row"><span class="decision-row-label">排除方案</span><span class="decision-row-content">重新设计整个选机 + 估价流程——工程量大，风险高，与本期「视觉对齐」目标不符。</span></div>
+    </div>
+
+    <div class="decision-card">
+      <div class="decision-title"><span class="decision-num">2</span>自动识别字段折叠置顶，用户修改后标记消失</div>
+      <div class="decision-row"><span class="decision-row-label">决策</span><span class="decision-row-content">可自动识别的字段（储存容量、购买渠道、剩余保修时长）排列到字段列表顶部，标记「自动识别」badge，并默认折叠收起；首个无法自动识别的字段（运行情况）自动展开；用户主动修改任意自动识别字段后，该字段的 badge 消失。</span></div>
+      <div class="decision-row"><span class="decision-row-label">原因</span><span class="decision-row-content">折叠已识别字段减少视觉噪音；badge 消失防止误以为修改后的值还是「自动识别」结果；自动展开首个未识别项减少用户寻找入口的成本。</span></div>
+      <div class="decision-row"><span class="decision-row-label">排除方案</span><span class="decision-row-content">不折叠直接展示——页面高度膨胀；已识别项混排——用户难以区分哪些需要填写。</span></div>
+    </div>
+
+    <div class="decision-card">
+      <div class="decision-title"><span class="decision-num">3</span>购买时间展示规则——与换新利益点互斥，仅限平台购买旧机</div>
+      <div class="decision-row"><span class="decision-row-label">决策</span><span class="decision-row-content">仅限在本平台（京东）购买的旧机展示购买时长。格式：m &lt; 12 → 「已购 m 个月」；m ≥ 12 → 「已购 y 年 n 个月」。<strong>互斥规则</strong>：购买时间与换新利益点只展示其一——展示购买时间时，换新利益点不显示；反之亦然。</span></div>
+      <div class="decision-row"><span class="decision-row-label">原因</span><span class="decision-row-content">非本平台购买的旧机无购买记录，无法计算购买时长；两者在同一位置且面向不同决策需求，混排会稀释各自的信息权重。</span></div>
+      <div class="decision-row"><span class="decision-row-label">排除方案</span><span class="decision-row-content">购买时间和换新利益点同时展示——与设计稿注解「与换新利益点互斥」明确冲突；缩小字号共存——信息密度过高，影响可读性。</span></div>
+    </div>
+
+    <div class="decision-card">
+      <div class="decision-title"><span class="decision-num">4</span>运行情况选项附带大盘选择百分比</div>
+      <div class="decision-row"><span class="decision-row-label">决策</span><span class="decision-row-content">运行情况三个选项（正常开机进入桌面 / 开机密码无法解除 / 无法开机进入桌面）各展示大盘用户选择率（当前数据：72% / 9% / 19%），以小字辅助展示在选项标签旁。</span></div>
+      <div class="decision-row"><span class="decision-row-label">原因</span><span class="decision-row-content">用户填写运行情况时往往不确定自己的描述是否准确，大盘百分比提供社会参照，帮助用户校准判断。以小字辅助展示，不喧宾夺主。</span></div>
+      <div class="decision-row"><span class="decision-row-label">排除方案</span><span class="decision-row-content">增加图文说明——文字量过多，弹层空间有限；不展示辅助信息——保留 v12.0 现状，无法解决判断不确定的问题。</span></div>
+    </div>
+
+    <div class="decision-card">
+      <div class="decision-title"><span class="decision-num">5</span>历史选择标签与选旧机列表排序规则（v14.0 延续至 v15.0）</div>
+      <div class="decision-row"><span class="decision-row-label">决策</span><span class="decision-row-content">选旧机列表中，用户历史选择过的设备打「历史」标签。列表排序优先级：<strong>本机 > 历史 > 排行榜 1、2、3…</strong></span></div>
+      <div class="decision-row"><span class="decision-row-label">原因</span><span class="decision-row-content">以旧换新是高频复购场景，历史标签帮助回头用户快速找到上次选择的机型；本机优先减少选择成本；排行榜兜底覆盖首次使用的用户。</span></div>
+    </div>
+  </div>
+
+  <!-- 状态覆盖表 -->
+  <div class="content-section">
+    <h2>5. 状态覆盖表</h2>
+    <table>
+      <tr><th>状态 / 场景</th><th>视觉处理</th><th>备注</th></tr>
+      <tr><td>选旧机弹层·默认</td><td>手机 tab 激活，列表展示本机/历史/排行榜设备，历史设备有「历史」标签</td><td>列表排序：本机 > 历史 > 排行榜</td></tr>
+      <tr><td>选旧机弹层·搜索</td><td>顶部搜索框激活，输入型号后列表实时过滤</td><td>搜索结果不展示排行榜顺序</td></tr>
+      <tr><td>旧机估价弹层·自动识别态（默认）</td><td>已识别字段（储存容量/购买渠道/保修时长）折叠置顶，显示「自动识别」badge；运行情况自动展开</td><td>用户可直接查看识别结果，无需逐项填写</td></tr>
+      <tr><td>旧机估价弹层·修改自动识别字段后</td><td>被修改字段的「自动识别」badge 消失，变为普通选择态</td><td>badge 消失即表示此字段为用户手动填写</td></tr>
+      <tr class="star-row"><td>⭐ 购买渠道 = 本平台购买</td><td>展示购买时长（「已购 n 个月」或「已购 y 年 n 个月」），换新利益点不显示</td><td>二者互斥</td></tr>
+      <tr class="star-row"><td>⭐ 购买渠道 = 非本平台购买</td><td>不展示购买时长，展示换新利益点</td><td>二者互斥</td></tr>
+      <tr><td>旧机估价弹层·更换机型</td><td>点击「更换机型」返回选旧机弹层</td><td>已填写字段是否保留，待联调确认</td></tr>
+      <tr><td>暗黑模式</td><td><span class="todo">TODO: 待补充</span></td><td>全链路暗黑规范库尚未搭建，当前版本不落地</td></tr>
+      <tr><td>接口异常 / 自动识别失败</td><td><span class="todo">TODO: 待补充</span></td><td>自动识别失败时的兜底展示方案未设计</td></tr>
+    </table>
+  </div>
+
+  <!-- 文案决策 -->
+  <div class="content-section">
+    <h2>6. 文案决策</h2>
+    <table>
+      <tr><th>元素</th><th>使用文案</th><th>原因</th><th>排除的方案</th></tr>
+      <tr><td>自动识别标记</td><td>自动识别</td><td>明确表明该值由系统自动填入，非用户手动选择</td><td>「智能填写」「推荐」——语义不够精确，容易误解为推荐选项</td></tr>
+      <tr><td>购买时长 &lt; 12 个月</td><td>已购 m 个月</td><td>直接展示月数，简洁明了</td><td>「购买 n 天」——天数数字过大，认知成本高</td></tr>
+      <tr><td>购买时长 ≥ 12 个月</td><td>已购 y 年 n 个月</td><td>年月组合更符合日常表达习惯</td><td>「已购 m 个月」——数字过大（如 25 个月），不直观</td></tr>
+      <tr><td>运行情况选项 · 百分比</td><td>72%人选择</td><td>口语化，亲切感强，与选项标签视觉区分清晰</td><td>「占比 72%」——偏数据报告语气，与用户场景不匹配</td></tr>
+    </table>
+  </div>
+
+  <!-- 有意排除的内容 -->
+  <div class="content-section">
+    <h2>7. 有意排除的内容</h2>
+    <ul>
+      <li><strong>重新设计选机 + 估价核心流程</strong>：本期仅做样式升级和辅助填写增强，核心交互路径保持 v12.0 不变</li>
+      <li><strong>暗黑模式完整实现</strong>：全链路暗黑规范库尚未搭建，本期设计稿中有暗黑适配视觉方案，但未正式落地，作为遗留问题</li>
+      <li><strong>自动识别失败的兜底方案</strong>：本期未设计，开发降级为全量手动填写</li>
+    </ul>
+  </div>
+
+  <!-- 可复用模式 -->
+  <div class="content-section">
+    <h2>8. 可复用的设计模式</h2>
+    <h3>Pattern 1：自动识别 + 折叠置顶 + 手动覆盖</h3>
+    <p><strong>适用场景：</strong>表单中存在可从系统自动获取的字段，用户可能需要修正自动填写的值，需要区分「系统填写」和「用户手动填写」的状态。</p>
+    <p><strong>触发结构：</strong></p>
+    <ol>
+      <li>自动识别字段排序到列表顶部，标记「自动识别」badge，折叠收起</li>
+      <li>首个无法自动识别的字段自动展开，引导用户填写</li>
+      <li>用户修改任意自动识别字段 → 该字段 badge 消失</li>
+    </ol>
+    <p><strong>不适用场景：</strong>字段数量少（≤ 2 个）时折叠反而增加操作步骤；自动识别准确率低（&lt; 50%）时频繁修改会增加交互成本。</p>
+    <p><strong>核心原则：</strong>自动识别是减负工具，不是替代用户决策。badge 消失机制保证用户始终清楚哪些是自己确认过的值。</p>
+    <h3>Pattern 2：互斥信息位——同位置仅展示当前最相关信息</h3>
+    <p><strong>适用场景：</strong>同一 UI 位置有多种信息可供展示，但只有一种与当前用户状态最相关，不同信息的展示优先级由后端数据/用户状态决定。</p>
+    <p><strong>规则：</strong>明确定义互斥条件：当 A 满足时展示 A，否则展示 B，不允许同时展示；前端无需感知决策逻辑，由后端下发对应字段即可。</p>
+    <p><strong>不适用场景：</strong>两种信息均为用户决策必需信息（应均展示，通过视觉权重区分）。</p>
+    <p><strong>核心原则：</strong>信息互斥不是「隐藏」而是「替换」——用户在不同状态下看到的是完整的、最相关的信息，而非缺失的信息。</p>
+  </div>
+
+  <!-- 遗留问题 -->
+  <div class="content-section">
+    <h2>9. 遗留问题</h2>
+    <table>
+      <tr><th>问题</th><th>负责人</th><th>状态</th></tr>
+      <tr><td>暗黑模式完整视觉规范</td><td>UX（马培娜）</td><td>⏳ 待全链路暗黑规范库搭建后补录</td></tr>
+      <tr><td>自动识别失败时的兜底展示方案</td><td>UX + 开发</td><td>⏳ 后续迭代</td></tr>
+      <tr><td>更换机型后已填写字段是否保留</td><td>产品（王亚欧）</td><td>⏳ 联调时确认</td></tr>
+      <tr><td>大盘百分比数据来源与更新频率</td><td>产品（王亚欧）</td><td>⏳ 联调时确认</td></tr>
+      <tr><td>业务影响数据（换新流程转化率、国补接入后 GMV 影响）</td><td>产品（王亚欧）</td><td><span class="todo">TODO: 待补充</span></td></tr>
+    </table>
+  </div>
+
+  <!-- Related Cases -->
+  <div class="content-section">
+    <h2>关联 Case</h2>
+    <div class="related-list">
+      <div class="related-item">
+        <div>
+          <div class="related-name">App 国补多商品</div>
+          <div class="related-note">国补 x 以旧换新互斥规则的来源背景；国补促销入口设计见该 Case。</div>
+        </div>
+        <a href="app-national-subsidy-multisku.html">查看详情 →</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close">✕</span>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.querySelectorAll('.screenshot-item img').forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.src));
+  });
+</script>
+</body>
+</html>

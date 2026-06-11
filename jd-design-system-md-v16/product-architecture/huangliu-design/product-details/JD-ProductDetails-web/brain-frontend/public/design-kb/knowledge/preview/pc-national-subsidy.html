@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PC 接入国补 · 设计决策记录</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #F5F5F5; color: #333; line-height: 1.7; }
+  .back-bar { background: white; padding: 12px 32px; border-bottom: 1px solid #E8E8E8; }
+  .back-link { color: #E1251B; text-decoration: none; font-size: 13px; }
+  .back-link:hover { text-decoration: underline; }
+  .header { background: #E1251B; color: white; padding: 28px 32px 24px; }
+  .header h1 { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 13px; opacity: 0.9; }
+  .meta-tag { padding: 2px 10px; border-radius: 10px; background: rgba(255,255,255,0.2); font-size: 12px; }
+  .relay-link { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 12px; }
+  .relay-link:hover { color: white; }
+  .screenshots-bar { background: white; padding: 16px 32px; border-bottom: 1px solid #E8E8E8; }
+  .screenshots-bar h3 { font-size: 13px; color: #999; margin-bottom: 10px; font-weight: 500; }
+  .no-screenshot-notice { font-size: 13px; color: #CCC; padding: 12px; background: #FAFAFA; border-radius: 6px; border: 1px dashed #E0E0E0; text-align: center; }
+  .todo-badge { display: inline-block; padding: 2px 8px; background: #FFF3CD; color: #856404; border-radius: 10px; font-size: 11px; font-weight: 600; margin-left: 8px; }
+  .content { max-width: 900px; margin: 24px auto; padding: 0 24px 60px; }
+  .section { background: white; border-radius: 8px; border: 1px solid #E8E8E8; margin-bottom: 16px; overflow: hidden; }
+  .section-header { padding: 14px 20px; background: #FAFAFA; border-bottom: 1px solid #F0F0F0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+  .section-header h2 { font-size: 15px; font-weight: 600; color: #1A1A1A; }
+  .section-header .toggle { color: #AAA; font-size: 12px; }
+  .section-body { padding: 20px; }
+  .section-body.collapsed { display: none; }
+  .bg-block { margin-bottom: 16px; }
+  .bg-block h3 { font-size: 13px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; }
+  .bg-block p, .bg-block ul { font-size: 14px; color: #444; }
+  .bg-block ul { padding-left: 18px; }
+  .bg-block li { margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+  th { background: #F5F5F5; padding: 8px 12px; text-align: left; font-weight: 600; color: #555; border-bottom: 2px solid #E8E8E8; }
+  td { padding: 9px 12px; border-bottom: 1px solid #F0F0F0; color: #444; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr.star-row { background: #FFFDE7; }
+  .decision { border: 1px solid #F0F0F0; border-radius: 6px; padding: 16px; margin-bottom: 12px; }
+  .decision:last-child { margin-bottom: 0; }
+  .decision h3 { font-size: 14px; font-weight: 600; color: #1A1A1A; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #F5F5F5; }
+  .decision-block { margin-bottom: 10px; }
+  .decision-block .label { font-size: 12px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+  .decision-block p, .decision-block ul { font-size: 13px; color: #444; }
+  .decision-block ul { padding-left: 16px; }
+  .decision-block li { margin-bottom: 3px; }
+  .excluded { background: #FFF3F3; border-radius: 4px; padding: 8px 12px; font-size: 13px; color: #C62828; }
+  .impact { background: #F3F8FF; border-radius: 4px; padding: 8px 12px; font-size: 13px; color: #1565C0; margin-top: 8px; }
+  .todo-placeholder { background: #FFF8E1; border: 1px dashed #FFC107; border-radius: 4px; padding: 8px 12px; font-size: 13px; color: #795548; margin-top: 8px; }
+  .pattern { border: 1px solid #E8F5E9; border-radius: 6px; padding: 16px; margin-bottom: 12px; background: #FAFFF9; }
+  .pattern:last-child { margin-bottom: 0; }
+  .pattern h3 { font-size: 14px; font-weight: 600; color: #2E7D32; margin-bottom: 10px; }
+  .pattern-principle { background: #E8F5E9; border-radius: 4px; padding: 8px 12px; font-size: 13px; color: #2E7D32; font-weight: 500; margin-top: 8px; }
+  .related-case { display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid #F0F0F0; border-radius: 6px; }
+  .related-case a { color: #E1251B; text-decoration: none; font-size: 13px; font-weight: 500; }
+  .related-case .note { font-size: 12px; color: #888; }
+  .non-goal-list { list-style: none; padding: 0; }
+  .non-goal-list li { padding: 6px 0 6px 20px; position: relative; font-size: 14px; color: #555; border-bottom: 1px solid #F5F5F5; }
+  .non-goal-list li:last-child { border-bottom: none; }
+  .non-goal-list li::before { content: "✗"; position: absolute; left: 0; color: #CCC; }
+  .ba-problem { color: #C62828; }
+  .ba-after { color: #2E7D32; }
+</style>
+</head>
+<body>
+
+<div class="back-bar">
+  <a class="back-link" href="index.html">← 返回知识库</a>
+</div>
+
+<div class="header">
+  <h1>PC 接入国补 · 设计决策记录</h1>
+  <div class="meta-row">
+    <span class="meta-tag">PC</span>
+    <span>pdp / promotion</span>
+    <span>最后更新 2024-12-05</span>
+    <span class="todo-badge">4 项待补充</span>
+    <a class="relay-link" href="https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:571806&node_id=6:571807" target="_blank">在 Relay 中查看设计稿 ↗</a>
+  </div>
+</div>
+
+<div class="screenshots-bar">
+  <h3>📸 设计稿截图</h3>
+  <div class="no-screenshot-notice">暂无截图链接 · 可在 Relay 中右键场景节点→分享→复制图片链接，通过 <code>/design-reasoning-input</code> 补录</div>
+</div>
+
+<div class="content">
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h2>0. 需求背景</h2>
+      <span class="toggle">▲</span>
+    </div>
+    <div class="section-body">
+      <div class="bg-block">
+        <h3>用户问题</h3>
+        <p>PC 端用户无法享受国家补贴优惠，购买意愿受到抑制。</p>
+      </div>
+      <div class="bg-block">
+        <h3>业务影响</h3>
+        <p>APP 端 9 月上线国补后，家电和电脑办公两个一级类目销售同比从 4% 增长至 50%+；PC 端因不支持国补核销，同比由 -25% 进一步下降至 -43%，受国补影响预估占整体 GMV 的 9%。</p>
+      </div>
+      <div class="bg-block">
+        <h3>根本原因</h3>
+        <p>PC 端此前未接入国补核销链路，无法识别用户资格并完成国补优惠抵扣。目标：12 月 PC GMV 同比转正。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h2>1. 设计目标与边界</h2>
+      <span class="toggle">▲</span>
+    </div>
+    <div class="section-body">
+      <div class="bg-block">
+        <h3>目标</h3>
+        <p>在 PC 商详价格楼层清晰传达国补信息，区分有资格/无资格两种状态，最大化国补转化率。</p>
+      </div>
+      <div class="bg-block">
+        <h3>明确不做的事</h3>
+        <ul class="non-goal-list">
+          <li>不在商品主图区或标题区展示国补入口（避免干扰主购买流程）</li>
+          <li>不对无资格用户强制弹窗拦截（降低跳出风险）</li>
+          <li>本期不做资格校验失败的错误态兜底样式（后续迭代）</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h2>2. 约束条件</h2>
+      <span class="toggle">▲</span>
+    </div>
+    <div class="section-body">
+      <table>
+        <tr><th>类型</th><th>约束内容</th></tr>
+        <tr><td>技术约束</td><td>需后端判断用户国补资格并下发对应状态；PC 端首次接入，链路需新建</td></tr>
+        <tr><td>业务约束</td><td>国补为非固定平台预算，竞速模式抢预算，需快速上线</td></tr>
+        <tr><td>设计系统约束</td><td>设计稿未使用 Token，直接使用 hex 色值；后续接入设计体系时需映射</td></tr>
+        <tr><td>平台约束</td><td>PC 商详价格楼层为行列布局，国补信息须适配既有行结构</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h2>3. Before → After</h2>
+      <span class="toggle">▲</span>
+    </div>
+    <div class="section-body">
+      <table>
+        <tr><th>问题（Before）</th><th>设计决策</th><th>结果（After）</th></tr>
+        <tr><td class="ba-problem">PC 端无国补入口，用户无感知</td><td>在促销行/独立行展示国补信息</td><td class="ba-after">用户可感知国补优惠并完成核销</td></tr>
+        <tr><td class="ba-problem">有资格用户无法快速识别国补权益</td><td>促销行内嵌绿色标签 + 文案 + tooltip</td><td class="ba-after">权益可见性强，不破坏促销行原有结构</td></tr>
+        <tr><td class="ba-problem">无资格用户不知道如何获取资格</td><td>独立国补引导行 +「去绑定」CTA</td><td class="ba-after">明确引导至资格领取落地页，降低流失</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h2>4. 核心设计决策</h2>
+      <span class="toggle">▲</span>
+    </div>
+    <div class="section-body">
+
+      <div class="decision">
+        <h3>Decision 1：有资格时，国补信息嵌入促销行，不新增独立行</h3>
+        <div class="decision-block">
+          <div class="label">决策</div>
+          <p>在现有促销行内，以绿色标签（<code>国家补贴20%</code>）+ 引导文案 + 小 <code>i</code> icon 的组合展示。</p>
+        </div>
+        <div class="decision-block">
+          <div class="label">原因</div>
+          <ul>
+            <li>促销行是用户在价格楼层的核心视觉动线，嵌入此处曝光率最高</li>
+            <li>国补本质是一种促销优惠，与现有促销标签在信息层级上平行，归入促销行语义一致</li>
+            <li>避免价格楼层行数过多导致视觉噪音</li>
+          </ul>
+        </div>
+        <div class="excluded">✗ 排除：在价格楼层顶部单独新增一行展示国补 —— 会打断用户从价格到促销的阅读节奏，且层级感不明确。</div>
+        <div class="impact">→ 影响：促销行需支持绿色标签类型的扩展；需确认现有标签组件是否已有绿色变体。</div>
+      </div>
+
+      <div class="decision">
+        <h3>Decision 2：无资格时，新增独立「国补」引导行</h3>
+        <div class="decision-block">
+          <div class="label">决策</div>
+          <p>在价格楼层插入独立的「国　　补」行（灰底 #F7F7F7，label 灰色 #666666），右侧展示引导文案 + 「去绑定>>」CTA。label 两字之间使用全角空格，与价格楼层其他行（如「配　　送」「服　　务」）排版规范保持一致。</p>
+        </div>
+        <div class="decision-block">
+          <div class="label">原因</div>
+          <ul>
+            <li>用户无资格时，国补不属于当前可用优惠，不应出现在促销行中造成误导</li>
+            <li>独立行以 label 形式呈现，视觉权重低于促销行，但保留曝光和转化入口</li>
+          </ul>
+        </div>
+        <div class="excluded">✗ 排除：弹窗提示引导绑定 —— 强打断体验差，与「不强制弹窗」约束冲突。</div>
+        <div class="impact">→ 影响：价格楼层行组件需支持灰色 label + 文字 + 跳转链接的行类型。</div>
+      </div>
+
+      <div class="decision">
+        <h3>Decision 3：小 i icon 用 hover tooltip 补充说明，不在行内展开</h3>
+        <div class="decision-block">
+          <div class="label">决策</div>
+          <p>有资格场景下，文案右侧放置小 <code>i</code> 信息图标，hover 后展示气泡 tooltip 说明国补详情。</p>
+        </div>
+        <div class="decision-block">
+          <div class="label">原因</div>
+          <ul>
+            <li>国补规则（补贴比例、上限金额、适用品类）信息量较大，行内无法完整展示</li>
+            <li>Tooltip 按需展示，不占用固定空间，对不需要详情的用户零打扰</li>
+          </ul>
+        </div>
+        <div class="todo-placeholder">📝 tooltip 文案：<strong>TODO: 待补充</strong>（需产品确认最终文案）</div>
+        <div class="excluded" style="margin-top:8px">✗ 排除：点击后展开折叠内容 —— 交互成本高于 hover，PC 端 hover 更自然。</div>
+        <div class="impact">→ 影响：需确认气泡组件在价格楼层的 z-index 层级，避免被其他浮层遮挡。</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h2>5. 状态覆盖表</h2>
+      <span class="toggle">▲</span>
+    </div>
+    <div class="section-body">
+      <table>
+        <tr><th>状态 / 场景</th><th>视觉处理</th><th>备注</th></tr>
+        <tr><td>有资格·默认</td><td>促销行内：绿色标签「国家补贴20%」+ 文案 + 小i icon</td><td>标签背景 #48A145，字白色，12px 500</td></tr>
+        <tr><td>有资格·hover 小i</td><td>气泡 tooltip 弹出，内容说明国补详情</td><td><span class="todo-badge">TODO: tooltip 文案待补充</span></td></tr>
+        <tr><td>无资格·默认</td><td>独立国补引导行：灰底，label「国　　补」+ 文案 + 「去绑定>>」</td><td>行高 30px，背景 #F7F7F7</td></tr>
+        <tr><td>无资格·点击「去绑定」</td><td>跳转至国补资格领取落地页</td><td>跳转 URL 由产品提供</td></tr>
+        <tr class="star-row"><td>⭐ 资格接口超时 / 异常</td><td><span class="todo-badge">TODO: 兜底状态设计待补充</span></td><td>当前版本未覆盖，需后续迭代</td></tr>
+        <tr><td>商品不参与国补</td><td>不展示任何国补相关组件</td><td>由后端控制下发，前端无需处理</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h2>6. 文案决策</h2>
+      <span class="toggle">▲</span>
+    </div>
+    <div class="section-body">
+      <table>
+        <tr><th>元素</th><th>使用文案</th><th>原因</th><th>排除的方案</th></tr>
+        <tr><td>有资格标签</td><td>国家补贴20%</td><td>直接展示补贴比例，信息密度高</td><td>「国补」二字过于简短，用户感知弱</td></tr>
+        <tr><td>有资格引导文案</td><td>点击领取国家补贴，有机会享至高2000元优惠</td><td>强调用户行为（点击领取）和利益上限（2000元）</td><td>「已享国补优惠」—— 未核销前不应用已享表述</td></tr>
+        <tr><td>无资格引导行文案</td><td>点击领取国家补贴，有机会享至高2000元优惠　去绑定>></td><td>保持文案一致性，CTA「去绑定」明确动作</td><td>「立即领取」—— 表述模糊</td></tr>
+        <tr><td>行 label</td><td>国　　补</td><td>全角空格对齐，与价格楼层其他行排版一致</td><td>「国补资格」—— 字数多，破坏对齐</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h2>8. 可复用的设计模式</h2>
+      <span class="toggle">▲</span>
+    </div>
+    <div class="section-body">
+      <div class="pattern">
+        <h3>Pattern 1：促销行内嵌资格态区分</h3>
+        <p style="font-size:13px;color:#444;margin-bottom:8px"><strong>适用：</strong>同一促销活动存在「已具备资格」和「未具备资格」两种状态，需要在商详价格楼层同时覆盖两种用户。</p>
+        <p style="font-size:13px;color:#888;margin-bottom:8px"><strong>不适用：</strong>资格态超过 2 种；需要强引导转化的高优活动。</p>
+        <div class="pattern-principle">核心原则：有资格态融入现有促销行（减少信息层级），无资格态独立行但权重低于促销行（保留入口而不抢占视觉焦点）。</div>
+      </div>
+      <div class="pattern">
+        <h3>Pattern 2：小 i + hover tooltip 补充政策说明</h3>
+        <p style="font-size:13px;color:#444;margin-bottom:8px"><strong>适用：</strong>政策规则复杂，行内无法完整呈现；PC 端，用户可通过 hover 获取信息。</p>
+        <p style="font-size:13px;color:#888;margin-bottom:8px"><strong>不适用：</strong>App / 移动端（无 hover 行为）；核心转化路径上的关键信息。</p>
+        <div class="pattern-principle">核心原则：Tooltip 只放补充说明，主文案必须能独立传达核心利益点。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h2>9. 遗留问题</h2>
+      <span class="toggle">▲</span>
+    </div>
+    <div class="section-body">
+      <table>
+        <tr><th>问题</th><th>负责人</th><th>状态</th></tr>
+        <tr><td>hover tooltip 具体文案 <span class="todo-badge">待补充</span></td><td>产品（刘柏君 / 李升权）</td><td>⏳ 待确认</td></tr>
+        <tr><td>资格接口异常时的兜底展示方案</td><td>UI（马培娜）+ 开发</td><td>⏳ 后续迭代</td></tr>
+        <tr><td>「去绑定」跳转落地页 URL</td><td>产品</td><td>⏳ 联调时提供</td></tr>
+        <tr><td>App 端国补样式与 PC 端差异点整理</td><td>UI</td><td>⏳ 建议补录 App 端节点</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h2>关联 Case</h2>
+      <span class="toggle">▲</span>
+    </div>
+    <div class="section-body">
+      <div class="related-case">
+        <a href="app-national-subsidy-multisku.html">App 国补多商品</a>
+        <span class="note">App 端先行版本；PC 端参考 App 方案入口逻辑后独立适配为行列布局。</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggle(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.toggle');
+  body.classList.toggle('collapsed');
+  arrow.textContent = body.classList.contains('collapsed') ? '▼' : '▲';
+}
+</script>
+</body>
+</html>

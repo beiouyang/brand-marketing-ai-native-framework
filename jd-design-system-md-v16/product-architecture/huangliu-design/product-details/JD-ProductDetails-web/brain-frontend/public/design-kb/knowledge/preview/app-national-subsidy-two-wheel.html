@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>二轮车国补感知强化及能力闭环 · 设计决策</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC",sans-serif;background:#f5f4f0;color:#1a1a1a;padding:2rem}
+.wrap{max-width:720px;margin:0 auto}
+.hd{background:#E1251B;color:#fff;border-radius:8px;padding:1.2rem 1.5rem;margin-bottom:1.5rem}
+.hd h1{font-size:18px;font-weight:500;margin-bottom:4px}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.2);margin-right:4px}
+.screenshot .empty{background:#f0f0ee;border-radius:8px;padding:1.5rem;font-size:12px;color:#aaa;text-align:center;border:.5px solid #e5e5e5;margin-bottom:1.5rem}
+.sec{background:#fff;border-radius:8px;border:.5px solid #e5e5e5;margin-bottom:12px;overflow:hidden}
+.sec-hd{padding:12px 16px;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center;border-bottom:.5px solid #f0f0ee}
+.sec-hd.toggle{cursor:pointer}
+.sec-body{padding:12px 16px;font-size:13px;line-height:1.7}
+.sec-body.hidden{display:none}
+.decision{background:#f7f7f5;border-radius:6px;padding:10px 12px;margin-bottom:10px}
+.decision:last-child{margin-bottom:0}
+.decision-title{font-weight:500;margin-bottom:6px}
+.ab-box{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.ab-card{border-radius:6px;padding:8px 10px;font-size:12px;line-height:1.6}
+.ab-a{background:#e8f4e8;border:.5px solid #b8dcb8}
+.ab-b{background:#f0f0ee;border:.5px solid #ddd}
+.ab-label{font-weight:500;margin-bottom:4px;font-size:11px;color:#555}
+.fields{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.field{font-size:11px;padding:3px 8px;border-radius:4px;border:.5px solid #ddd;background:#fafafa}
+.field.required{background:#fff8e6;border-color:#EF9F27;color:#b07800}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-weight:500;padding:6px 8px;border-bottom:.5px solid #e5e5e5;color:#888;background:#fafafa}
+td{padding:8px;border-bottom:.5px solid #f0f0ee;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.star td{background:#fffbe6}
+.pattern{background:#f0f4ff;border-radius:6px;padding:10px 12px}
+.pattern-title{font-weight:500;margin-bottom:6px}
+.principle{background:#e8f4e8;border-left:3px solid #0AAD48;padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;margin-top:8px}
+.related-case{display:block;font-size:12px;color:#3C84C4;text-decoration:none;padding:6px 0;border-bottom:.5px solid #f0f0ee}
+.related-case:last-child{border-bottom:none}
+.related-note{color:#888;font-size:11px;margin-top:2px}
+.back{display:inline-block;font-size:12px;color:#888;text-decoration:none;margin-bottom:1rem}
+.todo{display:inline-block;background:#fff8e6;border:.5px solid #EF9F27;padding:1px 6px;font-size:11px;border-radius:3px;color:#b07800}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.stat-card{background:#f7f7f5;border-radius:6px;padding:10px 12px;text-align:center}
+.stat-num{font-size:20px;font-weight:600;color:#E1251B}
+.stat-label{font-size:11px;color:#888;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="index.html">← 返回知识库</a>
+<div class="hd">
+  <h1>二轮车国补感知强化及能力闭环</h1>
+  <div style="margin-top:6px;font-size:12px;opacity:.8">
+    <span class="tag">App</span><span class="tag">pdp/promotion</span>
+    <span style="opacity:.7;margin-left:4px">最后更新 2026-05-25</span>
+  </div>
+  <div style="margin-top:6px;font-size:11px;opacity:.7">UX：刘迎 / 产品：马兰 / 2025.02.18</div>
+</div>
+
+<div class="screenshot"><div class="empty">📎 暂无设计稿截图 · 可在 reasoning.md frontmatter 的 screenshots 字段填入 CDN 链接</div></div>
+
+<div class="sec">
+  <div class="sec-hd">需求背景</div>
+  <div class="sec-body">
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-num">11步→2步</div><div class="stat-label">天津二轮车换新+云闪付</div></div>
+      <div class="stat-card"><div class="stat-num">10步→4步</div><div class="stat-label">重庆二轮车换新+后置申领</div></div>
+    </div>
+    <p style="margin-bottom:6px">二轮车国补由政策要求用户提交车辆资质材料（车架号/电机号/车牌号等），原流程无法在站内完成材料采集，用户需跨端填写，步骤分散。</p>
+    <p style="font-size:12px;color:#888">来源：PRD §4.1.1 二轮车场景数据 / 设计稿需求背景标注</p>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">核心设计决策</div>
+  <div class="sec-body">
+
+    <div class="decision">
+      <div class="decision-title">Decision 1 · 并行输出两套流程方案</div>
+      <div class="ab-box">
+        <div class="ab-card ab-a">
+          <div class="ab-label">方案一（先领补贴）</div>
+          用户在商详先领取国补资格（含材料填写），拿到资格后再发起换新，下单时自动享受补贴
+        </div>
+        <div class="ab-card ab-b">
+          <div class="ab-label">方案二（先换新）</div>
+          用户先完成换新下单，旧品回收成功后在订单页填写申请材料，申请国补
+        </div>
+      </div>
+      <p style="margin-top:8px;font-size:12px;color:#888">来源：设计稿区块标注「先领补贴再以旧换新」「先以旧换新，再在订单申请补贴」· 最终方案待评审</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 2 · 申请信息填写页采用独立页面（非弹层）</div>
+      <p style="margin-bottom:8px">包含以下字段（* 为必填）：</p>
+      <div class="fields">
+        <span class="field required">* 证件号</span>
+        <span class="field required">* 车架号</span>
+        <span class="field">电机号</span>
+        <span class="field required">* 车牌号（京A *****）</span>
+        <span class="field required">* 蓄电池分类</span>
+        <span class="field required">* 平台</span>
+      </div>
+      <p style="margin-top:8px;font-size:12px;color:#888">来源：设计稿「申请信息填写」区块；独立页面避免弹层内键盘遮挡和滚动冲突</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 3 · 弹层内旧品类目选择（tab 切换）</div>
+      <p>国补弹层内提供旧品类目选择 tab：<strong>大家电 / 平板电脑 / 电动车</strong>，用户选择后进入换新流程。</p>
+      <p style="margin-top:4px;font-size:12px;color:#888">来源：设计稿「领取弹层」区块标注</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 4 · 协议 checkbox 嵌入底部 bar 区域</div>
+      <p>底部双按钮 bar 上方包含协议 checkbox：「我已阅读并同意《以旧换新交易协议》《新增交易协议》」，协议勾选为前置操作。</p>
+      <p style="margin-top:4px;font-size:12px;color:#888">来源：设计稿底部 bar 标注</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">状态覆盖表</div>
+  <div class="sec-body" style="padding:0">
+    <table>
+      <tr><th>状态 / 场景</th><th>视觉处理</th><th>备注</th></tr>
+      <tr><td>商详 · 无资格</td><td>无国补腰带</td><td style="color:#888;font-size:11px">延用三态框架</td></tr>
+      <tr><td>商详 · 有资格未领取</td><td>国补腰带展示，引导领取</td><td style="color:#888;font-size:11px">—</td></tr>
+      <tr><td>商详 · 已领取</td><td>国补腰带文案切换，按钮消失</td><td style="color:#888;font-size:11px">—</td></tr>
+      <tr><td>国补弹层 · 旧品类目选择</td><td>tab 切换：大家电 / 平板电脑 / 电动车</td><td style="color:#888;font-size:11px">设计稿弹层区块</td></tr>
+      <tr><td>申请信息填写页 · 正常态</td><td>各字段空白待填写</td><td style="color:#888;font-size:11px">—</td></tr>
+      <tr class="star"><td>⭐ 申请信息填写页 · 字段校验失败</td><td><span class="todo">TODO 待补充</span></td><td style="color:#b07800;font-size:11px">键盘遮挡问题待单独评审</td></tr>
+      <tr class="star"><td>⭐ 旧品回收成功后状态更新</td><td><span class="todo">TODO 待补充</span></td><td style="color:#b07800;font-size:11px">方案二中订单页 CTA 如何变化</td></tr>
+      <tr><td>申请提交失败 / 接口异常</td><td><span class="todo">TODO 待补充</span></td><td style="color:#888;font-size:11px">—</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">可复用设计模式</div>
+  <div class="sec-body">
+    <div class="pattern">
+      <div class="pattern-title">Pattern 1 · 政策材料采集页——独立页面 vs 弹层的选择</div>
+      <p style="font-size:12px;color:#666;margin-bottom:6px">适用：需要采集超过 3 个表单字段的政策性资质信息，且字段包含格式校验（车牌号/证件号等）</p>
+      <div class="principle">核心原则：字段较多时使用独立页面承载，避免弹层内键盘遮挡和滚动冲突；字段不超过 2 个时可考虑弹层内联</div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd toggle" onclick="toggle(this)">遗留问题 <span>▾</span></div>
+  <div class="sec-body hidden" style="padding:0">
+    <table>
+      <tr><th>问题</th><th>负责人</th><th>状态</th></tr>
+      <tr><td>两套方案最终选择哪套（先领/先换新）</td><td>产品（马兰）</td><td>⏳ 待评审确认</td></tr>
+      <tr><td>申请信息填写页各字段格式校验规则及错误提示样式</td><td>UX（刘迎）</td><td>⏳ 待补充</td></tr>
+      <tr><td>协议未勾选时「提交申请」按钮是否禁用</td><td>产品 + 研发</td><td>⏳ 待确认</td></tr>
+      <tr><td>旧品回收成功后订单页 CTA 具体变化（方案二）</td><td>UX（刘迎）</td><td>⏳ 待补充</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">关联历史 Case</div>
+  <div class="sec-body">
+    <a class="related-case" href="app-national-subsidy-tradein.html">国补叠加以旧换新利益点感知提升<div class="related-note">换新+国补叠加场景的状态框架来源</div></a>
+    <a class="related-case" href="app-national-subsidy-multisku.html">App 国补多商品<div class="related-note">国补腰带基础设计及弹层框架</div></a>
+  </div>
+</div>
+
+</div>
+<script>function toggle(hd){hd.classList.toggle('open');var b=hd.nextElementSibling;b.classList.toggle('hidden');var a=hd.querySelector('span');if(a)a.textContent=b.classList.contains('hidden')?'▾':'▴'}</script>
+</body></html>

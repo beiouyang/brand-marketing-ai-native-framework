@@ -1,0 +1,2427 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>用户分析 Skill 工具</title>
+  <style>
+    :root {
+      --bg: #0c1324;
+      --panel: #131a2c;
+      --panel-2: #1a2236;
+      --panel-3: #222c44;
+      --line: #2b3550;
+      --line-soft: rgba(255, 255, 255, 0.08);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --soft: #cbd5e1;
+      --accent: #22d3ee;
+      --accent-dark: #0891b2;
+      --orange: #f26b1d;
+      --blue: #2454d6;
+      --green: #118c4f;
+      --radius: 8px;
+      --shadow: 0 26px 70px rgba(0, 0, 0, 0.42);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        linear-gradient(180deg, rgba(34, 211, 238, 0.06), transparent 34rem),
+        radial-gradient(circle at 50% -20%, rgba(255, 255, 255, 0.06), transparent 34rem),
+        var(--bg);
+      font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, transparent, black 18%, black 74%, transparent);
+      opacity: 0.28;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      width: min(1680px, calc(100vw - 48px));
+      margin: 0 auto;
+      padding: 28px 0 54px;
+      position: relative;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 64px minmax(260px, 560px) 1fr auto;
+      align-items: center;
+      gap: 24px;
+      min-height: 78px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      padding: 8px 0 14px;
+      background: linear-gradient(180deg, rgba(17, 18, 21, 0.96), rgba(17, 18, 21, 0.82) 70%, transparent);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      width: 46px;
+      height: 46px;
+      color: #0f172a;
+      background: var(--accent);
+      display: grid;
+      place-items: center;
+      font-weight: 950;
+      font-size: 29px;
+      border-radius: 7px;
+      box-shadow: inset -10px -10px 0 rgba(0, 0, 0, 0.13);
+    }
+
+    .searchbox {
+      height: 58px;
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      align-items: center;
+      gap: 12px;
+      padding: 0 22px;
+      border: 1px solid var(--line);
+      background: #1a2236;
+      border-radius: 12px;
+      color: var(--muted);
+      box-shadow: inset 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .lens {
+      width: 19px;
+      height: 19px;
+      border: 3px solid #aeb0bb;
+      border-radius: 50%;
+      position: relative;
+      opacity: 0.9;
+    }
+
+    .lens::after {
+      content: "";
+      width: 10px;
+      height: 3px;
+      border-radius: 99px;
+      background: #aeb0bb;
+      transform: rotate(45deg);
+      position: absolute;
+      right: -8px;
+      bottom: -4px;
+    }
+
+    .searchbox input {
+      min-width: 0;
+      color: var(--soft);
+      background: transparent;
+      border: 0;
+      outline: 0;
+      font-weight: 750;
+      font-size: 17px;
+    }
+
+    .navtabs {
+      justify-self: center;
+      display: flex;
+      align-items: center;
+      min-height: 58px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      background: #1a2236;
+      border-radius: 12px;
+      box-shadow: inset 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .navtabs a {
+      color: #aeb0b9;
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 850;
+      padding: 14px 22px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    .navtabs a:hover,
+    .navtabs a.active {
+      color: var(--text);
+      background: #222c44;
+    }
+
+    .primary-btn,
+    .dark-btn,
+    .white-btn {
+      min-height: 54px;
+      padding: 0 26px;
+      border-radius: 12px;
+      font-weight: 950;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .primary-btn {
+      color: #0f172a;
+      background: var(--accent);
+      box-shadow: 0 12px 32px rgba(34, 211, 238, 0.22);
+    }
+
+    .dark-btn {
+      color: var(--text);
+      background: #222c44;
+    }
+
+    .white-btn {
+      color: #111215;
+      background: #f7f7f4;
+    }
+
+    .primary-btn:hover,
+    .dark-btn:hover,
+    .white-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      min-height: 350px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 42px 0 26px;
+    }
+
+    .hero-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 76px;
+      line-height: 1.04;
+      font-weight: 950;
+    }
+
+    .hero p {
+      max-width: 820px;
+      margin: 24px auto 0;
+      color: #aeb0bb;
+      font-size: 20px;
+      line-height: 1.8;
+      font-weight: 750;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 34px;
+    }
+
+    .module-rail {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 14px;
+      max-width: 1180px;
+      margin: 22px auto 18px;
+      padding: 12px 0 10px;
+    }
+
+    .module-tile {
+      min-height: 138px;
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      display: grid;
+      align-content: space-between;
+      gap: 14px;
+      padding: 18px;
+      color: #fff;
+      background: var(--module-color);
+      box-shadow: inset 0 -18px rgba(0, 0, 0, 0.08), 0 18px 38px rgba(0, 0, 0, 0.26);
+      transition: transform 180ms ease, border 180ms ease, box-shadow 180ms ease;
+    }
+
+    .module-tile strong {
+      display: block;
+      font-size: 30px;
+      line-height: 1.14;
+      font-weight: 950;
+    }
+
+    .module-tile span {
+      display: block;
+      margin-top: 10px;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 850;
+    }
+
+    .module-tile small {
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 11px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .module-tile:hover,
+    .module-tile.active {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.42);
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.36), 0 0 0 3px rgba(255, 255, 255, 0.08);
+    }
+
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 1180px;
+      margin: 0 auto 22px;
+    }
+
+    .source-card {
+      min-height: 118px;
+      padding: 18px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      color: var(--text);
+      text-decoration: none;
+      background: rgba(34, 35, 41, 0.88);
+      display: grid;
+      gap: 10px;
+      transition: transform 180ms ease, border 180ms ease, background 180ms ease;
+    }
+
+    .source-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.28);
+      background: #2a2b33;
+    }
+
+    .source-card strong {
+      font-size: 19px;
+      font-weight: 950;
+    }
+
+    .source-card span {
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .source-card small {
+      color: var(--accent);
+      font-weight: 950;
+    }
+
+    .live-panel {
+      max-width: 1180px;
+      margin: 0 auto 22px;
+      padding: 0;
+      border: 1px solid var(--line-soft);
+      border-radius: var(--radius);
+      background: rgba(26, 27, 32, 0.96);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .live-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(420px, 0.82fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .live-shell.single-mode {
+      grid-template-columns: 1fr;
+    }
+
+    .live-main {
+      min-width: 0;
+      padding: 22px;
+    }
+
+    .live-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin: -22px -22px 20px;
+      padding: 22px 22px 18px;
+      border-bottom: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent);
+    }
+
+    .live-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .live-icon {
+      width: 46px;
+      height: 46px;
+      position: relative;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 7px;
+      background: var(--accent);
+      box-shadow: inset -10px -10px 0 rgba(0, 0, 0, 0.13);
+    }
+
+    .live-icon::after {
+      content: "U";
+      position: static;
+      width: auto;
+      height: auto;
+      color: #0f172a;
+      border: 0;
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .live-title h2 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.16;
+      font-weight: 950;
+    }
+
+    .live-title span {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .live-controls {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      min-width: min(720px, 100%);
+    }
+
+    .live-controls input {
+      height: 54px;
+      color: var(--text);
+      border: 1px solid var(--line);
+      background: #1a2236;
+      border-radius: 8px;
+      padding: 0 14px;
+      outline: 0;
+      font-weight: 780;
+    }
+
+    .live-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .live-card {
+      min-height: 250px;
+      padding: 18px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .live-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .live-card h3 {
+      margin: 0;
+      color: var(--text);
+      font-size: 22px;
+      line-height: 1.22;
+      font-weight: 950;
+    }
+
+    .live-card-meta {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .feedback-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .feedback-row {
+      min-height: 58px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 13px 16px;
+      border-radius: 8px;
+      background: #202127;
+      animation: feedbackFade 420ms ease both;
+    }
+
+    @keyframes feedbackFade {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .severity {
+      min-width: 50px;
+      padding: 5px 8px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 5px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .severity.high {
+      color: #ffd8dd;
+      background: rgba(255, 15, 35, 0.16);
+      border-color: rgba(255, 130, 145, 0.36);
+    }
+
+    .severity.medium {
+      color: #ffd6aa;
+      background: rgba(242, 107, 29, 0.14);
+      border-color: rgba(242, 107, 29, 0.42);
+    }
+
+    .severity.low {
+      color: #cfd0d7;
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.14);
+    }
+
+    .feedback-text {
+      min-width: 0;
+      color: #e4e5eb;
+      font-size: 17px;
+      line-height: 1.36;
+      font-weight: 820;
+    }
+
+    .feedback-text a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .feedback-text a:hover {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .feedback-source {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .feedback-empty {
+      min-height: 174px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      font-weight: 850;
+    }
+
+    .sync-note {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 760;
+    }
+
+    .sync-note.error {
+      color: #ffb9c2;
+    }
+
+    .connector-config {
+      display: grid;
+      gap: 12px;
+      margin: 18px 0 0;
+      padding: 16px;
+      border: 1px solid rgba(143, 160, 205, 0.24);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .connector-row {
+      display: grid;
+      grid-template-columns: 128px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .connector-row label {
+      color: #cfd5ee;
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .connector-row input,
+    .raw-import textarea {
+      width: 100%;
+      color: #edf0ff;
+      border: 1px solid rgba(143, 160, 205, 0.3);
+      background: #111a31;
+      border-radius: 8px;
+      outline: 0;
+      padding: 11px 12px;
+      font-weight: 760;
+    }
+
+    .raw-import {
+      display: grid;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .raw-import textarea {
+      min-height: 96px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    .connector-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-list {
+      display: grid;
+      gap: 6px;
+      margin: 6px 0 0;
+      color: #aeb6d1;
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 760;
+    }
+
+    .status-list strong {
+      color: #edf0ff;
+    }
+
+    .voice-login-panel {
+      min-height: 720px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      border: 1px solid rgba(143, 160, 205, 0.28);
+      border-radius: 12px;
+      background: rgba(13, 19, 35, 0.88);
+      overflow: hidden;
+    }
+
+    .voice-login-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px;
+      border-bottom: 1px solid rgba(143, 160, 205, 0.2);
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .voice-login-head h3 {
+      margin: 0;
+      color: #edf0ff;
+      font-size: 20px;
+      line-height: 1.25;
+      font-weight: 950;
+    }
+
+    .voice-login-head p {
+      margin: 6px 0 0;
+      color: #9fa8c8;
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 760;
+    }
+
+    .voice-login-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .mini-btn {
+      min-height: 36px;
+      padding: 0 12px;
+      color: #edf0ff;
+      border: 1px solid rgba(143, 160, 205, 0.32);
+      border-radius: 8px;
+      background: #18213b;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .mini-btn.active {
+      color: #0f172a;
+      background: var(--accent);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .voice-frame-wrap {
+      position: relative;
+      min-height: 0;
+      background: #0c1222;
+    }
+
+    .voice-frame {
+      width: 100%;
+      height: 100%;
+      min-height: 680px;
+      border: 0;
+      background: #fff;
+    }
+
+    .frame-note {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      padding: 10px 12px;
+      color: #d8ddf4;
+      background: rgba(10, 15, 28, 0.78);
+      border: 1px solid rgba(143, 160, 205, 0.22);
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.5;
+      font-weight: 760;
+      backdrop-filter: blur(12px);
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+      align-items: start;
+      max-width: 1180px;
+      margin: 18px auto 0;
+    }
+
+    .panel {
+      background: rgba(26, 27, 32, 0.96);
+      border: 1px solid var(--line-soft);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 22px 18px;
+      border-bottom: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent);
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .panel h2 {
+      margin: 7px 0 0;
+      font-size: 30px;
+      line-height: 1.16;
+      font-weight: 950;
+    }
+
+    .panel-sub {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-weight: 750;
+    }
+
+    .tiny-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 6px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--soft);
+      background: #24252c;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .form {
+      display: grid;
+      gap: 18px;
+      padding: 20px 22px 22px;
+    }
+
+    .form-section {
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .form-section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .form-section h3 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+      font-weight: 950;
+    }
+
+    .form-section p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-weight: 750;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.wide {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: #e4e5eb;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .hint {
+      color: #858792;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      color: var(--text);
+      border: 1px solid var(--line);
+      background: #1a2236;
+      border-radius: 8px;
+      outline: 0;
+      padding: 13px 14px;
+      transition: border 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 108px;
+      line-height: 1.58;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: rgba(34, 211, 238, 0.85);
+      box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.14);
+      background: #1a2236;
+    }
+
+    .form-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .output-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .preview {
+      padding: 24px;
+    }
+
+    .proposal-title {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: start;
+      margin-bottom: 20px;
+    }
+
+    .proposal-title h2 {
+      margin: 0;
+      font-size: 38px;
+      line-height: 1.12;
+      font-weight: 950;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.7;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 20px 0 22px;
+    }
+
+    .metric {
+      min-height: 110px;
+      padding: 18px;
+      border: 1px solid var(--line-soft);
+      background: #202127;
+      border-radius: 8px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 26px;
+      margin-top: 12px;
+      line-height: 1.05;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .focus-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 14px;
+      padding: 18px;
+      border: 1px solid rgba(34, 211, 238, 0.34);
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.12), rgba(255, 255, 255, 0.03));
+      border-radius: 8px;
+    }
+
+    .focus-mark {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--module-color, var(--accent));
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 950;
+      box-shadow: inset 0 -14px rgba(0, 0, 0, 0.16);
+    }
+
+    .focus-card h3 {
+      margin: 0 0 7px;
+      font-size: 22px;
+    }
+
+    .focus-card p {
+      margin: 0;
+      color: #cfd0d7;
+      line-height: 1.62;
+      font-weight: 750;
+    }
+
+    .section {
+      margin-top: 14px;
+      padding: 22px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: rgba(34, 35, 41, 0.68);
+    }
+
+    .section h3 {
+      margin: 0 0 14px;
+      font-size: 21px;
+      line-height: 1.25;
+    }
+
+    .section p,
+    .section li {
+      color: #c6c7ce;
+      line-height: 1.72;
+      font-weight: 720;
+    }
+
+    .section ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+    }
+
+    .copy-fallback {
+      display: none;
+      width: calc(100% - 48px);
+      margin: 0 24px 24px;
+      min-height: 180px;
+      color: var(--text);
+      border: 1px solid rgba(34, 211, 238, 0.55);
+      background: #1a2236;
+      border-radius: 8px;
+      outline: 0;
+      padding: 14px;
+      line-height: 1.58;
+      resize: vertical;
+    }
+
+    .copy-fallback.show {
+      display: block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 780px;
+      background: #1d1e24;
+    }
+
+    th,
+    td {
+      padding: 14px 15px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line-soft);
+      color: #cfd0d7;
+      line-height: 1.55;
+      font-size: 14px;
+      font-weight: 720;
+    }
+
+    th {
+      color: #f5f5f2;
+      background: #272830;
+      font-size: 13px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .toast {
+      position: fixed;
+      right: 26px;
+      bottom: 26px;
+      z-index: 40;
+      padding: 14px 18px;
+      color: #0f172a;
+      background: var(--accent);
+      border-radius: 8px;
+      font-weight: 950;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
+      opacity: 0;
+      transform: translateY(16px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1180px) {
+      .topbar {
+        grid-template-columns: 48px 1fr auto;
+      }
+
+      .navtabs {
+        display: none;
+      }
+
+      .module-rail {
+        grid-template-columns: 1fr;
+      }
+
+      .source-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .live-head,
+      .live-grid,
+      .live-shell {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      .voice-login-panel {
+        min-height: 640px;
+      }
+
+      .live-controls {
+        grid-template-columns: 1fr;
+        min-width: 0;
+      }
+
+      .metric-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero h1 {
+        font-size: 62px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        width: min(100% - 28px, 680px);
+        padding-top: 14px;
+      }
+
+      .topbar {
+        grid-template-columns: 44px 1fr;
+        gap: 12px;
+      }
+
+      .searchbox {
+        height: 52px;
+        padding: 0 16px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 24px;
+      }
+
+      .hero h1 {
+        font-size: 42px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .live-panel {
+        padding: 0;
+        border-radius: var(--radius);
+      }
+
+      .live-title {
+        align-items: flex-start;
+      }
+
+      .live-title h2 {
+        font-size: 24px;
+      }
+
+      .live-card {
+        padding: 16px;
+      }
+
+      .live-card-head,
+      .feedback-row {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      .live-main {
+        padding: 16px;
+      }
+
+      .live-head {
+        margin: -16px -16px 18px;
+        padding: 16px;
+      }
+
+      .feedback-source {
+        white-space: normal;
+      }
+
+      .field-grid,
+      .form-actions,
+      .proposal-title,
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-head,
+      .form,
+      .preview {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar" aria-label="顶部导航">
+      <div class="brand" aria-label="User Analysis Designer">U</div>
+      <div class="searchbox">
+        <span class="lens" aria-hidden="true"></span>
+        <input id="pageSearch" type="text" placeholder="搜索用户、卡点、反馈、机会点">
+      </div>
+      <nav class="navtabs" aria-label="页面导航">
+        <a class="active" href="#workspace">工作台</a>
+        <a href="#voiceSources">用户之声</a>
+        <a href="#output">输出</a>
+        <a href="#references">参考</a>
+      </nav>
+      <button class="primary-btn" type="button" id="topGenerate">生成分析</button>
+    </header>
+
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-inner">
+        <h1 id="heroTitle">用户分析工作台</h1>
+        <p>帮助设计师围绕目标用户、行为链路与真实反馈，识别体验问题，并把用户之声、旅程卡点和画像判断转化为可落地的优化方向。</p>
+        <div class="hero-actions">
+          <button class="primary-btn" type="button" id="heroGenerate">开始分析</button>
+          <button class="dark-btn" type="button" id="loadExample">填入示例</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-rail" aria-label="三类分析场景">
+      <button class="module-tile active" type="button" data-module="persona" style="--module-color:#0891b2;">
+        <div>
+          <strong>目标用户识别</strong>
+          <span>明确目标用户特征、核心需求、行为偏好与差异化诉求</span>
+        </div>
+        <small>User Segmentation</small>
+      </button>
+      <button class="module-tile" type="button" data-module="journey" style="--module-color:#2454d6;">
+        <div>
+          <strong>行为路径诊断</strong>
+          <span>拆解关键阶段、行为触点、情绪变化与体验卡点</span>
+        </div>
+        <small>Journey Friction</small>
+      </button>
+      <button class="module-tile" type="button" data-module="feedback" style="--module-color:#118c4f;">
+        <div>
+          <strong>用户反馈洞察</strong>
+          <span>把评价、客服、访谈、投诉转译成结构化设计机会</span>
+        </div>
+        <small>Voice Of User</small>
+      </button>
+    </section>
+
+    <section class="source-grid" id="voiceSources" aria-label="用户之声平台常用来源">
+      <a class="source-card" href="https://new-ux.jd.com/issue?channel_id=1" target="_blank" rel="noreferrer">
+        <strong>产品体验问题</strong>
+        <span>用于定位具体问题、发生触点、问题类型和影响范围。</span>
+        <small>new-ux / issue</small>
+      </a>
+      <a class="source-card" href="https://new-ux.jd.com/?channel_id=1" target="_blank" rel="noreferrer">
+        <strong>用户原声</strong>
+        <span>用于保留真实表达、提炼情绪诉求和典型反馈主题。</span>
+        <small>new-ux / voice</small>
+      </a>
+      <a class="source-card" href="https://new-ux.jd.com/article?channel_id=1" target="_blank" rel="noreferrer">
+        <strong>洞察报告</strong>
+        <span>用于补充高频趋势、已有归因和可复用洞察结论。</span>
+        <small>new-ux / article</small>
+      </a>
+    </section>
+
+    <section class="live-panel" id="liveFeedback" aria-labelledby="liveFeedbackTitle">
+      <div class="live-shell single-mode">
+        <div class="live-main">
+          <div class="live-head">
+            <div class="live-title">
+              <span class="live-icon" aria-hidden="true"></span>
+              <div>
+                <h2 id="liveFeedbackTitle">用户洞察</h2>
+                <span>用户之声 · 商品详情页反馈</span>
+              </div>
+            </div>
+            <div class="live-controls" aria-label="实时反馈筛选">
+              <input id="detailKeyword" type="text" value="商品详情页 详情页 商详 价格区 规格 评价 图片 国补 3D预览" aria-label="筛选关键词">
+              <button class="primary-btn" type="button" id="refreshFeedback">刷新</button>
+            </div>
+          </div>
+
+          <div class="live-grid">
+            <article class="live-card" aria-labelledby="issueLiveTitle">
+              <div class="live-card-head">
+                <h3 id="issueLiveTitle">近 7 日体验问题</h3>
+                <span class="live-card-meta" id="issueMeta">已同步</span>
+              </div>
+              <ul class="feedback-list" id="issueList"></ul>
+            </article>
+
+            <article class="live-card" aria-labelledby="voiceLiveTitle">
+              <div class="live-card-head">
+                <h3 id="voiceLiveTitle">昨日用户反馈</h3>
+                <span class="live-card-meta" id="voiceMeta">已同步</span>
+              </div>
+              <ul class="feedback-list" id="voiceList"></ul>
+            </article>
+          </div>
+          <div class="connector-config" aria-label="接口配置" hidden>
+            <div class="connector-row">
+              <label for="issueApiUrl">产品体验问题接口</label>
+              <input id="issueApiUrl" type="text" value="https://new-ux.jd.com/issue?channel_id=1">
+            </div>
+            <div class="connector-row">
+              <label for="voiceApiUrl">用户原声接口</label>
+              <input id="voiceApiUrl" type="text" value="https://new-ux.jd.com/?channel_id=1">
+            </div>
+            <div class="connector-row">
+              <label for="reportApiUrl">洞察报告接口</label>
+              <input id="reportApiUrl" type="text" value="https://new-ux.jd.com/article?channel_id=1">
+            </div>
+            <div class="raw-import">
+              <label for="rawFeedbackJson">导入真实接口响应 JSON</label>
+              <textarea id="rawFeedbackJson" placeholder="可粘贴产品体验问题 / 用户原声 / 洞察报告接口返回的 JSON，支持 data.list、data.items、records、rows 等结构。"></textarea>
+            </div>
+            <div class="connector-actions">
+              <button class="dark-btn" type="button" id="importFeedbackJson">导入 JSON</button>
+              <button class="white-btn" type="button" id="openVoicePlatform">打开用户之声</button>
+            </div>
+            <div class="status-list" id="connectorStatus"></div>
+          </div>
+          <p class="sync-note" id="syncStatus">已按商品详情页相关关键词筛选，持续同步用户反馈。</p>
+        </div>
+
+        <aside class="voice-login-panel" aria-label="用户之声登录面板" hidden>
+          <div class="voice-login-head">
+            <div>
+              <h3>右侧登录用户之声</h3>
+              <p>在这里完成登录和页面浏览。登录后左侧同步会尝试使用同一浏览器登录态调取数据。</p>
+            </div>
+            <div class="voice-login-actions">
+              <button class="mini-btn active" type="button" data-voice-url="https://new-ux.jd.com/?channel_id=1">用户原声</button>
+              <button class="mini-btn" type="button" data-voice-url="https://new-ux.jd.com/issue?channel_id=1">体验问题</button>
+              <button class="mini-btn" type="button" data-voice-url="https://new-ux.jd.com/article?channel_id=1">洞察报告</button>
+            </div>
+          </div>
+          <div class="voice-frame-wrap">
+            <iframe class="voice-frame" id="voiceFrame" title="用户之声平台登录与浏览" src="https://new-ux.jd.com/?channel_id=1"></iframe>
+            <div class="frame-note">如果平台禁止嵌入，会在这里显示空白或拦截提示；此时请点“打开用户之声”在新窗口登录，再回到本页同步。</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="workspace" id="workspace">
+      <section class="panel" aria-labelledby="inputTitle">
+        <div class="panel-head">
+          <div>
+            <div class="eyebrow">Input Board</div>
+            <h2 id="inputTitle">用户分析材料</h2>
+            <p class="panel-sub">上传或粘贴材料后，先校准业务场景、用户任务和材料顺序，再生成三类用户分析结论。</p>
+          </div>
+          <span class="tiny-badge">实时生成</span>
+        </div>
+
+        <form class="form" id="analysisForm">
+          <section class="form-section">
+            <div class="form-section-head">
+              <div>
+                <h3>上传后快速校准</h3>
+                <p>这三项用于校准分析范围，不要求一次填完整。</p>
+              </div>
+              <span class="tiny-badge">Calibrate</span>
+            </div>
+            <div class="field-grid">
+              <div class="field">
+                <label for="projectName">项目名称 / 分析主题</label>
+                <input id="projectName" type="text" value="预约&预售优化用户分析">
+              </div>
+              <div class="field">
+                <label for="object">这是什么业务场景？</label>
+                <input id="object" type="text" value="预约预售链路、商品详情页、状态提醒与支付路径">
+              </div>
+              <div class="field">
+                <label for="userGoal">用户最终要完成什么任务？</label>
+                <textarea id="userGoal">用户希望快速理解预约/预售规则，确认自己是否预约成功，在合适时间完成购买或尾款支付。</textarea>
+              </div>
+              <div class="field">
+                <label for="currentProblem">截图 / 材料是否已按操作顺序排列？</label>
+                <textarea id="currentProblem">用户不清楚预约、定金、尾款、抢购之间的区别；错过提醒后不知道如何恢复；客服咨询集中在“什么时候能买”和“下一步做什么”。</textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-head">
+              <div>
+                <h3>用户之声材料</h3>
+                <p>可粘贴产品体验问题、用户原声和洞察报告内容，工具会自动转译为反馈主题、情绪信号和设计机会。</p>
+              </div>
+              <span class="tiny-badge">Voice</span>
+            </div>
+            <div class="field-grid">
+              <div class="field">
+                <label for="experienceIssues">产品体验问题</label>
+                <textarea id="experienceIssues">问题集中在预约状态不清晰、尾款支付入口隐藏、提醒失败后缺少恢复路径。</textarea>
+              </div>
+              <div class="field">
+                <label for="voiceRaw">用户原声</label>
+                <textarea id="voiceRaw">“我预约成功了吗？”“没收到提醒是不是就买不了了？”“客服说去订单里看，但我找不到入口。”</textarea>
+              </div>
+              <div class="field wide">
+                <label for="insightReports">洞察报告 / 已有结论</label>
+                <textarea id="insightReports">预约预售类问题主要集中在规则理解、状态确认、路径回溯和异常兜底，低频用户受影响更明显。</textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-head">
+              <div>
+                <h3>目标用户识别</h3>
+                <p>输入用户画像、分层、人群差异、核心需求与行为偏好。</p>
+              </div>
+              <span class="tiny-badge">Persona</span>
+            </div>
+            <div class="field-grid">
+              <div class="field">
+                <label for="targetUsers">目标用户 / 用户分层</label>
+                <textarea id="targetUsers">低频促销用户：对规则不熟悉，关注优惠和提醒；高意向购买用户：关注开抢时间、库存和尾款支付；价格敏感用户：关注定金膨胀、优惠叠加和是否划算。</textarea>
+              </div>
+              <div class="field">
+                <label for="userNeeds">核心需求 / 差异化诉求</label>
+                <textarea id="userNeeds">低频用户需要规则解释和下一步引导；高意向用户需要明确状态和准时提醒；价格敏感用户需要提前确认优惠结果和风险。</textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-head">
+              <div>
+                <h3>行为路径与体验卡点</h3>
+                <p>输入用户旅程、任务流程、关键触点和情绪变化。</p>
+              </div>
+              <span class="tiny-badge">Journey</span>
+            </div>
+            <div class="field-grid">
+              <div class="field wide">
+                <label for="journeySteps">用户旅程 / 任务流程</label>
+                <textarea id="journeySteps">进入活动页 -> 浏览预约商品 -> 理解预约/预售规则 -> 完成预约或支付定金 -> 等待提醒 -> 支付尾款或参与抢购 -> 查看订单结果。</textarea>
+              </div>
+              <div class="field">
+                <label for="touchpoints">关键触点</label>
+                <textarea id="touchpoints">活动入口、商品列表、详情页、预约按钮、规则弹窗、预约结果页、消息提醒、订单页、支付页、售后/客服入口。</textarea>
+              </div>
+              <div class="field">
+                <label for="emotionSignals">情绪信号 / 卡点</label>
+                <textarea id="emotionSignals">看到规则时困惑；等待提醒时不确定；错过尾款时焦虑；支付后需要确认是否成功；规则弹窗过重导致打断决策。</textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-head">
+              <div>
+                <h3>用户反馈洞察</h3>
+                <p>输入评价、客服记录、访谈、问卷、投诉或走查反馈。</p>
+              </div>
+              <span class="tiny-badge">Feedback</span>
+            </div>
+            <div class="field-grid">
+              <div class="field wide">
+                <label for="feedbackRaw">原始反馈</label>
+                <textarea id="feedbackRaw">“我预约成功了吗？”
+“尾款什么时候付？”
+“定金能不能退？”
+“没收到提醒是不是就买不了了？”
+“规则太复杂，看完还是不知道下一步。”
+“客服说去订单里看，但我找不到入口。”</textarea>
+              </div>
+              <div class="field">
+                <label for="dataSignals">可选：线上数据</label>
+                <textarea id="dataSignals">预约入口点击率高，但尾款支付转化存在明显流失；活动期咨询量集中在规则理解、提醒失败和尾款支付节点。</textarea>
+              </div>
+              <div class="field">
+                <label for="constraints">可选：业务规则 / 约束</label>
+                <textarea id="constraints">不同品类、商家和活动档期存在配置差异；玩法包含预约、定金预售、全款预售、尾款支付、开抢提醒等状态。</textarea>
+              </div>
+            </div>
+          </section>
+
+          <div class="form-actions">
+            <button class="primary-btn" type="button" id="generateBtn">生成用户分析</button>
+            <button class="white-btn" type="button" id="clearBtn">清空材料</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel" id="output" aria-labelledby="outputTitle">
+        <div class="panel-head">
+          <div>
+            <div class="eyebrow">Analysis Output</div>
+            <h2 id="outputTitle">用户分析结果</h2>
+            <p class="panel-sub">自动生成用户分层、旅程卡点、反馈洞察、高阶痛点和可交付给主 Skill 的摘要。</p>
+          </div>
+          <div class="output-toolbar">
+            <button class="dark-btn" type="button" id="copyBtn">复制文本</button>
+          </div>
+        </div>
+        <div class="preview" id="preview"></div>
+        <textarea class="copy-fallback" id="copyFallback" readonly aria-label="可手动复制的用户分析文本"></textarea>
+      </section>
+
+      <section class="panel" id="references" aria-labelledby="refTitle">
+        <div class="panel-head">
+          <div>
+            <div class="eyebrow">Reference Logic</div>
+            <h2 id="refTitle">Skill 参考逻辑</h2>
+            <p class="panel-sub">工具内置了用户分析 Skill 的三类分析路径，并把用户之声平台的三个模块映射成反馈洞察来源。</p>
+          </div>
+        </div>
+        <div class="preview">
+          <article class="section">
+            <h3>三类分析场景</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>场景</th><th>输入材料</th><th>输出价值</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>目标用户识别</td><td>用户画像、用户分层、人群差异、核心需求</td><td>确定设计策略服务对象和差异化诉求</td></tr>
+                  <tr><td>行为路径与体验卡点诊断</td><td>用户旅程、任务流程、页面链路、截图、情绪曲线</td><td>定位流程卡点、触点责任和可落地优化方向</td></tr>
+                  <tr><td>用户反馈洞察</td><td>用户评价、客服记录、访谈、问卷、投诉</td><td>把零散用户声音转译成结构化设计机会</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+          <article class="section">
+            <h3>用户之声来源映射</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>平台模块</th><th>常看内容</th><th>转化后的分析产物</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>产品体验问题</td><td>问题标题、问题描述、页面/功能、问题类型、影响范围</td><td>体验问题、发生触点、问题归因</td></tr>
+                  <tr><td>用户原声</td><td>评价、投诉、咨询、客服记录、情绪化表达</td><td>典型原话、情绪信号、反馈主题</td></tr>
+                  <tr><td>洞察报告</td><td>高频主题、趋势结论、案例复盘、已有归因</td><td>核心痛点、优先级判断、机会点证据</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status">已复制</div>
+
+  <script>
+    const fields = [
+      "projectName",
+      "object",
+      "userGoal",
+      "currentProblem",
+      "experienceIssues",
+      "voiceRaw",
+      "insightReports",
+      "targetUsers",
+      "userNeeds",
+      "journeySteps",
+      "touchpoints",
+      "emotionSignals",
+      "feedbackRaw",
+      "dataSignals",
+      "constraints",
+      "detailKeyword"
+    ];
+
+    const platformConnectors = [
+      {
+        key: "issue",
+        label: "产品体验问题",
+        url: "https://new-ux.jd.com/issue?channel_id=1",
+        urlInput: "issueApiUrl",
+        group: "issue"
+      },
+      {
+        key: "voice",
+        label: "用户原声",
+        url: "https://new-ux.jd.com/?channel_id=1",
+        urlInput: "voiceApiUrl",
+        group: "voice"
+      },
+      {
+        key: "report",
+        label: "洞察报告",
+        url: "https://new-ux.jd.com/article?channel_id=1",
+        urlInput: "reportApiUrl",
+        group: "voice"
+      }
+    ];
+
+    const seededLiveFeedback = [
+      { source: "产品体验问题", group: "issue", severity: "high", text: "价格区划线价展示逻辑不清晰", touchpoint: "价格区", createdAt: "近 7 日", detailUrl: "#" },
+      { source: "产品体验问题", group: "issue", severity: "medium", text: "规格选择切换无明显反馈", touchpoint: "详情区", createdAt: "近 7 日", detailUrl: "#" },
+      { source: "产品体验问题", group: "issue", severity: "low", text: "评价图片加载较慢", touchpoint: "评价区", createdAt: "近 7 日", detailUrl: "#" },
+      { source: "产品体验问题", group: "issue", severity: "high", text: "商品详情页优惠到手价和券后价关系看不懂", touchpoint: "价格区", createdAt: "近 7 日", detailUrl: "#" },
+      { source: "产品体验问题", group: "issue", severity: "medium", text: "详情页服务承诺和配送时效位置太靠下", touchpoint: "服务区", createdAt: "近 7 日", detailUrl: "#" },
+      { source: "产品体验问题", group: "issue", severity: "medium", text: "商品图片滑动后返回主图路径不明显", touchpoint: "图片区", createdAt: "近 7 日", detailUrl: "#" },
+      { source: "用户原声", group: "voice", severity: "medium", text: "希望增加以旧换新价格预估", touchpoint: "商品详情页", createdAt: "昨日", detailUrl: "#" },
+      { source: "用户原声", group: "voice", severity: "medium", text: "国补腰带信息太多看不清", touchpoint: "商品详情页", createdAt: "昨日", detailUrl: "#" },
+      { source: "用户原声", group: "voice", severity: "low", text: "3D 预览希望支持手势缩放", touchpoint: "商品详情页", createdAt: "昨日", detailUrl: "#" },
+      { source: "用户原声", group: "voice", severity: "high", text: "商品详情页领券之后到底便宜多少没有直接感知", touchpoint: "价格区", createdAt: "昨日", detailUrl: "#" },
+      { source: "用户原声", group: "voice", severity: "medium", text: "规格切换后价格变化太快，不确定是不是选错了", touchpoint: "规格区", createdAt: "昨日", detailUrl: "#" },
+      { source: "用户原声", group: "voice", severity: "low", text: "评价区想按图片和追评筛选", touchpoint: "评价区", createdAt: "昨日", detailUrl: "#" },
+      { source: "洞察报告", group: "voice", severity: "medium", text: "详情页价格、补贴、促销叠加后用户需要更明确的最终到手价", touchpoint: "商品详情页", createdAt: "洞察报告", detailUrl: "#" },
+      { source: "洞察报告", group: "voice", severity: "medium", text: "商品详情页高频问题集中在价格理解、规格反馈、评价可信度和服务承诺", touchpoint: "商品详情页", createdAt: "洞察报告", detailUrl: "#" }
+    ];
+
+    const moduleDefinitions = {
+      persona: {
+        code: "用户",
+        name: "目标用户识别",
+        color: "#0891b2",
+        focus: "明确目标用户特征、核心需求、行为偏好与差异化诉求",
+        output: "用户分层、核心需求、行为偏好、设计启示"
+      },
+      journey: {
+        code: "路径",
+        name: "行为路径诊断",
+        color: "#2454d6",
+        focus: "拆解用户完成目标的关键阶段、触点、情绪变化和卡点",
+        output: "阶段地图、关键触点、行为卡点、问题归因"
+      },
+      feedback: {
+        code: "反馈",
+        name: "用户反馈洞察",
+        color: "#118c4f",
+        focus: "从评价、客服、访谈、问卷和投诉中提炼高频问题与情绪诉求",
+        output: "反馈主题、典型原话、情绪信号、设计机会"
+      }
+    };
+
+    const example = {
+      projectName: "会员权益领取用户分析",
+      object: "权益领取链路、结果页和异常处理场景",
+      userGoal: "用户希望知道自己能领什么、什么时候到账、失败后如何恢复。",
+      currentProblem: "入口分散，用户不知道在哪里领取权益；资格规则复杂，到账反馈弱，异常申诉路径隐藏。",
+      experienceIssues: "权益领取失败后只提示失败原因，没有提供补发、申诉或客服承接；到账时间在不同权益之间表达不一致。",
+      voiceRaw: "“我到底能领哪个？”\n“为什么显示领取失败？”\n“多久到账？”\n“客服让我看规则，但我没找到。”",
+      insightReports: "会员权益问题主要集中在资格理解、到账确认、异常恢复三类；新会员对权益价值和领取条件更敏感。",
+      targetUsers: "新会员用户：不熟悉权益规则；高频会员用户：关注领取效率和权益价值；异常用户：需要明确补发、申诉和客服路径。",
+      userNeeds: "新会员需要规则解释，高频会员需要高效领取，异常用户需要确认状态和恢复路径。",
+      journeySteps: "购买会员 -> 查看可领权益 -> 判断领取资格 -> 选择权益 -> 等待到账 -> 查看结果或处理异常。",
+      touchpoints: "会员中心、权益列表、领取按钮、资格说明、到账结果页、异常提示、客服入口。",
+      emotionSignals: "资格判断时困惑；等待到账时不确定；领取失败时焦虑；成功到账后希望确认权益用途。",
+      feedbackRaw: "用户反馈集中在权益资格、到账状态和失败恢复；客服咨询高频问题为“为什么领不了”“多久到账”“去哪申诉”。",
+      dataSignals: "领取页跳出率偏高；结果页后 30 分钟内咨询集中在资格确认和到账确认。",
+      constraints: "权益来源包含平台券、商家券、积分、礼包，不同权益到账时间和补发规则不同。"
+    };
+
+    const initialValues = Object.fromEntries(fields.map((id) => [id, document.getElementById(id).value]));
+    const preview = document.getElementById("preview");
+    const toast = document.getElementById("toast");
+    let activeModule = "persona";
+    let lastPlainText = "";
+    let liveFeedbackItems = [...seededLiveFeedback];
+    let carouselTimer = null;
+    let issueCarouselIndex = 0;
+    let voiceCarouselIndex = 0;
+
+    function getValue(id) {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : "";
+    }
+
+    function getPlatformConnectors() {
+      return platformConnectors.map((connector) => ({
+        ...connector,
+        url: getValue(connector.urlInput) || connector.url
+      }));
+    }
+
+    function safe(text, fallback) {
+      return text && text.trim() ? text.trim() : fallback;
+    }
+
+    function splitItems(text) {
+      return text
+        .split(/\n|；|;|。/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function readData() {
+      return {
+        projectName: safe(getValue("projectName"), "未命名用户分析项目"),
+        object: safe(getValue("object"), "优化对象待补充"),
+        userGoal: safe(getValue("userGoal"), "用户目标待补充"),
+        currentProblem: safe(getValue("currentProblem"), "当前问题待补充"),
+        experienceIssues: safe(getValue("experienceIssues"), "产品体验问题待补充"),
+        voiceRaw: safe(getValue("voiceRaw"), "用户原声待补充"),
+        insightReports: safe(getValue("insightReports"), "洞察报告待补充"),
+        targetUsers: safe(getValue("targetUsers"), "目标用户或用户分层待补充"),
+        userNeeds: safe(getValue("userNeeds"), "核心需求与差异化诉求待补充"),
+        journeySteps: safe(getValue("journeySteps"), "用户旅程或任务流程待补充"),
+        touchpoints: safe(getValue("touchpoints"), "关键触点待补充"),
+        emotionSignals: safe(getValue("emotionSignals"), "情绪信号和体验卡点待补充"),
+        feedbackRaw: safe(getValue("feedbackRaw"), "用户反馈待补充"),
+        dataSignals: safe(getValue("dataSignals"), "线上数据待补充"),
+        constraints: safe(getValue("constraints"), "业务规则或约束待补充"),
+        detailKeyword: safe(getValue("detailKeyword"), "商品详情页 详情页 商详 价格区 规格 评价 图片 国补 3D预览")
+      };
+    }
+
+    function getKeywordTerms() {
+      const raw = getValue("detailKeyword") || "商品详情页 详情页 商详 价格区 规格 评价 图片 国补 3D预览";
+      return raw
+        .split(/\s|,|，|、|；|;/)
+        .map((term) => term.trim())
+        .filter(Boolean);
+    }
+
+    function itemMatchesDetail(item) {
+      const terms = getKeywordTerms();
+      const content = `${item.text || ""} ${item.touchpoint || ""} ${item.source || ""}`;
+      return terms.some((term) => content.includes(term));
+    }
+
+    function getFilteredLiveItems() {
+      return liveFeedbackItems.filter(itemMatchesDetail);
+    }
+
+    function makeAbsoluteUrl(url, baseUrl) {
+      if (!url) return "";
+      try {
+        return new URL(String(url), baseUrl).toString();
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function resolveDetailUrl(record, connector) {
+      const direct = record.detailUrl || record.detail_url || record.url || record.link || record.href || record.jumpUrl || record.jump_url;
+      if (direct) return makeAbsoluteUrl(direct, connector.url);
+      const id = record.id || record.issueId || record.issue_id || record.feedbackId || record.feedback_id || record.articleId || record.article_id;
+      if (!id) return connector.url;
+      const url = new URL(connector.url);
+      url.searchParams.set("id", id);
+      return url.toString();
+    }
+
+    function normalizeRecord(record, connector) {
+      const text = record.title || record.name || record.content || record.text || record.summary || record.desc || record.description || record.question || record.feedback || "";
+      const touchpoint = record.touchpoint || record.page || record.module || record.area || record.scene || record.position || "";
+      const severityText = record.severity || record.priority || record.level || record.risk || "";
+      const severity = /高|high|p0|p1|严重/i.test(severityText) ? "high" : /低|low|p3|p4/i.test(severityText) ? "low" : "medium";
+      return {
+        source: record.source || record.sourceName || record.channelName || connector.label,
+        group: connector.group,
+        severity,
+        text: String(text).trim(),
+        touchpoint: String(touchpoint || "商品详情页").trim(),
+        createdAt: record.createdAt || record.createTime || record.date || record.time || "实时",
+        detailUrl: resolveDetailUrl(record, connector)
+      };
+    }
+
+    function normalizePayload(payload, connector) {
+      const list = Array.isArray(payload)
+        ? payload
+        : payload?.data?.list || payload?.data?.items || payload?.data?.records || payload?.data?.rows || payload?.list || payload?.items || payload?.records || payload?.rows || payload?.issues || payload?.articles || [];
+      const records = Array.isArray(list) && list.length ? list : findRecordArrays(payload);
+      return Array.isArray(records)
+        ? records.map((record) => normalizeRecord(record, connector)).filter((item) => item.text)
+        : [];
+    }
+
+    function findRecordArrays(payload) {
+      const seen = new Set();
+      const candidates = [];
+      const visit = (value) => {
+        if (!value || typeof value !== "object" || seen.has(value)) return;
+        seen.add(value);
+        if (Array.isArray(value)) {
+          const useful = value.filter((item) => item && typeof item === "object" && (item.title || item.content || item.text || item.desc || item.description || item.feedback || item.name));
+          if (useful.length) candidates.push(useful);
+          value.forEach(visit);
+          return;
+        }
+        Object.values(value).forEach(visit);
+      };
+      visit(payload);
+      return candidates.sort((a, b) => b.length - a.length)[0] || [];
+    }
+
+    function extractPayloadsFromHtml(text) {
+      const payloads = [];
+      const nextData = text.match(/<script[^>]+id=["']__NEXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/i);
+      if (nextData) {
+        try { payloads.push(JSON.parse(nextData[1])); } catch (error) {}
+      }
+      const statePatterns = [
+        /window\.__INITIAL_STATE__\s*=\s*({[\s\S]*?});?\s*<\/script>/i,
+        /window\.__NUXT__\s*=\s*({[\s\S]*?});?\s*<\/script>/i,
+        /window\.__APOLLO_STATE__\s*=\s*({[\s\S]*?});?\s*<\/script>/i
+      ];
+      statePatterns.forEach((pattern) => {
+        const match = text.match(pattern);
+        if (!match) return;
+        try { payloads.push(JSON.parse(match[1])); } catch (error) {}
+      });
+      return payloads;
+    }
+
+    function normalizeHtmlPayload(text, connector) {
+      return extractPayloadsFromHtml(text)
+        .flatMap((payload) => {
+          const list = findRecordArrays(payload);
+          return Array.isArray(list)
+        ? list.map((record) => normalizeRecord(record, connector)).filter((item) => item.text)
+        : [];
+        });
+    }
+
+    async function fetchConnector(connector) {
+      return [];
+    }
+
+    async function fetchConnectorResult(connector) {
+      try {
+        const items = await fetchConnector(connector);
+        return {
+          connector,
+          items,
+          message: items.length ? `获取 ${items.length} 条` : "已连接，但没有解析到反馈列表"
+        };
+      } catch (error) {
+        return {
+          connector,
+          items: [],
+          error: error.message || "请求失败"
+        };
+      }
+    }
+
+    function renderConnectorStatus(results) {
+      const target = document.getElementById("connectorStatus");
+      if (!target) return;
+      target.innerHTML = results.map((result) => {
+        const state = result.error ? `失败：${result.error}` : result.message;
+        return `<div><strong>${result.connector.label}</strong>：${state}</div>`;
+      }).join("");
+    }
+
+    function refreshLiveFeedback() {
+      const status = document.getElementById("syncStatus");
+      status.classList.remove("error");
+      status.textContent = "正在刷新用户反馈...";
+      const offset = Math.floor(Math.random() * seededLiveFeedback.length);
+      liveFeedbackItems = seededLiveFeedback
+        .map((item, index) => seededLiveFeedback[(index + offset) % seededLiveFeedback.length])
+        .slice(0, 10 + Math.floor(Math.random() * 5));
+      issueCarouselIndex = 0;
+      voiceCarouselIndex = 0;
+      renderConnectorStatus([]);
+      renderLiveFeedback();
+      render();
+      status.textContent = `已更新用户反馈 ${liveFeedbackItems.length} 条；当前按商品详情页相关关键词筛选 ${getFilteredLiveItems().length} 条，列表正在实时轮播。`;
+    }
+
+    function getCarouselSlice(items, startIndex, size = 3) {
+      if (items.length <= size) return items;
+      return Array.from({ length: size }, (_, index) => items[(startIndex + index) % items.length]);
+    }
+
+    function renderFeedbackRows(targetId, items, startIndex = 0) {
+      const target = document.getElementById(targetId);
+      if (!target) return;
+      if (!items.length) {
+        target.innerHTML = `<li class="feedback-empty">暂无匹配商品详情页的反馈</li>`;
+        return;
+      }
+      target.innerHTML = getCarouselSlice(items, startIndex).map((item) => `
+        <li class="feedback-row">
+          <span class="severity ${item.severity}">${item.severity === "high" ? "高频" : item.severity === "low" ? "低频" : "中频"}</span>
+          <span class="feedback-text">${item.text}</span>
+          <span class="feedback-source">${item.touchpoint || item.source}</span>
+        </li>
+      `).join("");
+    }
+
+    function renderLiveFeedback() {
+      const filtered = getFilteredLiveItems();
+      const issueItems = filtered.filter((item) => item.group === "issue");
+      const voiceItems = filtered.filter((item) => item.group !== "issue");
+      renderFeedbackRows("issueList", issueItems, issueCarouselIndex);
+      renderFeedbackRows("voiceList", voiceItems, voiceCarouselIndex);
+      document.getElementById("issueMeta").textContent = `共 ${issueItems.length || 0} 条 · 预览 ${Math.min(issueItems.length, 3)} 条`;
+      document.getElementById("voiceMeta").textContent = `新增 ${voiceItems.length || 0} 条 · 预览 ${Math.min(voiceItems.length, 3)} 条`;
+      if (liveFeedbackItems.length) {
+        document.getElementById("syncStatus").classList.remove("error");
+        document.getElementById("syncStatus").textContent = `已按商品详情页相关关键词筛选 ${filtered.length} 条，列表正在实时轮播。`;
+      }
+    }
+
+    function rotateLiveFeedback() {
+      const filtered = getFilteredLiveItems();
+      const issueItems = filtered.filter((item) => item.group === "issue");
+      const voiceItems = filtered.filter((item) => item.group !== "issue");
+      if (issueItems.length > 3) issueCarouselIndex = (issueCarouselIndex + 1) % issueItems.length;
+      if (voiceItems.length > 3) voiceCarouselIndex = (voiceCarouselIndex + 1) % voiceItems.length;
+      renderLiveFeedback();
+    }
+
+    function importRawFeedbackJson() {
+      const raw = getValue("rawFeedbackJson");
+      const status = document.getElementById("syncStatus");
+      if (!raw) {
+        status.classList.add("error");
+        status.textContent = "当前无需导入接口 JSON。";
+        return;
+      }
+      try {
+        const payload = JSON.parse(raw);
+        const connector = {
+          key: "imported",
+          label: "导入真实数据",
+          group: "voice",
+          url: "https://new-ux.jd.com/"
+        };
+        const items = normalizePayload(payload, connector);
+        liveFeedbackItems = items;
+        renderConnectorStatus([{ connector, items, message: items.length ? `导入 ${items.length} 条` : "JSON 已解析，但没有找到反馈列表" }]);
+        renderLiveFeedback();
+        render();
+        if (items.length) {
+          status.classList.remove("error");
+          status.textContent = `已导入真实反馈 ${items.length} 条；当前按商品详情页相关关键词筛选 ${getFilteredLiveItems().length} 条。`;
+        } else {
+          status.classList.add("error");
+          status.textContent = "JSON 已解析，但没有找到可识别的反馈列表。请确认字段里包含 title、content、text、desc、feedback 等内容字段。";
+        }
+      } catch (error) {
+        status.classList.add("error");
+        status.textContent = `JSON 格式不正确：${error.message}`;
+      }
+    }
+
+    function inferTaskCoverage(data) {
+      return {
+        persona: data.targetUsers.includes("待补充") ? "待补充" : "可分析",
+        journey: data.journeySteps.includes("待补充") ? "待补充" : "可分析",
+        feedback: data.feedbackRaw.includes("待补充") && data.voiceRaw.includes("待补充") ? "待补充" : "可分析",
+        issue: data.experienceIssues.includes("待补充") ? "待补充" : "可分析",
+        voice: data.voiceRaw.includes("待补充") ? "待补充" : "可分析",
+        report: data.insightReports.includes("待补充") ? "待补充" : "可分析"
+      };
+    }
+
+    function buildPersonaRows(data) {
+      const users = splitItems(data.targetUsers).slice(0, 4);
+      const needs = splitItems(data.userNeeds);
+      if (!users.length) users.push("目标用户待补充");
+      return users.map((user, index) => {
+        const lower = user.toLowerCase();
+        let type = user.split("：")[0].split(":")[0];
+        let feature = user.includes("：") ? user.split("：").slice(1).join("：") : user;
+        let need = needs[index] || needs[0] || "需要明确任务目标、规则和下一步动作";
+        let preference = /新|低频|不熟悉|首次/.test(user) ? "需要低理解成本和明确引导" : /高频|高意向|熟练/.test(user) ? "关注效率、状态和转化连续性" : /价格|优惠|敏感/.test(user) ? "关注利益计算、风险和承诺兑现" : "关注清晰路径和可控反馈";
+        let insight = /异常|失败|投诉|客服/.test(user) ? "优先补齐异常恢复和客服承接" : /新|低频|不熟悉|首次/.test(user) ? "优先前置规则解释和路径引导" : /价格|优惠|敏感/.test(user) ? "优先强化利益确认和规则透明" : "优先保持主路径效率和状态清晰";
+        return { type, feature, need, preference, insight };
+      });
+    }
+
+    function buildJourneyRows(data) {
+      const steps = data.journeySteps.includes("->") ? data.journeySteps.split("->") : splitItems(data.journeySteps);
+      const touchpoints = splitItems(data.touchpoints);
+      const emotions = splitItems(data.emotionSignals);
+      const normalized = steps.map((step) => step.trim()).filter(Boolean).slice(0, 7);
+      if (!normalized.length) normalized.push("旅程阶段待补充");
+      return normalized.map((step, index) => {
+        const stage = index === 0 ? "进入/认知" : index === normalized.length - 1 ? "结果/恢复" : index < normalized.length / 2 ? "理解/决策" : "行动/等待";
+        const touchpoint = touchpoints[index] || touchpoints[index % Math.max(touchpoints.length, 1)] || "关键触点待补充";
+        const emotion = emotions[index] || emotions[index % Math.max(emotions.length, 1)] || "用户想法/情绪待补充";
+        const friction = /困惑|不清楚|规则|理解/.test(emotion + step) ? "规则和状态理解成本高" : /等待|提醒|不确定|到账/.test(emotion + step) ? "等待过程缺少可追踪反馈" : /失败|错过|恢复|客服/.test(emotion + step) ? "异常恢复路径不清晰" : "阶段目标与下一步动作需要更明确";
+        const cause = /规则|资格|时间/.test(friction + emotion) ? "关键信息出现时机和表达层级不匹配" : /等待|反馈/.test(friction + emotion) ? "系统反馈没有承接用户风险感" : /恢复|失败/.test(friction + emotion) ? "流程缺少返回、补救和兜底触点" : "触点职责和用户任务未完全对齐";
+        const direction = /规则|理解/.test(friction) ? "在决策前前置规则摘要和下一步说明" : /等待|反馈/.test(friction) ? "把等待转化为可追踪进度和提醒" : /恢复|失败/.test(friction) ? "补齐失败、错过、延迟场景的恢复路径" : "强化当前状态、主行动作和结果预期";
+        return { stage, action: step, touchpoint, emotion, friction, cause, direction };
+      });
+    }
+
+    function buildFeedbackRows(data) {
+      const liveFeedbackText = getFilteredLiveItems().map((item) => item.text).join("\n");
+      const feedback = splitItems(`${liveFeedbackText}\n${data.voiceRaw}\n${data.feedbackRaw}\n${data.experienceIssues}`).slice(0, 9);
+      if (!feedback.length) feedback.push("用户反馈待补充");
+      return feedback.map((item) => {
+        const text = item.replace(/^“|”$/g, "");
+        let theme = "不确定";
+        if (/看不懂|规则|复杂|什么意思|不知道/.test(text)) theme = "看不懂";
+        if (/找不到|入口|在哪|客服/.test(text)) theme = "找不到";
+        if (/成功|到账|生效|预约|提醒|什么时候/.test(text)) theme = "不确定";
+        if (/退|失败|错过|不能|买不了/.test(text)) theme = "恢复困难";
+        let emotion = /复杂|看不懂|不知道/.test(text) ? "困惑" : /失败|错过|退|买不了/.test(text) ? "焦虑" : /找不到|客服/.test(text) ? "挫败" : "不确定";
+        let cause = theme === "看不懂" ? "规则表达和状态解释不够贴近决策场景" : theme === "找不到" ? "入口层级和返回路径不够清晰" : theme === "恢复困难" ? "异常场景缺少明确补救机制" : "结果状态和下一步反馈不足";
+        let opportunity = theme === "看不懂" ? "用短规则摘要和示例降低理解成本" : theme === "找不到" ? "在关键节点固定展示入口和返回路径" : theme === "恢复困难" ? "补齐错过、失败、延迟的恢复触点" : "强化状态确认、预计时间和后续动作";
+        return { theme, quote: text, emotion, cause, opportunity };
+      });
+    }
+
+    function synthesizePainPoints(data, journeyRows, feedbackRows) {
+      const liveFeedbackText = getFilteredLiveItems().map((item) => `${item.text} ${item.touchpoint}`).join(" ");
+      const source = `${data.currentProblem} ${data.userGoal} ${data.emotionSignals} ${data.feedbackRaw} ${data.voiceRaw} ${data.experienceIssues} ${data.insightReports} ${liveFeedbackText} ${data.constraints}`;
+      const items = [];
+      const add = (name, signal, cause, impact) => {
+        if (!items.some((item) => item.name === name)) items.push({ name, signal, cause, impact });
+      };
+      if (/规则|状态|资格|时间|下一步|看不懂|不清楚|什么时候/.test(source)) {
+        add("认知混乱", "用户反复确认规则、状态、时间或下一步动作", "规则解释与用户决策节点没有充分对齐", "降低继续操作信心，增加咨询和重复判断");
+      }
+      if (/入口|找不到|路径|客服|订单/.test(source)) {
+        add("路径阻断", "用户找不到入口、记录、客服或返回路径", "关键触点职责不清，恢复路径隐藏", "造成流程中断和求助成本上升");
+      }
+      if (/提醒|等待|到账|成功|生效|不确定/.test(source)) {
+        add("反馈不足", "用户需要确认是否成功、是否到账、是否需要等待", "系统反馈强度与用户风险感不匹配", "带来不确定感、重复点击和客服咨询");
+      }
+      if (/复杂|多|配置|不同|品类|商家|活动/.test(source)) {
+        add("信息复杂", "多玩法、多状态、多规则让用户难以判断差异", "信息层级和规则兼容策略不清晰", "增加理解成本，影响转化和规范复用");
+      }
+      if (!items.length) {
+        add("用户问题待明确", "当前材料不足以形成稳定痛点", "缺少用户反馈、旅程步骤或真实触点材料", "需要补充材料后再判断优先级");
+      }
+      return items.slice(0, 4);
+    }
+
+    function opportunityForPain(name) {
+      if (name.includes("认知")) return ["降低规则理解成本", "在用户决策前展示当前状态、关键规则和下一步动作", "详情页、规则弹窗、结果页"];
+      if (name.includes("路径")) return ["补齐连续路径和恢复路径", "固定返回、继续、客服和异常处理入口", "订单页、结果页、客服入口"];
+      if (name.includes("反馈")) return ["强化结果确认和进度反馈", "把等待、成功、失败、延迟转化为可追踪状态", "消息提醒、状态页、支付结果页"];
+      if (name.includes("信息")) return ["重构信息优先级", "把多玩法规则收敛成统一状态表达和分层说明", "活动页、商品卡、楼层、提示"];
+      return ["补充用户材料", "先完成用户访谈、反馈分类和旅程走查", "研究材料和评审问题"];
+    }
+
+    function render() {
+      const data = readData();
+      const coverage = inferTaskCoverage(data);
+      const module = moduleDefinitions[activeModule];
+      const personaRows = buildPersonaRows(data);
+      const journeyRows = buildJourneyRows(data);
+      const feedbackRows = buildFeedbackRows(data);
+      const pains = synthesizePainPoints(data, journeyRows, feedbackRows);
+      const filteredLiveItems = getFilteredLiveItems();
+      const opportunities = pains.map((pain) => {
+        const [area, direction, touchpoints] = opportunityForPain(pain.name);
+        return { pain: pain.name, area, direction, touchpoints };
+      });
+
+      lastPlainText = [
+        `# ${data.projectName}`,
+        "",
+        "## 1. 分析范围",
+        `优化对象：${data.object}`,
+        `用户目标：${data.userGoal}`,
+        `当前问题：${data.currentProblem}`,
+        `业务/数据补充：${data.dataSignals}；${data.constraints}`,
+        "",
+        "## 2. 输入材料盘点",
+        `目标用户识别：${coverage.persona}`,
+        `行为路径诊断：${coverage.journey}`,
+        `用户反馈洞察：${coverage.feedback}`,
+        `用户之声来源：产品体验问题 ${coverage.issue}；用户原声 ${coverage.voice}；洞察报告 ${coverage.report}`,
+        `实时筛选反馈：${filteredLiveItems.length} 条，关键词：${data.detailKeyword}`,
+        "",
+        "## 3. 目标用户识别",
+        ...personaRows.map((row) => `- ${row.type}：${row.feature}；需求：${row.need}；设计启示：${row.insight}`),
+        "",
+        "## 4. 行为路径与体验卡点诊断",
+        ...journeyRows.map((row) => `- ${row.stage}｜${row.action}｜触点：${row.touchpoint}｜卡点：${row.friction}｜方向：${row.direction}`),
+        "",
+        "## 5. 用户反馈洞察",
+        ...filteredLiveItems.slice(0, 6).map((item) => `- 实时反馈｜${item.source}｜${item.touchpoint}｜${item.text}`),
+        ...feedbackRows.map((row) => `- ${row.theme}｜“${row.quote}”｜情绪：${row.emotion}｜机会：${row.opportunity}`),
+        `- 洞察报告补充：${data.insightReports}`,
+        "",
+        "## 6. 高阶用户痛点",
+        ...pains.map((pain) => `- ${pain.name}：${pain.cause}；影响：${pain.impact}`),
+        "",
+        "## 7. 设计机会点",
+        ...opportunities.map((row) => `- ${row.pain} -> ${row.area} -> ${row.direction} -> ${row.touchpoints}`),
+        "",
+        "## 8. 用户分析摘要",
+        `目标用户主要包括 ${personaRows.map((row) => row.type).join("、")}，在 ${data.object} 中主要想完成：${data.userGoal}`,
+        `当前用户侧问题集中在 ${pains.map((pain) => pain.name).join("、")}。`,
+        `从行为路径看，关键卡点集中在 ${journeyRows.slice(0, 3).map((row) => row.touchpoint).join("、")}。`,
+        `从用户反馈看，高频诉求包括 ${feedbackRows.slice(0, 3).map((row) => row.theme).join("、")}。`,
+        `因此后续设计应优先围绕 ${opportunities.slice(0, 2).map((row) => row.area).join("、")} 展开。`
+      ].join("\n");
+
+      preview.innerHTML = `
+        <div class="proposal-title">
+          <div>
+            <h2>${data.projectName}</h2>
+            <p class="meta">优化对象：${data.object}<br>输出方向：用户分层、旅程卡点、反馈主题、痛点与机会点。</p>
+          </div>
+          <span class="tiny-badge">User Analysis</span>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric"><span>用户类型</span><strong>${personaRows.length}</strong></div>
+          <div class="metric"><span>旅程阶段</span><strong>${journeyRows.length}</strong></div>
+          <div class="metric"><span>反馈主题</span><strong>${new Set(feedbackRows.map((row) => row.theme)).size}</strong></div>
+          <div class="metric"><span>实时反馈</span><strong>${filteredLiveItems.length}</strong></div>
+        </div>
+
+        <article class="focus-card" style="--module-color:${module.color};">
+          <div class="focus-mark">${module.code}</div>
+          <div>
+            <h3>${module.name}</h3>
+            <p>${module.focus}。建议沉淀：${module.output}。</p>
+          </div>
+        </article>
+
+        <article class="section">
+          <h3>1. 分析范围</h3>
+          <p><strong>用户目标：</strong>${data.userGoal}</p>
+          <p><strong>当前问题：</strong>${data.currentProblem}</p>
+          <p><strong>补充约束：</strong>${data.dataSignals} ${data.constraints}</p>
+        </article>
+
+        <article class="section">
+          <h3>2. 输入材料盘点</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>材料类型</th><th>已有内容</th><th>完整度</th><th>对分析的作用</th></tr></thead>
+              <tbody>
+                <tr><td>目标用户</td><td>${data.targetUsers}</td><td>${coverage.persona}</td><td>判断核心服务对象和需求差异</td></tr>
+                <tr><td>行为路径</td><td>${data.journeySteps}</td><td>${coverage.journey}</td><td>定位阶段、触点和体验卡点</td></tr>
+                <tr><td>产品体验问题</td><td>${data.experienceIssues}</td><td>${coverage.issue}</td><td>定位具体问题、发生触点和影响范围</td></tr>
+                <tr><td>用户原声</td><td>${data.voiceRaw}</td><td>${coverage.voice}</td><td>保留真实表达，判断情绪诉求</td></tr>
+                <tr><td>洞察报告</td><td>${data.insightReports}</td><td>${coverage.report}</td><td>补充趋势判断、已有归因和问题优先级</td></tr>
+                <tr><td>其他反馈</td><td>${data.feedbackRaw}</td><td>${coverage.feedback}</td><td>提炼高频问题、情绪诉求和设计机会</td></tr>
+                <tr><td>实时商品详情页反馈</td><td>${filteredLiveItems.slice(0, 6).map((item) => `${item.source}：${item.text}`).join("；") || "暂无"}</td><td>${filteredLiveItems.length ? "可分析" : "待补充"}</td><td>实时露出与商品详情页相关的用户问题</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="section">
+          <h3>3. 目标用户识别</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>用户类型</th><th>用户特征</th><th>核心需求</th><th>行为偏好</th><th>设计启示</th></tr></thead>
+              <tbody>
+                ${personaRows.map((row) => `<tr><td>${row.type}</td><td>${row.feature}</td><td>${row.need}</td><td>${row.preference}</td><td>${row.insight}</td></tr>`).join("")}
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="section">
+          <h3>4. 行为路径与体验卡点诊断</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>阶段</th><th>用户行为</th><th>关键触点</th><th>用户想法/情绪</th><th>卡点</th><th>问题归因</th><th>优化方向</th></tr></thead>
+              <tbody>
+                ${journeyRows.map((row) => `<tr><td>${row.stage}</td><td>${row.action}</td><td>${row.touchpoint}</td><td>${row.emotion}</td><td>${row.friction}</td><td>${row.cause}</td><td>${row.direction}</td></tr>`).join("")}
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="section">
+          <h3>5. 用户反馈洞察</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>来源</th><th>反馈内容</th><th>触点</th><th>频次/优先级</th></tr></thead>
+              <tbody>
+                ${filteredLiveItems.slice(0, 8).map((item) => `<tr><td>${item.source}</td><td>${item.text}</td><td>${item.touchpoint}</td><td>${item.severity === "high" ? "高频" : item.severity === "low" ? "低频" : "中频"}</td></tr>`).join("") || `<tr><td colspan="4">暂无匹配商品详情页的实时反馈</td></tr>`}
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="section">
+          <h3>6. 用户之声来源解读</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>用户之声模块</th><th>当前材料</th><th>分析用途</th><th>处理方式</th></tr></thead>
+              <tbody>
+                <tr><td>产品体验问题</td><td>${data.experienceIssues}</td><td>识别具体体验问题、触点和影响范围</td><td>转译为问题主题与发生触点</td></tr>
+                <tr><td>用户原声</td><td>${data.voiceRaw}</td><td>捕捉真实表达和情绪诉求</td><td>保留典型原话并归纳情绪信号</td></tr>
+                <tr><td>洞察报告</td><td>${data.insightReports}</td><td>补充高频趋势、已有归因和优先级判断</td><td>作为核心痛点和机会点的辅助证据</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="section">
+          <h3>7. 反馈主题归纳</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>反馈主题</th><th>典型原话/表现</th><th>情绪信号</th><th>可能根因</th><th>设计机会</th></tr></thead>
+              <tbody>
+                ${feedbackRows.map((row) => `<tr><td>${row.theme}</td><td>${row.quote}</td><td>${row.emotion}</td><td>${row.cause}</td><td>${row.opportunity}</td></tr>`).join("")}
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="section">
+          <h3>8. 高阶用户痛点</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>高阶痛点</th><th>用户信号</th><th>根因判断</th><th>体验影响</th></tr></thead>
+              <tbody>
+                ${pains.map((pain) => `<tr><td>${pain.name}</td><td>${pain.signal}</td><td>${pain.cause}</td><td>${pain.impact}</td></tr>`).join("")}
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="section">
+          <h3>9. 设计机会点</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>高阶痛点</th><th>设计机会点</th><th>可落地优化方向</th><th>关键触点</th></tr></thead>
+              <tbody>
+                ${opportunities.map((row) => `<tr><td>${row.pain}</td><td>${row.area}</td><td>${row.direction}</td><td>${row.touchpoints}</td></tr>`).join("")}
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="section">
+          <h3>10. 用户分析摘要</h3>
+          <p>目标用户主要包括 <strong>${personaRows.map((row) => row.type).join("、")}</strong>，在 ${data.object} 中主要想完成：${data.userGoal}</p>
+          <p>当前用户侧问题集中在 <strong>${pains.map((pain) => pain.name).join("、")}</strong>。从行为路径看，关键卡点集中在 ${journeyRows.slice(0, 3).map((row) => row.touchpoint).join("、")}；从反馈看，高频诉求包括 ${feedbackRows.slice(0, 3).map((row) => row.theme).join("、")}。</p>
+          <p>因此后续设计应优先围绕 <strong>${opportunities.slice(0, 2).map((row) => row.area).join("、")}</strong> 展开。</p>
+        </article>
+      `;
+    }
+
+    function setData(data) {
+      Object.entries(data).forEach(([id, text]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = text;
+      });
+      render();
+    }
+
+    function showToast(text) {
+      toast.textContent = text;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 1600);
+    }
+
+    function activateModule(moduleId) {
+      activeModule = moduleId;
+      document.querySelectorAll(".module-tile").forEach((tile) => {
+        tile.classList.toggle("active", tile.dataset.module === moduleId);
+      });
+      render();
+    }
+
+    fields.forEach((id) => {
+      const el = document.getElementById(id);
+      el.addEventListener("input", render);
+      el.addEventListener("change", render);
+    });
+
+    document.getElementById("detailKeyword").addEventListener("input", () => {
+      renderLiveFeedback();
+      render();
+    });
+
+    document.getElementById("refreshFeedback").addEventListener("click", () => {
+      refreshLiveFeedback();
+    });
+
+    document.getElementById("importFeedbackJson").addEventListener("click", () => {
+      importRawFeedbackJson();
+    });
+
+    document.getElementById("openVoicePlatform").addEventListener("click", () => {
+      window.open(document.getElementById("voiceFrame").src || "https://new-ux.jd.com/?channel_id=1", "_blank", "noreferrer");
+    });
+
+    document.querySelectorAll("[data-voice-url]").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-voice-url]").forEach((item) => item.classList.toggle("active", item === button));
+        document.getElementById("voiceFrame").src = button.dataset.voiceUrl;
+      });
+    });
+
+    ["issueApiUrl", "voiceApiUrl", "reportApiUrl"].forEach((id) => {
+      document.getElementById(id).addEventListener("change", () => {
+        document.getElementById("connectorStatus").innerHTML = "";
+        document.getElementById("syncStatus").classList.remove("error");
+        document.getElementById("syncStatus").textContent = "接口地址已更新，请点击“刷新”。";
+      });
+    });
+
+    document.querySelectorAll(".module-tile").forEach((tile) => {
+      tile.addEventListener("click", () => activateModule(tile.dataset.module));
+    });
+
+    document.getElementById("generateBtn").addEventListener("click", () => {
+      render();
+      document.getElementById("output").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    document.getElementById("topGenerate").addEventListener("click", () => {
+      render();
+      document.getElementById("workspace").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    document.getElementById("heroGenerate").addEventListener("click", () => {
+      render();
+      document.getElementById("workspace").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    document.getElementById("loadExample").addEventListener("click", () => {
+      setData(example);
+      showToast("已填入示例");
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", () => {
+      setData(Object.fromEntries(fields.map((id) => [id, id === "detailKeyword" ? "商品详情页 详情页 商详 价格区 规格 评价 图片 国补 3D预览" : ""])));
+      liveFeedbackItems = [...seededLiveFeedback];
+      renderLiveFeedback();
+      const status = document.getElementById("syncStatus");
+      status.classList.remove("error");
+      status.textContent = "已恢复用户反馈数据。";
+      document.getElementById("rawFeedbackJson").value = "";
+      document.getElementById("connectorStatus").innerHTML = "";
+      showToast("已清空");
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      render();
+      let copied = false;
+      const fallbackBox = document.getElementById("copyFallback");
+      try {
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(lastPlainText);
+          copied = true;
+        }
+      } catch (error) {
+        copied = false;
+      }
+
+      if (!copied) {
+        const helper = document.createElement("textarea");
+        helper.value = lastPlainText;
+        helper.setAttribute("readonly", "");
+        helper.style.position = "fixed";
+        helper.style.left = "-9999px";
+        helper.style.top = "0";
+        document.body.appendChild(helper);
+        helper.focus();
+        helper.select();
+        helper.setSelectionRange(0, helper.value.length);
+        copied = document.execCommand("copy");
+        document.body.removeChild(helper);
+      }
+
+      if (copied) {
+        fallbackBox.classList.remove("show");
+        fallbackBox.value = "";
+        showToast("用户分析文本已复制");
+      } else {
+        fallbackBox.value = lastPlainText;
+        fallbackBox.classList.add("show");
+        fallbackBox.focus();
+        fallbackBox.select();
+        showToast("复制未授权，已展开可选文本");
+      }
+    });
+
+    document.getElementById("pageSearch").addEventListener("input", (event) => {
+      const keyword = event.target.value.trim();
+      document.querySelectorAll(".section").forEach((block) => {
+        if (!keyword) {
+          block.style.outline = "";
+          return;
+        }
+        const hit = block.textContent.includes(keyword);
+        block.style.outline = hit ? "2px solid rgba(34, 211, 238, 0.62)" : "";
+      });
+    });
+
+    renderLiveFeedback();
+    carouselTimer = window.setInterval(rotateLiveFeedback, 3600);
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>返回顶部 · Back to Top 组件规范 — JD APP V16.0</title>
+<!-- v2.0 frontmatter meta(SEO + AI 探测) -->
+<meta name="component-slug" content="back-to-top">
+<meta name="component-version" content="0.2">
+<meta name="component-level" content="component-base">
+<style>
+  :root {
+    --c-text: #171a26;
+    --c-text-2: #3d414d;
+    --c-text-3: #828794;
+    --c-line: #00000014;
+    --c-bg: #ffffff;
+    --c-bg-sunken: #f5f6fa;
+    --c-brand: #ff0f23;
+    --c-success: #2aa32a;
+    --c-success-bg: #ebfbeb;
+    --c-danger: #ff0f23;
+    --c-danger-bg: #fff0f4;
+    --c-warning: #b26b00;
+    --c-warning-bg: #fff9e0;
+    --c-info: #0073ff;
+    --c-info-bg: #e5f5ff;
+    --c-mask: rgba(0, 0, 0, 0.7);
+    --c-code-bg: #f5f6fa;
+    --r-base: 6px;
+    --r-detail: 8px;
+    --r-xl: 12px;
+    --r-xxl: 16px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--c-bg-sunken);
+    color: var(--c-text);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .doc {
+    max-width: 880px;
+    margin: 40px auto;
+    background: var(--c-bg);
+    padding: 64px 72px;
+    border-radius: var(--r-xl);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  h1 { font-size: 32px; font-weight: 600; margin: 0 0 8px; line-height: 1.3; }
+  h1 + .meta { color: var(--c-text-3); font-size: 13px; margin-bottom: 40px; line-height: 1.8; }
+  h1 + .meta code { font-size: 12px; }
+
+  h2 {
+    font-size: 24px; font-weight: 600; margin: 56px 0 16px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--c-line);
+  }
+  h2 .num {
+    display: inline-block; width: 32px; height: 32px; line-height: 32px;
+    background: var(--c-brand); color: #fff; border-radius: var(--r-base);
+    text-align: center; font-size: 16px; margin-right: 12px; vertical-align: middle;
+  }
+  h3 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; color: var(--c-text); }
+  h4 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; color: var(--c-text-2); }
+  p { margin: 12px 0; color: var(--c-text-2); }
+  strong { color: var(--c-text); font-weight: 600; }
+
+  code {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px; background: var(--c-code-bg); padding: 2px 6px;
+    border-radius: 4px; color: var(--c-brand);
+  }
+  pre {
+    background: #1a1a1a; color: #e8e8e8; padding: 20px 24px; border-radius: var(--r-base);
+    overflow-x: auto; font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px; line-height: 1.6; margin: 16px 0;
+  }
+  pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+
+  blockquote {
+    margin: 16px 0; padding: 12px 20px; background: var(--c-info-bg);
+    border-left: 3px solid var(--c-info); border-radius: 0 var(--r-base) var(--r-base) 0;
+    color: var(--c-text-2);
+  }
+  blockquote p { margin: 4px 0; }
+  blockquote.warn { background: var(--c-warning-bg); border-left-color: var(--c-warning); }
+  blockquote.danger { background: var(--c-danger-bg); border-left-color: var(--c-danger); }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--c-line); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--c-bg-sunken); font-weight: 600; color: var(--c-text); }
+  td code { font-size: 12px; }
+
+  ul, ol { padding-left: 24px; color: var(--c-text-2); }
+  li { margin: 6px 0; }
+
+  /* Case blocks（正反案例 ✅ / ❌）*/
+  .case { margin: 20px 0; padding: 20px 24px; border-radius: var(--r-base); border: 1px solid var(--c-line); }
+  .case.good { background: var(--c-success-bg); border-color: var(--c-success); }
+  .case.bad { background: var(--c-danger-bg); border-color: var(--c-danger); }
+  .case h4 { margin-top: 0; display: flex; align-items: center; gap: 8px; }
+  .case .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; color: #fff; }
+  .case.good .badge { background: var(--c-success); }
+  .case.bad .badge { background: var(--c-danger); }
+
+  /* 色彩 token swatch grid */
+  .color-swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 16px 0; }
+  .color-swatch { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--c-bg); border: 1px solid var(--c-line); border-radius: var(--r-base); }
+  .color-swatch__chip { width: 40px; height: 40px; border-radius: 6px; flex-shrink: 0; border: 1px solid var(--c-line); }
+  .color-swatch__meta { flex: 1; min-width: 0; }
+  .color-swatch__name { font-size: 13px; font-weight: 600; color: var(--c-text); }
+  .color-swatch__hex { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--c-text-3); }
+
+  a { color: var(--c-info); text-decoration: none; border-bottom: 1px solid transparent; }
+  a:hover { border-bottom-color: var(--c-info); }
+  hr { border: none; border-top: 1px solid var(--c-line); margin: 40px 0; }
+
+  .toc { background: var(--c-bg-sunken); padding: 20px 28px; border-radius: var(--r-base); margin-bottom: 40px; }
+  .toc h3 { margin: 0 0 8px; font-size: 14px; color: var(--c-text-3); font-weight: 500; }
+  .toc ol { margin: 0; padding-left: 20px; }
+  .toc li { margin: 4px 0; }
+  .toc a { color: var(--c-text-2); border: none; }
+  .toc a:hover { color: var(--c-brand); }
+
+  @media print {
+    body { background: #fff; }
+    .doc { box-shadow: none; margin: 0; padding: 24px 32px; max-width: none; border-radius: 0; }
+    h2 { page-break-after: avoid; }
+    .case, table, pre, blockquote { page-break-inside: avoid; }
+    pre { background: #f5f6fa; color: #171a26; border: 1px solid var(--c-line); }
+  }
+  @media (max-width: 720px) {
+    .doc { margin: 0; padding: 32px 20px; border-radius: 0; }
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; }
+    table { font-size: 12px; }
+    th, td { padding: 8px 10px; }
+  }
+
+  /* ========== 视图切换(Pro / Basic) ========== */
+  .title-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; border-bottom: 2px solid var(--c-text); padding-bottom: 16px; margin-bottom: 8px; }
+  .title-row h1 { border-bottom: none; padding-bottom: 0; margin: 0; flex: 1 1 auto; }
+  .view-tabs { display: inline-flex; align-items: center; gap: 4px; padding: 4px; background: var(--c-bg-sunken); border-radius: var(--r-base); flex-shrink: 0; }
+  .view-tab { background: transparent; border: none; padding: 6px 14px; font-family: inherit; font-size: 12px; font-weight: 500; color: var(--c-text-2); cursor: pointer; border-radius: 4px; transition: all 150ms; line-height: 1.4; }
+  .view-tab:hover { color: var(--c-text); }
+  .view-tab.is-active { background: var(--c-bg); color: var(--c-text); box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-weight: 600; }
+
+  body.mode-basic .pro-only { display: none !important; }
+  body.mode-pro .basic-only { display: none !important; }
+  body:not(.mode-basic):not(.mode-pro) .pro-only,
+  body:not(.mode-basic):not(.mode-pro) .basic-only { display: none; }
+  body.mode-all .pro-only, body.mode-all .basic-only { display: block !important; }
+  .basic-only.summary { margin: 16px 0; padding: 12px 20px; background: var(--c-info-bg); border-left: 3px solid var(--c-info); border-radius: 0 var(--r-base) var(--r-base) 0; color: var(--c-text-2); font-size: 14px; }
+  .basic-only.summary strong { color: var(--c-text); }
+
+  /* ========== 顶部 5-zone nav ========== */
+  .top-bar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 16px; padding: 0 24px; background: rgba(255, 255, 255, 0.78); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04); flex-wrap: wrap; }
+  .top-bar__brand { padding: 14px 0; margin-right: 12px; font-size: 13px; font-weight: 600; color: var(--c-text); text-decoration: none; letter-spacing: 0.02em; }
+  .top-bar__brand small { color: var(--c-text-3); font-weight: 500; margin-left: 6px; }
+  .top-bar__nav { display: flex; align-items: stretch; gap: 4px; flex-wrap: wrap; }
+  .top-bar__nav-link { padding: 14px 14px 12px; font-size: 13px; color: var(--c-text-2); text-decoration: none; font-weight: 500; line-height: 1.4; white-space: nowrap; transition: color 150ms; }
+  .top-bar__nav-link:hover { color: var(--c-text); }
+  .top-bar__nav-link.is-current { color: var(--c-text); font-weight: 600; }
+  .top-bar__spacer { flex: 1; }
+
+  /* ========== 交互式组件展示台 showcase(v2.2) ========== */
+  .showcase { border: 1px solid var(--c-line); border-radius: var(--r-xl); overflow: hidden; margin: 20px 0; background: var(--c-bg); }
+  .showcase__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px 16px; flex-wrap: wrap; padding: 12px 16px; border-bottom: 1px solid var(--c-line); background: var(--c-bg-sunken); }
+  .showcase__title { font-size: 14px; font-weight: 600; color: var(--c-text); }
+  .showcase__controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .seg { display: inline-flex; padding: 3px; background: var(--c-bg); border: 1px solid var(--c-line); border-radius: var(--r-base); gap: 2px; }
+  .seg__btn { border: none; background: transparent; padding: 5px 12px; font-family: inherit; font-size: 12px; font-weight: 500; color: var(--c-text-2); border-radius: 4px; cursor: pointer; line-height: 1.4; white-space: nowrap; transition: all 120ms; }
+  .seg__btn:hover { color: var(--c-text); }
+  .seg__btn.is-active { background: var(--c-text); color: var(--c-bg); font-weight: 600; }
+  .showcase__stage { padding: 28px 20px; display: flex; justify-content: center; transition: background 200ms; }
+  .showcase[data-theme="light"] .showcase__stage { background: #eef0f4; }
+  .showcase[data-theme="dark"] .showcase__stage { background: #0e1013; }
+  .variant-panel { display: none; width: 100%; }
+  .variant-panel.is-active { display: block; }
+  .variant-panel__cap { text-align: center; font-size: 12px; color: var(--c-text-3); margin-bottom: 12px; }
+  .showcase[data-theme="dark"] .variant-panel__cap { color: #6b7280; }
+  .sc-screen { width: 360px; max-width: 100%; margin: 0 auto; border-radius: 14px; overflow: hidden; min-height: 160px; display: flex; align-items: center; justify-content: center; transition: background 200ms; box-shadow: 0 2px 14px rgba(0,0,0,.08); }
+  .showcase[data-theme="light"] .sc-screen { background: #fff; }
+  .showcase[data-theme="dark"] .sc-screen { background: #14171A; }
+  .tok { font-family: "JetBrains Mono", monospace; font-size: 12px; background: var(--c-code-bg); color: var(--c-brand); padding: 2px 7px; border-radius: 4px; cursor: copy; border: 1px solid transparent; transition: border-color 120ms, background 120ms; }
+  .tok:hover { border-color: var(--c-brand); }
+  .tok.copied { color: var(--c-success); border-color: var(--c-success); }
+  .hl-flash { outline: 2px solid var(--c-brand) !important; outline-offset: 2px; border-radius: 4px; }
+  .copy-toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: var(--c-text); color: #fff; padding: 9px 18px; border-radius: var(--r-base); font-size: 13px; opacity: 0; pointer-events: none; transition: opacity 180ms; z-index: 300; }
+  .copy-toast.show { opacity: 1; }
+  @media (max-width: 720px) { .showcase__bar { flex-direction: column; align-items: flex-start; } }
+</style>
+</head>
+<body>
+<div class="copy-toast" id="copy-toast" role="status" aria-live="polite"></div>
+
+<!-- 顶部 5 大 Zone nav(bg=foundations → foundations is-current) -->
+<div class="top-bar">
+  <a href="../../../docs/jd-design-wiki-knowledge-tree.html" class="top-bar__brand">JD Design Wiki <small>· V16</small></a>
+  <nav class="top-bar__nav" aria-label="5 大分区导航">
+    <a href="../../../knowledge/spec-page.html" class="top-bar__nav-link ">📚 Design 知识</a>
+    <a href="../../../foundations/spec-page.html" class="top-bar__nav-link is-current">🎨 Design 基础</a>
+    <a href="../../../ai-mechanism/spec-page.html" class="top-bar__nav-link ">🤖 AI 机制</a>
+    <a href="../../../product-architecture/spec-page.html" class="top-bar__nav-link ">🏗 组织架构</a>
+    <a href="../../../horizontal/spec-page.html" class="top-bar__nav-link ">🚀 横向专项</a>
+  </nav>
+  <span class="top-bar__spacer"></span>
+</div>
+
+<div class="doc">
+
+<div class="title-row">
+  <h1>返回顶部 · Back to Top 组件规范</h1>
+  <div class="view-tabs" role="tablist" aria-label="视图切换">
+    <button class="view-tab is-active" role="tab" data-view="basic" aria-selected="true">常规版</button>
+    <button class="view-tab" role="tab" data-view="pro" aria-selected="false">专业版</button>
+  </div>
+</div>
+<div class="meta">
+  组件级 · 通用组件(components-base) · 普通形态 · 浅/暗双态 · 默认/点击双状态<br>
+  <!-- version-label self-check: V16 -->
+  样式来源:Relay V16.0 GUIDELINE 节点 <code>1382:4932</code> · Token 版本:<code>tokens.json 16.0-draft</code><br>
+  关联 Foundation:<code>gray_7 #11141a</code> · <code>color_background #f2f4f7</code> · <code>radius 20(正圆)</code> · <code>Liquid Glass - Small</code>
+</div>
+
+<div class="toc">
+  <h3>目录</h3>
+  <ol>
+    <li><a href="#sec-1-definition">组件定义</a></li>
+    <li><a href="#sec-2-behavior">行为准则</a></li>
+    <li><a href="#sec-3-attributes">设计属性</a></li>
+    <li><a href="#sec-4-scenarios">应用场景</a></li>
+  </ol>
+</div>
+
+<!-- 通用组件(components-base) → 4 要素 -->
+
+<h2 id="sec-1-definition"><span class="num">1</span>组件定义</h2>
+
+<p class="basic-only summary"><strong>一句话：</strong>页面长列表滚动时浮现的单击回顶按钮，40×40 液态玻璃圆形悬浮件，承载一枚向上箭头，支持浅 / 暗双态。</p>
+<p>页面长列表滚动时浮现的<strong>单击回顶</strong>圆形按钮 —— 40×40 液态玻璃（Liquid Glass）材质悬浮件，承载一枚向上箭头，点击将当前页面平滑滚回顶部。随系统外观切换浅 / 暗双态。</p>
+<h3>与 Toolbar / Tabbar 的边界</h3>
+<table>
+<thead><tr><th>组件</th><th>职责</th><th>关系</th></tr></thead>
+<tbody>
+<tr><td><strong>返回顶部（本）</strong></td><td>长页滚动中的<strong>「回到顶部」快捷操作</strong></td><td>单一原子，悬浮于内容右下</td></tr>
+<tr><td>底部工具栏 Toolbar</td><td>业务页底部<strong>主操作承载栏</strong></td><td>常与之并存但不内嵌；层级更高、贴边浮起</td></tr>
+<tr><td>Tabbar</td><td>全局 <strong>tab 导航</strong></td><td>不重叠；返回顶部不参与导航，仅滚动控制</td></tr>
+</tbody></table>
+<blockquote>它不是导航、不是工具栏的一格，而是一枚<strong>独立悬浮控件</strong>：只做一件事 —— 回顶。</blockquote>
+
+<h2 id="sec-2-behavior"><span class="num">2</span>行为准则</h2>
+
+<p class="basic-only summary"><strong>核心约定：</strong>只做回顶、不带文字；材质优先于实色；浅 / 暗各取独立材质与底衬；点击叠底衬给按压反馈。</p>
+<ul>
+<li><strong>单一职责</strong> —— 只做「回顶」，不堆叠次操作、不带文字标签 / 数字角标。</li>
+<li><strong>触发回顶</strong> —— 点击后当前页面平滑滚动回顶部（smooth scroll-to-top）。</li>
+<li><strong>材质优先于实色</strong> —— 底衬走「Liquid Glass - Small」材质，融入内容；不要用纯色圆按钮替代。</li>
+<li><strong>深浅跟随系统</strong> —— 浅 / 暗双态各取独立材质参数与底衬值，暗态不是浅态简单反相。</li>
+<li><strong>按压即时反馈</strong> —— 点击态靠叠加底衬（浅 plus_darker / 暗 plus_lighter），保持材质连续性。</li>
+</ul>
+<blockquote class="warn">⚠️ 出现 / 消失时机 Relay 稿未标注；建议口径：向下滚动超约 1 屏后浮现、回到顶部附近隐出，常驻内容右下角，<strong>待业务确认</strong>。</blockquote>
+
+<h2 id="sec-3-attributes"><span class="num">3</span>设计属性</h2>
+
+<p class="basic-only summary"><strong>单一形态</strong>：40×40 液态玻璃正圆 + 20×20 上箭头。<strong>4 个展示态</strong> = 浅 / 暗 × 默认 / 点击。暗色为独立态。</p>
+
+<h3>解剖结构</h3>
+<pre>返回顶部按钮（40×40 · padding 2）
+┌──────────────────────────────┐
+│  材质层 Liquid Glass - Small    │  ← 绝对铺满 40×40 · radius 20
+│  (Fill+Shadow + Glass Effect)  │     渐变 + 投影 +(暗态)玻璃叠加
+│   ┌── 图标容器 36×36 ──────┐   │  ← padding 8 · radius 20
+│   │     ↑  上箭头 20×20     │   │     点击态加底衬
+│   └────────────────────────┘   │
+└──────────────────────────────┘</pre>
+
+<h3>视觉演示（可交互 · 浅 / 暗 · 默认 / 点击）</h3>
+<p>右上可切 <strong>浅 / 暗主题</strong> 与 <strong>默认 / 点击</strong> 状态；下方 token 表色值点击即复制。</p>
+<style>
+/* ===== 返回顶部 组件视觉（§3 内联，以 .showcase[data-theme] 作主题锚）===== */
+  .btt-stage { display: flex; align-items: center; justify-content: center; min-height: 160px; }
+  .btt { width: 40px; height: 40px; border-radius: 20px; display: flex; align-items: center; justify-content: center; position: relative; }
+  /* 材质层 Liquid Glass - Small */
+  .showcase[data-theme="light"] .btt {
+    background: linear-gradient(0deg, #F7F7F7, #F7F7F7), rgba(255,255,255,.65);
+    background-blend-mode: normal, color-burn;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
+  }
+  .showcase[data-theme="dark"] .btt {
+    background: linear-gradient(0deg, rgba(255,255,255,.06), rgba(255,255,255,.06)), rgba(0,0,0,.60);
+    background-blend-mode: color-burn, normal;
+    box-shadow: 0 8px 40px rgba(0,0,0,.12);
+  }
+  /* 图标容器 36×36 */
+  .btt__ico { width: 36px; height: 36px; border-radius: 20px; display: flex; align-items: center; justify-content: center; transition: background 120ms; }
+  .btt__ico svg { width: 17.4px; height: 18.3px; display: block; }
+  .showcase[data-theme="light"] .btt__ico { color: #11141a; }
+  .showcase[data-theme="dark"] .btt__ico { color: #e8eaed; }
+  /* 点击态：叠底衬（浅 darken / 暗 lighten，近似 Relay plus_darker / plus_lighter）*/
+  .showcase[data-theme="light"] .btt.is-pressed .btt__ico { background: rgba(17,20,26,.06); }
+  .showcase[data-theme="dark"] .btt.is-pressed .btt__ico { background: rgba(255,255,255,.10); }
+</style>
+<div class="showcase" data-theme="light">
+<div class="showcase__bar"><div class="showcase__title">返回顶部 · 普通形态</div><div class="showcase__controls">
+<div class="seg"><button class="seg__btn is-active" data-theme-set="light">浅色</button><button class="seg__btn" data-theme-set="dark">暗色</button></div>
+<div class="seg"><button class="seg__btn is-active" data-variant="0">默认态</button><button class="seg__btn" data-variant="1">点击态</button></div></div></div>
+<div class="showcase__stage"><div class="variant-panel is-active" data-variant="0"><div class="variant-panel__cap">默认态（未按下）</div><div class="sc-screen"><div class="btt-stage"><div class="btt"><div class="btt__ico"><svg viewBox="0 0 17.406 18.335" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.7069998 2.8959999L16.350342 8.542985C16.525789 8.6921196 16.788912 8.6708174 16.938084 8.4954014L17.477797 7.8607378C17.627016 7.6852679 17.605705 7.4220486 17.430202 7.2728686L9.4134951 0.4585771C9.1024275 0.19416635 8.6455717 0.19416636 8.3345041 0.45857713L0.31779748 7.2728686C0.14229423 7.4220486 0.12098332 7.6852674 0.27020207 7.8607378L0.80989718 8.4953794C0.95907736 8.670804 1.2222137 8.6920977 1.39766 8.542943L8.04 2.8959999L8.04 18.177999C8.04 18.408302 8.226697 18.594999 8.4569998 18.594999L9.29 18.594999C9.5203028 18.594999 9.7069998 18.408302 9.7069998 18.177999L9.7069998 2.8959999Z" fill-rule="evenodd" transform="translate(-0.171, -0.26)" fill="currentColor"></path></svg></div></div></div></div></div><div class="variant-panel" data-variant="1"><div class="variant-panel__cap">点击态（按下叠底衬）</div><div class="sc-screen"><div class="btt-stage"><div class="btt"><div class="btt__ico"><svg viewBox="0 0 17.406 18.335" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.7069998 2.8959999L16.350342 8.542985C16.525789 8.6921196 16.788912 8.6708174 16.938084 8.4954014L17.477797 7.8607378C17.627016 7.6852679 17.605705 7.4220486 17.430202 7.2728686L9.4134951 0.4585771C9.1024275 0.19416635 8.6455717 0.19416636 8.3345041 0.45857713L0.31779748 7.2728686C0.14229423 7.4220486 0.12098332 7.6852674 0.27020207 7.8607378L0.80989718 8.4953794C0.95907736 8.670804 1.2222137 8.6920977 1.39766 8.542943L8.04 2.8959999L8.04 18.177999C8.04 18.408302 8.226697 18.594999 8.4569998 18.594999L9.29 18.594999C9.5203028 18.594999 9.7069998 18.408302 9.7069998 18.177999L9.7069998 2.8959999Z" fill-rule="evenodd" transform="translate(-0.171, -0.26)" fill="currentColor"></path></svg></div></div></div></div></div></div></div>
+<script>
+  // 点击态变体激活时给按钮加 is-pressed（演示按压底衬）
+  document.querySelectorAll('.showcase').forEach(function (sc) {
+    function syncPressed() {
+      sc.querySelectorAll('.variant-panel').forEach(function (p) {
+        var btt = p.querySelector('.btt'); if (!btt) return;
+        btt.classList.toggle('is-pressed', p.dataset.variant === '1');
+      });
+    }
+    syncPressed();
+    sc.querySelectorAll('.seg [data-variant]').forEach(function (b) { b.addEventListener('click', syncPressed); });
+  });
+</script>
+
+<h3>关键尺寸</h3>
+<table>
+<thead><tr><th>项</th><th>值</th></tr></thead>
+<tbody>
+<tr><td>按钮命中区</td><td>40 × 40（padding 2）</td></tr>
+<tr><td>材质圆角</td><td>radius 20（正圆）</td></tr>
+<tr><td>图标容器</td><td>36 × 36 · padding 8 · radius 20</td></tr>
+<tr><td>图标</td><td>20 × 20 上箭头（currentColor）</td></tr>
+</tbody></table>
+
+<h3>设计令牌（浅 / 暗双列）</h3>
+<blockquote class="warn">⚠️ <strong>暗色是独立态，非浅色重着色</strong>。材质参数 / 中性色浅暗各取独立值。</blockquote>
+<h4>材质层 Liquid Glass - Small</h4>
+<table>
+<thead><tr><th>属性</th><th>浅色</th><th>暗色</th></tr></thead>
+<tbody>
+<tr><td>Fill 底</td><td>渐变 #F7F7F7 over #DDDDDD + 白65%</td><td>opacity .6 · 白6% over 黑60% + #CCCCCC 50%</td></tr>
+<tr><td>blend mode</td><td>normal, color_burn, darken</td><td>color_burn, normal, normal</td></tr>
+<tr><td>投影</td><td>0 4 20 rgba(0,0,0,.08)</td><td>0 8 40 rgba(0,0,0,.12)</td></tr>
+<tr><td>Glass Effect 叠加</td><td>无</td><td>黑 20% · blend screen</td></tr>
+<tr><td>圆角</td><td colspan="2">radius 20（正圆）</td></tr>
+</tbody></table>
+<h4>图标容器底衬（默认 / 点击）</h4>
+<table>
+<thead><tr><th>模式</th><th>默认态</th><th>点击态底衬</th><th>blend</th></tr></thead>
+<tbody>
+<tr><td>浅色</td><td>透明</td><td><span data-hl-target="press">#F2F4F7</span>（color_background）</td><td>plus_darker</td></tr>
+<tr><td>暗色</td><td>透明</td><td>#14171A</td><td>plus_lighter</td></tr>
+</tbody></table>
+<p class="pro-only" style="margin-top:10px;line-height:2.2">色值速查（点击复制）：<code class="tok" data-copy="#11141A">#11141A</code> <code class="tok" data-copy="#F2F4F7" data-hl="press">#F2F4F7</code> <code class="tok" data-copy="#14171A">#14171A</code> <code class="tok" data-copy="#1F2226">#1F2226</code></p>
+<blockquote class="warn pro-only">⚠️ 演示台的点击底衬用 <code>rgba</code> 近似 Relay 的 <code>plus_darker</code> / <code>plus_lighter</code> 混合模式（CSS 无等价 blend）；精确取值以表中 token 为准。暗态点击底衬 <code>#14171A</code> 为材质内直给值，未映射语义 token。</blockquote>
+
+<h2 id="sec-4-scenarios"><span class="num">4</span>应用场景</h2>
+
+<p class="basic-only summary">长列表 / 长页滚动场景的回顶快捷入口，浅 / 暗两套，悬浮内容右下、避让底部栏。</p>
+<h3>典型场景</h3>
+<table>
+<thead><tr><th>场景</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><strong>长列表回顶</strong></td><td>商品列表 / 信息流 / 搜索结果等长页，向下滚动超约 1 屏后浮现，点击平滑回顶。</td></tr>
+<tr><td><strong>浅 / 暗双态</strong></td><td>随系统外观切换；材质参数与图标色各取对应模式独立值。</td></tr>
+<tr><td><strong>与底部栏共存</strong></td><td>悬浮于内容右下，层级低于 Toolbar / Tabbar，避让底部安全区，不遮挡主操作。</td></tr>
+</tbody></table>
+
+<h3>Donts</h3>
+<div class="case bad"><h4><span class="badge">❌</span>纯色圆按钮替代</h4><p>不要用纯色圆按钮替代 Liquid Glass 材质 —— 材质感是该组件的视觉契约。</p></div>
+<div class="case bad"><h4><span class="badge">❌</span>加文字 / 角标</h4><p>不要加文字标签 / 数字角标 / 次操作，保持单一职责。</p></div>
+<div class="case bad"><h4><span class="badge">❌</span>暗态复用浅态</h4><p>暗态不要直接复用浅态材质参数与图标色 —— 材质渐变 / 投影 / 底衬都换值。</p></div>
+<div class="case bad"><h4><span class="badge">❌</span>点击态长亮</h4><p>不要把「点击态」当持续选中态长亮 —— 它是按下瞬时反馈，松手即回默认态。</p></div>
+<div class="case bad"><h4><span class="badge">❌</span>破坏正圆 / 命中区</h4><p>不要改变 40×40 命中区或破坏 radius 20 正圆。</p></div>
+
+<hr>
+
+<h3>API 速查</h3>
+<table>
+<thead><tr><th>维度</th><th>取值</th></tr></thead>
+<tbody>
+<tr><td>形态</td><td>普通形态（单一）</td></tr>
+<tr><td>命中区 / 圆角</td><td>40×40 · radius 20（正圆）</td></tr>
+<tr><td>图标容器</td><td>36×36 · padding 8 · radius 20</td></tr>
+<tr><td>图标</td><td>上箭头 20×20 · currentColor（浅 #11141A）</td></tr>
+<tr><td>材质</td><td>Liquid Glass - Small（Fill+Shadow + Glass Effect）</td></tr>
+<tr><td>状态</td><td>默认态 / 点击态（pressed，瞬时）</td></tr>
+<tr><td>双态</td><td>浅色 / 暗色（材质与中性色独立取值）</td></tr>
+</tbody></table>
+
+<h3>引用</h3>
+<ul>
+<li><a href="./design.md">design.md</a> —— 完整主文档（定义 / 边界 / 结构 / 形态总览 / 原则）</li>
+<li><a href="./spec.md">spec.md</a> —— 视觉与结构规格（token 浅/暗双列 / 材质 / 图标资产）</li>
+<li><a href="./variants.md">variants.md</a> —— 4 态详规 / 状态机</li>
+<li><a href="./behaviors.md">behaviors.md</a> —— 行为 / Donts / Relay 残留</li>
+<li><a href="./_assets-cdn.md">_assets-cdn.md</a> —— 图标资产清单（arrow-up.svg）</li>
+<li><a href="../toolbar-general/spec-page.html">底部工具栏 Toolbar</a> · <a href="../tabbar/design.md">Tabbar</a> —— 关联组件</li>
+</ul>
+
+<div style="margin-top:60px; padding-top:20px; border-top:1px solid var(--c-line); color:var(--c-text-3); font-size:12px; text-align:center;">
+  JD APP V16.0 Design System · 返回顶部 规范 · 生成于 2026-06-03 · 样式 = Relay 节点 1382:4932
+</div>
+
+</div><!-- /.doc -->
+
+<!-- 视图切换 JS + showcase 控制器 + token 复制 -->
+<script>
+(function () {
+  var STORAGE_KEY = 'spec-page-view-mode';
+  var body = document.body;
+  var tabs = document.querySelectorAll('.view-tab');
+  function setMode(mode) {
+    body.classList.remove('mode-basic', 'mode-pro');
+    body.classList.add('mode-' + mode);
+    tabs.forEach(function (t) {
+      var on = t.dataset.view === mode;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    try { localStorage.setItem(STORAGE_KEY, mode); } catch (e) {}
+  }
+  var initial = 'basic';
+  try {
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === 'pro' || saved === 'basic') initial = saved;
+  } catch (e) {}
+  setMode(initial);
+  tabs.forEach(function (t) { t.addEventListener('click', function () { setMode(t.dataset.view); }); });
+
+  // ===== 交互式 showcase 控制器:主题切换 / 变体 tabs =====
+  document.querySelectorAll('.showcase').forEach(function (sc) {
+    sc.querySelectorAll('[data-theme-set]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        sc.setAttribute('data-theme', b.dataset.themeSet);
+        sc.querySelectorAll('[data-theme-set]').forEach(function (x) { x.classList.toggle('is-active', x === b); });
+      });
+    });
+    sc.querySelectorAll('.seg [data-variant]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var v = b.dataset.variant;
+        sc.querySelectorAll('.seg [data-variant]').forEach(function (x) { x.classList.toggle('is-active', x === b); });
+        sc.querySelectorAll('.variant-panel').forEach(function (p) { p.classList.toggle('is-active', p.dataset.variant === v); });
+      });
+    });
+  });
+
+  // ===== token 点击复制 + 悬停高亮联动 =====
+  var toast = document.getElementById('copy-toast');
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('.tok') : null;
+    if (!t) return;
+    var val = t.dataset.copy || t.textContent.trim();
+    try { navigator.clipboard.writeText(val); } catch (err) {}
+    t.classList.add('copied'); setTimeout(function () { t.classList.remove('copied'); }, 900);
+    if (toast) { toast.textContent = '已复制 ' + val; toast.classList.add('show'); clearTimeout(window.__ct); window.__ct = setTimeout(function () { toast.classList.remove('show'); }, 1200); }
+  });
+  document.querySelectorAll('.tok[data-hl]').forEach(function (t) {
+    var root = t.closest('.showcase') || document;
+    var targets = function () { return root.querySelectorAll('[data-hl-target="' + t.dataset.hl + '"]'); };
+    t.addEventListener('mouseenter', function () { targets().forEach(function (el) { el.classList.add('hl-flash'); }); });
+    t.addEventListener('mouseleave', function () { targets().forEach(function (el) { el.classList.remove('hl-flash'); }); });
+  });
+})();
+</script>
+
+</body>
+</html>

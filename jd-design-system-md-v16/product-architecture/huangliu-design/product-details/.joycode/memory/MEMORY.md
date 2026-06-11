@@ -1,0 +1,1 @@
+- [design-schema 公共命名规范强制使用](feedback_design_schema.md) — 商详组件 / 楼层 / 区域 / 模块 / 类型 / 横切 / 场景相关输出,必须实时 grep 源 JSON,禁止凭记忆或自创命名

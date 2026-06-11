@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>录入需求 · 设计知识库</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0D0D0D;--ink2:#4A4A4A;--ink3:#9A9A9A;--ink4:#C8C8C8;
+  --paper:#F8F7F4;--surface:#FFFFFF;--line:rgba(0,0,0,.07);
+  --green:#00B96B;--green-dim:#E6F9F1;--green-dark:#007A47;
+  --blue:#2563EB;--blue-dim:#EFF4FF;
+  --purple:#6B21A8;--purple-mid:#7C3AED;--purple-dim:#F3EEFF;
+  --amber:#D97706;--amber-dim:#FEF3C7;
+  --red:#DC2626;
+  --r:12px;--r-sm:8px;--r-xs:6px;
+}
+html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif;background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased}
+body{display:flex;flex-direction:column;height:100%}
+
+/* ── MODAL ── */
+.modal{width:100%;flex:1;background:var(--surface);display:flex;flex-direction:column;overflow:hidden}
+
+/* ── HEADER ── */
+.modal-head{padding:22px 28px 0;display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:18px;font-weight:500;letter-spacing:-.02em}
+.close-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink3);transition:all .15s}
+.close-btn:hover{background:var(--paper);color:var(--ink)}
+
+/* ── STEPPER ── */
+.stepper{padding:18px 28px 0;display:flex;align-items:center}
+.step{display:flex;align-items:center;gap:8px}
+.step-circle{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;transition:all .3s}
+.step.done .step-circle{background:var(--green);color:#fff}
+.step.active .step-circle{background:var(--ink);color:#fff}
+.step.future .step-circle{background:var(--paper);border:1.5px solid var(--ink4);color:var(--ink3)}
+.step-label{font-size:13px;transition:color .3s}
+.step.done .step-label{color:var(--green-dark)}
+.step.active .step-label{color:var(--ink);font-weight:500}
+.step.future .step-label{color:var(--ink3)}
+.step-line{flex:1;height:1.5px;background:var(--ink4);margin:0 10px;min-width:28px;transition:background .3s}
+.step-line.done{background:var(--green)}
+.modal-divider{height:1px;background:var(--line);margin:16px 0 0}
+
+/* ── BODY ── */
+.modal-body{padding:24px 28px;flex:1;min-height:0;overflow-y:auto}
+.step-pane{display:none;animation:fadeIn .2s ease both}
+.step-pane.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── FORM BASE ── */
+.field{margin-bottom:18px}
+.field:last-child{margin-bottom:0}
+.field-label{font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.field-label .optional{font-weight:400;color:var(--ink3);font-size:11px}
+.field-label .required{color:var(--red);font-size:12px}
+input[type=text],input[type=url]{width:100%;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:9px 12px;font-family:inherit;font-size:13px;color:var(--ink);background:var(--surface);outline:none;transition:border-color .15s,box-shadow .15s}
+input[type=text]:focus,input[type=url]:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(0,0,0,.06)}
+input::placeholder{color:var(--ink4)}
+.input-hint{font-size:11px;color:var(--ink3);margin-top:4px}
+
+/* 需求类型 pill */
+.type-group{display:flex;gap:8px}
+.type-btn{padding:6px 16px;border-radius:20px;border:1.5px solid var(--line);background:var(--surface);font-family:inherit;font-size:12px;color:var(--ink2);cursor:pointer;transition:all .15s}
+.type-btn:hover{border-color:var(--ink3);color:var(--ink)}
+.type-btn.selected{border-color:var(--ink);background:var(--ink);color:#fff}
+
+/* ── 步骤2 ── */
+.ai-notice{display:flex;align-items:flex-start;gap:8px;background:var(--green-dim);border-radius:var(--r-xs);padding:9px 12px;margin-bottom:20px;font-size:12px;color:var(--green-dark);line-height:1.5}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:4px}
+
+/* 标签分区 */
+.tag-section{margin-bottom:20px}
+.tag-section-label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:500;color:var(--ink2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
+.tag-section-icon{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px}
+
+/* 三级联动楼层 */
+.floor-cascade{display:flex;flex-direction:column;gap:10px}
+.cascade-row{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap}
+.cascade-label{font-size:11px;color:var(--ink3);width:36px;flex-shrink:0;padding-top:6px}
+.floor-chips{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.floor-chip{padding:4px 10px;border-radius:20px;border:1.5px solid var(--line);background:var(--surface);font-size:12px;color:var(--ink2);cursor:pointer;transition:all .15s;user-select:none}
+.floor-chip:hover{border-color:var(--ink3)}
+.floor-chip.sel{border-color:var(--blue);background:var(--blue-dim);color:var(--blue);font-weight:500}
+
+/* 垂类场景 — 大类 tab */
+.scene-tabs{display:flex;gap:0;border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;margin-bottom:10px;width:fit-content}
+.scene-tab{padding:6px 16px;font-size:12px;cursor:pointer;border:none;background:transparent;font-family:inherit;color:var(--ink3);transition:all .15s}
+.scene-tab.on{background:var(--ink);color:#fff}
+.scene-sub{display:flex;flex-wrap:wrap;gap:5px}
+
+/* 二级承接 */
+.secondary-group{display:flex;flex-direction:column;gap:8px}
+.secondary-group-label{font-size:11px;color:var(--ink3);margin-bottom:2px}
+.secondary-chips{display:flex;flex-wrap:wrap;gap:5px}
+.sec-chip{padding:4px 10px;border-radius:20px;border:1.5px solid var(--line);background:var(--surface);font-size:12px;color:var(--ink2);cursor:pointer;transition:all .15s;user-select:none}
+.sec-chip:hover{border-color:var(--ink3)}
+.sec-chip.sel{border-color:var(--amber);background:var(--amber-dim);color:var(--amber);font-weight:500}
+.sec-chip.disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+
+/* 追加输入 */
+.tag-add-row{display:flex;gap:6px;margin-top:8px}
+.tag-add-input{flex:1;height:30px;border:1.5px dashed var(--line);border-radius:20px;padding:0 12px;font-family:inherit;font-size:12px;color:var(--ink);background:transparent;outline:none;transition:border-color .15s}
+.tag-add-input:focus{border-color:var(--ink3)}
+.tag-add-input::placeholder{color:var(--ink4)}
+.tag-add-btn{height:30px;padding:0 12px;border-radius:20px;border:1.5px solid var(--line);background:var(--surface);font-family:inherit;font-size:12px;color:var(--ink2);cursor:pointer;white-space:nowrap;transition:all .15s}
+.tag-add-btn:hover{border-color:var(--ink3)}
+.biz-badge{display:inline-flex;align-items:center;padding:1px 5px;border-radius:8px;background:#FFF3E0;color:#E65100;font-size:9px;font-weight:500;margin-left:3px;vertical-align:middle;white-space:nowrap}
+.add-instance-form{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.add-inst-input{height:32px;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:0 10px;font-family:inherit;font-size:12px;outline:none;transition:border-color .15s;background:var(--surface);color:var(--ink)}
+.add-inst-input:focus{border-color:var(--ink3)}
+.add-inst-row{display:flex;gap:6px}
+.add-inst-select{flex:1;height:32px;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:0 8px;font-family:inherit;font-size:12px;background:var(--surface);color:var(--ink);outline:none;cursor:pointer}
+
+/* ── 步骤3 ── */
+.status-group{display:flex;gap:0;border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;width:fit-content;margin-bottom:12px}
+.status-opt{padding:7px 20px;font-size:13px;cursor:pointer;border:none;background:transparent;font-family:inherit;color:var(--ink3);transition:all .15s}
+.status-opt.on{background:var(--ink);color:#fff}
+.status-detail{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.status-detail-label{font-size:12px;color:var(--ink2);white-space:nowrap}
+.status-detail-input{width:100px;height:32px;padding:0 10px;border:1.5px solid var(--line);border-radius:var(--r-xs);font-family:inherit;font-size:13px;color:var(--ink);background:var(--surface);outline:none;transition:border-color .15s}
+.status-detail-input:focus{border-color:var(--ink)}
+.status-detail-suffix{font-size:12px;color:var(--ink3)}
+
+/* AB 测 checkbox */
+.ab-row{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--line);border-radius:var(--r-sm);cursor:pointer;transition:all .15s;margin-bottom:14px}
+.ab-row:hover{border-color:var(--ink3)}
+.ab-row.on{border-color:var(--purple-mid);background:var(--purple-dim)}
+.ab-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--ink4);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.ab-row.on .ab-check{background:var(--purple-mid);border-color:var(--purple-mid)}
+.ab-label{font-size:13px;color:var(--ink2)}
+.ab-row.on .ab-label{color:var(--purple-mid);font-weight:500}
+
+textarea{width:100%;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:9px 12px;font-family:inherit;font-size:13px;color:var(--ink);background:var(--surface);outline:none;transition:border-color .15s;resize:none;line-height:1.55}
+textarea:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(0,0,0,.06)}
+textarea::placeholder{color:var(--ink4)}
+
+/* ── FOOTER ── */
+.modal-foot{padding:16px 28px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:var(--surface)}
+.btn-back{height:36px;padding:0 16px;border-radius:var(--r-sm);border:1.5px solid var(--line);background:none;font-family:inherit;font-size:13px;color:var(--ink2);cursor:pointer;transition:all .15s}
+.btn-back:hover{border-color:var(--ink3);color:var(--ink)}
+.btn-back:disabled{opacity:0;pointer-events:none}
+.btn-next{height:36px;padding:0 22px;border-radius:var(--r-sm);border:none;background:var(--ink);color:#fff;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.btn-next:hover{background:#333;transform:translateY(-1px)}
+.btn-next.submit{background:var(--green)}
+.btn-next.submit:hover{background:var(--green-dark)}
+.progress-dots{display:flex;gap:5px;align-items:center}
+.progress-dot{width:5px;height:5px;border-radius:50%;background:var(--ink4);transition:all .2s}
+.progress-dot.active{background:var(--ink);width:16px;border-radius:3px}
+.progress-dot.done{background:var(--green)}
+
+/* ── SUCCESS ── */
+.success-pane{display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;text-align:center}
+.success-pane.active{display:flex}
+.success-icon{width:56px;height:56px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:24px}
+.success-title{font-size:17px;font-weight:500;margin-bottom:6px}
+.success-sub{font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:20px}
+.success-code{width:100%;background:var(--paper);border-radius:var(--r-sm);padding:12px 14px;font-family:'DM Mono',monospace;font-size:12px;color:var(--ink2);text-align:left;border:1px solid var(--line);white-space:pre-wrap;word-break:break-all;margin-bottom:16px;max-height:110px;overflow-y:auto}
+.copy-btn{height:34px;padding:0 18px;border-radius:var(--r-sm);border:1.5px solid var(--line);background:var(--surface);font-family:inherit;font-size:12px;color:var(--ink2);cursor:pointer;transition:all .15s}
+.copy-btn:hover{border-color:var(--ink);color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="modal" id="modal">
+
+  <!-- HEAD -->
+  <div class="modal-head">
+    <div class="modal-title">录入需求</div>
+    <button class="close-btn" onclick="closeModal()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- STEPPER -->
+  <div class="stepper" id="stepper">
+    <div class="step active" id="s1"><div class="step-circle">1</div><div class="step-label">基础信息</div></div>
+    <div class="step-line" id="line1"></div>
+    <div class="step future" id="s2"><div class="step-circle">2</div><div class="step-label">选择实例</div></div>
+    <div class="step-line" id="line2"></div>
+    <div class="step future" id="s3"><div class="step-circle">3</div><div class="step-label">状态与效果</div></div>
+  </div>
+  <div class="modal-divider"></div>
+
+  <!-- BODY -->
+  <div class="modal-body">
+
+    <!-- ── 步骤1：基础信息 ── -->
+    <div class="step-pane active" id="pane1">
+      <div class="field">
+        <div class="field-label">需求名称 <span class="required">*</span></div>
+        <input type="text" id="f-title" placeholder="输入需求名称..." oninput="validateStep1()">
+      </div>
+      <div class="field">
+        <div class="field-label">Relay 设计稿链接 <span class="required">*</span></div>
+        <input type="url" id="f-relay" placeholder="https://relay.jd.com/file/design?id=..." oninput="validateStep1()">
+      </div>
+      <div class="field">
+        <div class="field-label">PRD 链接 <span class="optional">可选</span></div>
+        <input type="url" id="f-prd" placeholder="https://...">
+      </div>
+      <div class="field">
+        <div class="field-label">
+          预览图 <span class="optional">可选</span>
+          <span style="font-size:10px;font-weight:400;color:var(--ink3);margin-left:4px">当前需手动上传 · 未来将支持自动截取</span>
+        </div>
+        <input type="url" id="f-preview" placeholder="https://...（PNG 在线链接）" oninput="updatePreviewImg()">
+        <div id="preview-img-wrap" style="display:none;margin-top:6px;border:1.5px solid var(--line);border-radius:var(--r-sm);overflow:hidden;max-height:160px">
+          <img id="preview-img" src="" alt="预览图" style="width:100%;display:block;object-fit:cover" onerror="this.parentElement.style.display='none'">
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">需求类型 <span class="required">*</span></div>
+        <div class="type-group">
+          <button class="type-btn selected" onclick="selectType(this,'新增功能')">新增功能</button>
+          <button class="type-btn" onclick="selectType(this,'优化迭代')">优化迭代</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 步骤2：选择实例 ── -->
+    <div class="step-pane" id="pane2">
+
+      <!-- 实例标签 -->
+      <div class="tag-section">
+        <div class="tag-section-label">
+          <div class="tag-section-icon" style="background:var(--blue-dim);color:var(--blue)">🧩</div>
+          实例标签
+        </div>
+        <div class="floor-cascade">
+          <div class="cascade-row">
+            <div class="cascade-label">场景</div>
+            <div class="floor-chips" id="inst-l1"></div>
+          </div>
+          <div class="cascade-row" id="inst-l2-row" style="display:none">
+            <div class="cascade-label">区块</div>
+            <div class="floor-chips" id="inst-l2"></div>
+          </div>
+          <div class="cascade-row" id="inst-l3-row" style="display:none">
+            <div class="cascade-label">楼层</div>
+            <div class="floor-chips" id="inst-l3"></div>
+          </div>
+        </div>
+        <div id="inst-selected-chips" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;min-height:10px"></div>
+      </div>
+
+      <!-- 新增实例（仅新增功能类需求） -->
+      <div class="tag-section" id="add-inst-section" style="display:none">
+        <div class="tag-section-label">
+          <div class="tag-section-icon" style="background:var(--green-dim);color:var(--green)">＋</div>
+          新增实例 <span style="font-size:10px;font-weight:400;color:var(--ink3);text-transform:none;letter-spacing:0">添加后可供后续需求复用</span>
+        </div>
+        <div class="add-instance-form">
+          <div>
+            <div style="font-size:11px;font-weight:500;color:var(--ink2);margin-bottom:4px">实例名称</div>
+            <input class="add-inst-input" id="add-inst-name" placeholder="如：腰带倒计时" style="width:100%">
+          </div>
+          <div class="add-inst-row">
+            <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:11px;font-weight:500;color:var(--ink2)">所属场景</div>
+              <select class="add-inst-select" id="add-inst-l1" onchange="updateAddInstL2()">
+                <option value="">请选择</option>
+                <option value="universalFloors">通用楼层</option>
+                <option value="secondaryLayers">二级承接</option>
+              </select>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:11px;font-weight:500;color:var(--ink2)">所属区块</div>
+              <select class="add-inst-select" id="add-inst-l2">
+                <option value="">请选择</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:500;color:var(--ink2);margin-bottom:4px">类型</div>
+            <select class="add-inst-select" id="add-inst-biz" style="width:100%">
+              <option value="通用">通用</option>
+              <option value="大健康">大健康</option>
+              <option value="汽车">汽车</option>
+              <option value="大时尚">大时尚</option>
+              <option value="大商超">大商超</option>
+              <option value="家电家居">家电家居</option>
+              <option value="3C数码">3C数码</option>
+              <option value="拍拍二手">拍拍二手</option>
+              <option value="集团政企">集团政企</option>
+              <option value="生活服务">生活服务</option>
+            </select>
+          </div>
+          <button class="tag-add-btn" style="width:100%;justify-content:center;height:34px" onclick="confirmAddInstance()">确认添加</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── 步骤3：状态与效果 ── -->
+    <div class="step-pane" id="pane3">
+
+      <div class="field">
+        <div class="field-label">状态 <span class="required">*</span></div>
+        <div class="status-group">
+          <button class="status-opt on" id="opt-online" onclick="setStatus('online',this)">已上线</button>
+          <button class="status-opt" id="opt-pending" onclick="setStatus('pending',this)">未上线</button>
+        </div>
+        <div class="status-detail" id="status-detail-online">
+          <span class="status-detail-label">切量百分比</span>
+          <input type="text" class="status-detail-input" id="f-cutrate" placeholder="100">
+          <span class="status-detail-suffix">%</span>
+        </div>
+        <div class="status-detail" id="status-detail-pending" style="display:none">
+          <span class="status-detail-label">预计上线版本</span>
+          <input type="text" class="status-detail-input" id="f-launch-ver" placeholder="630">
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">AB 测规划</div>
+        <div class="ab-row" id="ab-row" onclick="toggleAB()">
+          <div class="ab-check" id="ab-check"></div>
+          <div class="ab-label">规划 AB 测</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">预期效果 <span class="optional">可选</span></div>
+        <textarea id="f-metrics" rows="3" placeholder="如：国补弹层转化率提升 5%、解绑率降低 10%..."></textarea>
+      </div>
+
+    </div>
+
+    <!-- 成功态 -->
+    <div class="success-pane" id="pane-success">
+      <div class="success-icon">✓</div>
+      <div class="success-title">录入成功</div>
+      <div class="success-sub">已生成录入命令<br>复制后在 Claude Code 里粘贴运行</div>
+      <div class="success-code" id="success-cmd"></div>
+      <button class="copy-btn" onclick="copyCmd()">复制命令</button>
+    </div>
+
+  </div>
+
+  <!-- FOOT -->
+  <div class="modal-foot" id="modal-foot">
+    <button class="btn-back" id="btn-back" disabled onclick="prevStep()">上一步</button>
+    <div class="progress-dots">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+    </div>
+    <button class="btn-next" id="btn-next" disabled onclick="nextStep()">
+      下一步
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+</div>
+
+<script>
+var currentStep = 1;
+var selectedType = '新增功能';
+var selectedStatus = 'online';
+var abEnabled = false;
+
+/* ── 实例数据（来自 knowledge/instances.json，内联避免 file:// 限制）
+   结构：英文 camelCase key + label 字段存中文；item 含 id / name / businessId / business ── */
+var INSTANCES_DATA = {"universalFloors":{"label":"通用楼层","globalFeatures":{"label":"全局功能","items":[{"id":"topNav","name":"顶部导航","businessId":"general","business":"通用"},{"id":"bottomBar","name":"底Bar","businessId":"general","business":"通用"},{"id":"liveWindow","name":"直播小窗","businessId":"general","business":"通用"},{"id":"floatingBall","name":"悬浮球","businessId":"general","business":"通用"},{"id":"bottomTip","name":"底部提示条","businessId":"general","business":"通用"}]},"heroArea":{"label":"主图区","items":[{"id":"liveWidget","name":"直播挂件","businessId":"general","business":"通用"},{"id":"manualWidget","name":"说明书挂件","businessId":"general","business":"通用"},{"id":"chatWidget","name":"问东东挂件","businessId":"general","business":"通用"},{"id":"heroContent","name":"主图内容","businessId":"general","business":"通用"}]},"card1Area":{"label":"首卡区","items":[{"id":"skuPicker","name":"小图选款","businessId":"general","business":"通用"},{"id":"belt","name":"腰带","businessId":"general","business":"通用"},{"id":"purchaseTabs","name":"购买方式Tabs","businessId":"general","business":"通用"},{"id":"price","name":"价格","businessId":"general","business":"通用"},{"id":"enjoyed","name":"已享受","businessId":"general","business":"通用"},{"id":"canEnjoy","name":"可再享","businessId":"general","business":"通用"},{"id":"activateEnjoy","name":"开通享","businessId":"general","business":"通用"},{"id":"tradeInNote","name":"以旧换新说明","businessId":"general","business":"通用"},{"id":"medicineDiscountNote","name":"购药折扣险说明","businessId":"general","business":"通用"},{"id":"title","name":"标题","businessId":"general","business":"通用"},{"id":"highlights","name":"亮点行","businessId":"general","business":"通用"},{"id":"prescriptionTip","name":"处方药提醒","businessId":"health","business":"大健康"},{"id":"adultProductTip","name":"成人用品提醒","businessId":"health","business":"大健康"},{"id":"storePriceNote","name":"门店价格解释","businessId":"general","business":"通用"}]},"card2Area":{"label":"二卡区","items":[{"id":"mindCap","name":"心智加盖","businessId":"general","business":"通用"},{"id":"gift","name":"送礼","businessId":"general","business":"通用"},{"id":"storeUp","name":"店铺上提","businessId":"general","business":"通用"},{"id":"selected","name":"已选","businessId":"general","business":"通用"},{"id":"specs","name":"参数","businessId":"general","business":"通用"},{"id":"fulfillment","name":"履约","businessId":"general","business":"通用"},{"id":"service","name":"服务","businessId":"general","business":"通用"},{"id":"promotion","name":"活动","businessId":"general","business":"通用"},{"id":"publisher","name":"出版社","businessId":"digital3c","business":"3C数码"},{"id":"author","name":"作家","businessId":"digital3c","business":"3C数码"},{"id":"artist","name":"艺术家","businessId":"general","business":"通用"},{"id":"artwork","name":"艺术品","businessId":"general","business":"通用"},{"id":"voucher","name":"代金券","businessId":"general","business":"通用"},{"id":"shipping","name":"运费","businessId":"general","business":"通用"},{"id":"carProfile","name":"汽车档案","businessId":"auto","business":"汽车"},{"id":"petProfileNew","name":"宠物档案（新）","businessId":"general","business":"通用"},{"id":"furnitureSize","name":"家居尺码","businessId":"general","business":"通用"}]},"standaloneFloors":{"label":"独立楼层","items":[{"id":"medicineFlash","name":"买药秒送","businessId":"health","business":"大健康"},{"id":"offlineStore","name":"线下门店","businessId":"general","business":"通用"},{"id":"tradeIn","name":"以旧换新","businessId":"secondHand","business":"拍拍二手"},{"id":"highValueRecycle","name":"高价回收","businessId":"secondHand","business":"拍拍二手"},{"id":"dutchAuction","name":"荷兰拍","businessId":"general","business":"通用"},{"id":"petProfileOld","name":"宠物档案（旧）","businessId":"general","business":"通用"},{"id":"homeInstall","name":"上门安装","businessId":"general","business":"通用"},{"id":"processBar","name":"流程条","businessId":"general","business":"通用"},{"id":"giftCustom","name":"送礼定制","businessId":"general","business":"通用"},{"id":"reserveProcess","name":"预约流程","businessId":"general","business":"通用"},{"id":"preSaleProcess","name":"预售流程","businessId":"general","business":"通用"},{"id":"healthCenter","name":"我的健康中心","businessId":"health","business":"大健康"},{"id":"simPackage","name":"号卡套餐","businessId":"digital3c","business":"3C数码"},{"id":"groupBuyJoin","name":"拼购参团","businessId":"general","business":"通用"},{"id":"healthManual","name":"健康说明书","businessId":"health","business":"大健康"},{"id":"sizeAssistant","name":"尺码助手","businessId":"fashion","business":"大时尚"},{"id":"buyerZone","name":"采销运营专区","businessId":"general","business":"通用"},{"id":"petLiveProfile","name":"宠物活体档案","businessId":"general","business":"通用"},{"id":"carMaintenanceSet","name":"汽车保养套装","businessId":"auto","business":"汽车"},{"id":"medicineSet","name":"医药套装","businessId":"health","business":"大健康"},{"id":"regularBuyOption","name":"定期购选项","businessId":"supermarket","business":"大商超"},{"id":"planBuyOption","name":"计划购选项","businessId":"govEnterprise","business":"集团政企"},{"id":"jewelryCustom","name":"珠宝定制","businessId":"fashion","business":"大时尚"},{"id":"designerBio","name":"设计师简介","businessId":"fashion","business":"大时尚"},{"id":"homeCabinetCustom","name":"上门定制","businessId":"homeAppliance","business":"家电家居"},{"id":"homeService","name":"家政服务","businessId":"general","business":"通用"},{"id":"trySamples","name":"买一试三","businessId":"fashion","business":"大时尚"},{"id":"regularEnjoySet","name":"定期享套装","businessId":"homeAppliance","business":"家电家居"},{"id":"workwearCustom","name":"工服定制","businessId":"govEnterprise","business":"集团政企"}]},"contentArea":{"label":"内容区","items":[{"id":"reviews","name":"评价","businessId":"general","business":"通用"},{"id":"testReview","name":"测评","businessId":"general","business":"通用"},{"id":"qanda","name":"问答","businessId":"general","business":"通用"},{"id":"userCase","name":"用户案例","businessId":"health","business":"大健康"},{"id":"healthEdu","name":"健康科普","businessId":"health","business":"大健康"},{"id":"doctorQanda","name":"医生问答","businessId":"health","business":"大健康"}]},"storeArea":{"label":"店铺区","items":[{"id":"store","name":"店铺","businessId":"general","business":"通用"}]},"waistRecommendArea":{"label":"腰部推荐区","items":[{"id":"waistRecommend","name":"腰部推荐","businessId":"general","business":"通用"}]},"detailArea":{"label":"详情介绍区","items":[{"id":"promoZone","name":"活动专区","businessId":"general","business":"通用"},{"id":"dynamicZone","name":"动态展区","businessId":"general","business":"通用"},{"id":"storeTop","name":"店内优选","businessId":"general","business":"通用"},{"id":"productIntro","name":"商品介绍","businessId":"general","business":"通用"}]},"bottomRecommendArea":{"label":"底部推荐区","items":[{"id":"recommendFeeds","name":"推荐FEEDS","businessId":"general","business":"通用"}]}},"secondaryLayers":{"label":"二级承接","cartSheet":{"label":"已选弹层","items":[{"id":"productInfo","name":"商品信息","businessId":"general","business":"通用"},{"id":"giftRow","name":"赠品行","businessId":"general","business":"通用"},{"id":"deliveryRow","name":"时效行","businessId":"general","business":"通用"},{"id":"installRow","name":"安装行","businessId":"general","business":"通用"},{"id":"purchaseMethod","name":"购买方式","businessId":"general","business":"通用"},{"id":"skuSelect","name":"规格选择","businessId":"general","business":"通用"},{"id":"accessorySet","name":"配件套装","businessId":"general","business":"通用"},{"id":"boneBrothService","name":"熬胶服务","businessId":"general","business":"通用"},{"id":"deliveryInstall","name":"送装服务","businessId":"general","business":"通用"},{"id":"flashItem","name":"秒送商品","businessId":"general","business":"通用"},{"id":"deliveryService","name":"配送服务","businessId":"general","business":"通用"},{"id":"premiumService","name":"优质服务","businessId":"general","business":"通用"},{"id":"bottomBtn","name":"底部按钮","businessId":"general","business":"通用"}]},"secondarySheet":{"label":"二级弹层","items":[{"id":"fulfillmentSheet","name":"履约弹层","businessId":"general","business":"通用"},{"id":"serviceSheet","name":"服务弹层","businessId":"general","business":"通用"},{"id":"specsSheet","name":"参数弹层","businessId":"general","business":"通用"},{"id":"promoSheet","name":"活动弹层","businessId":"general","business":"通用"},{"id":"petProfileSheet","name":"宠物档案弹层","businessId":"general","business":"通用"},{"id":"outOfStockSheet","name":"无货弹层","businessId":"general","business":"通用"},{"id":"addCartSheet","name":"加车成功弹层","businessId":"general","business":"通用"},{"id":"healthManualSheet","name":"健康说明书弹层","businessId":"general","business":"通用"},{"id":"jingbuContractSheet","name":"京补合约弹层","businessId":"general","business":"通用"},{"id":"compareSheet","name":"对比选品弹层","businessId":"general","business":"通用"},{"id":"recommendSheet","name":"推荐弹层","businessId":"general","business":"通用"},{"id":"giftSheet","name":"赠品弹层","businessId":"general","business":"通用"},{"id":"bundleSheet","name":"组合购买弹层","businessId":"general","business":"通用"},{"id":"tradeInSheet","name":"以旧换新弹层","businessId":"general","business":"通用"}]},"secondaryPage":{"label":"二级页面","items":[{"id":"skuImageView","name":"SKU大图浏览","businessId":"general","business":"通用"},{"id":"specImageView","name":"规格大图浏览","businessId":"general","business":"通用"}]},"dialog":{"label":"弹窗","items":[{"id":"genericDialog","name":"通用弹窗","businessId":"general","business":"通用"},{"id":"marketingDialog","name":"营销弹窗","businessId":"general","business":"通用"}]}}};
+
+var instSelectedL1 = null, instSelectedL2 = null;
+var selectedInstances = []; // [{zone, name, business, label}]
+
+/* ══════════ STEP 1 ══════════ */
+function updatePreviewImg(){
+  var url=document.getElementById('f-preview').value.trim();
+  var wrap=document.getElementById('preview-img-wrap');
+  var img=document.getElementById('preview-img');
+  if(url){img.src=url;wrap.style.display='';}
+  else{wrap.style.display='none';}
+}
+
+function selectType(btn, type){
+  document.querySelectorAll('.type-btn').forEach(function(b){b.classList.remove('selected')});
+  btn.classList.add('selected');
+  selectedType = type;
+}
+
+function validateStep1(){
+  var title = document.getElementById('f-title').value.trim();
+  var relay = document.getElementById('f-relay').value.trim();
+  var ok = title && relay;
+  var btn = document.getElementById('btn-next');
+  btn.disabled = !ok;
+  btn.style.opacity = ok ? '1' : '0.5';
+}
+
+/* ══════════ STEP 2 ══════════ */
+function initStep2(){
+  var addSec = document.getElementById('add-inst-section');
+  if(addSec) addSec.style.display = selectedType==='新增功能' ? '' : 'none';
+  renderInstL1();
+  renderInstSelected();
+}
+
+function renderInstL1(){
+  var el=document.getElementById('inst-l1');
+  el.innerHTML=Object.keys(INSTANCES_DATA).map(function(k){
+    var sel=instSelectedL1===k;
+    var lbl=INSTANCES_DATA[k].label||k;
+    return '<div class="floor-chip'+(sel?' sel':'')+'" onclick="selectInstL1(\''+k+'\')">'+lbl+'</div>';
+  }).join('');
+  renderInstL2();
+}
+
+function selectInstL1(key){
+  instSelectedL1=key; instSelectedL2=null;
+  renderInstL1();
+}
+
+function zoneKeys(l1){
+  return Object.keys(INSTANCES_DATA[l1]||{}).filter(function(k){return k!=='label';});
+}
+
+function renderInstL2(){
+  var row=document.getElementById('inst-l2-row');
+  var el=document.getElementById('inst-l2');
+  if(!instSelectedL1){row.style.display='none';document.getElementById('inst-l3-row').style.display='none';return;}
+  var zones=zoneKeys(instSelectedL1);
+  el.innerHTML=zones.map(function(z){
+    var sel=instSelectedL2===z;
+    var lbl=(INSTANCES_DATA[instSelectedL1][z]||{}).label||z;
+    return '<div class="floor-chip'+(sel?' sel':'')+'" onclick="selectInstL2(\''+escQ(z)+'\')">'+lbl+'</div>';
+  }).join('');
+  row.style.display='';
+  renderInstL3();
+}
+
+function selectInstL2(key){instSelectedL2=key;renderInstL2();}
+
+function renderInstL3(){
+  var row=document.getElementById('inst-l3-row');
+  var el=document.getElementById('inst-l3');
+  if(!instSelectedL1||!instSelectedL2){row.style.display='none';return;}
+  var zone=(INSTANCES_DATA[instSelectedL1]||{})[instSelectedL2]||{};
+  var items=zone.items||[];
+  var zoneLabel=zone.label||instSelectedL2;
+  el.innerHTML=items.map(function(item){
+    var label=zoneLabel+'·'+item.name;
+    var sel=selectedInstances.some(function(x){return x.label===label;});
+    var biz=item.business!=='通用'?'<span class="biz-badge">'+item.business+'</span>':'';
+    return '<div class="floor-chip'+(sel?' sel':'')+'" onclick="toggleInstL3(\''+escQ(item.name)+'\',\''+escQ(item.business)+'\',\''+escQ(zoneLabel)+'\')">'
+      +item.name+biz+'</div>';
+  }).join('');
+  row.style.display='';
+}
+
+function escQ(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+
+function toggleInstL3(name,business,zoneLabel){
+  var label=zoneLabel+'·'+name;
+  var idx=selectedInstances.findIndex(function(x){return x.label===label;});
+  if(idx>=0)selectedInstances.splice(idx,1);
+  else selectedInstances.push({zoneKey:instSelectedL2,zoneLabel:zoneLabel,name:name,business:business,label:label});
+  renderInstL3();
+  renderInstSelected();
+}
+
+function renderInstSelected(){
+  var el=document.getElementById('inst-selected-chips');
+  if(!el)return;
+  el.innerHTML=selectedInstances.map(function(item,i){
+    var biz=item.business!=='通用'?'<span class="biz-badge">'+item.business+'</span>':'';
+    return '<div class="floor-chip sel" style="display:inline-flex;align-items:center;gap:3px">'
+      +item.label+biz
+      +'<span onclick="removeInstance('+i+')" style="margin-left:3px;cursor:pointer;opacity:.5;font-size:10px">×</span>'
+      +'</div>';
+  }).join('');
+}
+
+function removeInstance(i){selectedInstances.splice(i,1);renderInstL3();renderInstSelected();}
+
+function updateAddInstL2(){
+  var l1=document.getElementById('add-inst-l1').value;
+  var l2Select=document.getElementById('add-inst-l2');
+  l2Select.innerHTML='<option value="">请选择</option>';
+  if(l1&&INSTANCES_DATA[l1]){
+    zoneKeys(l1).forEach(function(z){
+      var lbl=(INSTANCES_DATA[l1][z]||{}).label||z;
+      l2Select.innerHTML+='<option value="'+z+'">'+lbl+'</option>';
+    });
+  }
+}
+
+function confirmAddInstance(){
+  var name=document.getElementById('add-inst-name').value.trim();
+  var l1=document.getElementById('add-inst-l1').value;
+  var l2=document.getElementById('add-inst-l2').value;
+  var biz=document.getElementById('add-inst-biz').value;
+  if(!name||!l1||!l2){alert('请完整填写实例名称、所属场景和区块');return;}
+  if(!INSTANCES_DATA[l1][l2])INSTANCES_DATA[l1][l2]={label:l2,items:[]};
+  var items=INSTANCES_DATA[l1][l2].items;
+  if(!items.some(function(x){return x.name===name;}))
+    items.push({id:'custom_'+Date.now(),name:name,businessId:biz,business:biz});
+  var zoneLabel=(INSTANCES_DATA[l1][l2]||{}).label||l2;
+  var label=zoneLabel+'·'+name;
+  if(!selectedInstances.some(function(x){return x.label===label;}))
+    selectedInstances.push({zoneKey:l2,zoneLabel:zoneLabel,name:name,business:biz,label:label});
+  document.getElementById('add-inst-name').value='';
+  document.getElementById('add-inst-l1').value='';
+  document.getElementById('add-inst-l2').innerHTML='<option value="">请选择</option>';
+  document.getElementById('add-inst-biz').value='通用';
+  if(instSelectedL1===l1&&instSelectedL2===l2)renderInstL3();
+  renderInstSelected();
+}
+
+
+
+/* ══════════ STEP 3 ══════════ */
+function setStatus(status, btn){
+  selectedStatus = status;
+  document.querySelectorAll('.status-opt').forEach(function(b){b.classList.remove('on')});
+  btn.classList.add('on');
+  document.getElementById('status-detail-online').style.display = status==='online' ? 'flex' : 'none';
+  document.getElementById('status-detail-pending').style.display = status==='pending' ? 'flex' : 'none';
+}
+
+function toggleAB(){
+  abEnabled = !abEnabled;
+  document.getElementById('ab-row').classList.toggle('on', abEnabled);
+  document.getElementById('ab-check').innerHTML = abEnabled
+    ? '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>'
+    : '';
+}
+
+/* ══════════ STEPPER LOGIC ══════════ */
+function updateStepper(step){
+  for(var i=1;i<=3;i++){
+    document.getElementById('s'+i).className='step '+(i<step?'done':i===step?'active':'future');
+    if(i<3) document.getElementById('line'+i).className='step-line'+(i<step?' done':'');
+    document.getElementById('dot'+i).className='progress-dot'+(i<step?' done':i===step?' active':'');
+  }
+}
+
+function nextStep(){
+  if(currentStep===3){submitForm();return;}
+  currentStep++;
+  if(currentStep===2) initStep2();
+  showStep(currentStep);
+}
+
+function prevStep(){
+  if(currentStep<=1)return;
+  currentStep--;
+  showStep(currentStep);
+}
+
+function showStep(step){
+  document.querySelectorAll('.step-pane').forEach(function(p){p.classList.remove('active')});
+  document.getElementById('pane'+step).classList.add('active');
+  updateStepper(step);
+  document.getElementById('btn-back').disabled = step<=1;
+  var btn = document.getElementById('btn-next');
+  if(step===3){
+    btn.className='btn-next submit';
+    btn.disabled=false;
+    btn.innerHTML='提交归档 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>';
+  } else {
+    btn.className='btn-next';
+    btn.innerHTML='下一步 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    if(step===2) btn.disabled=false;
+  }
+}
+
+/* ══════════ SUBMIT ══════════ */
+function submitForm(){
+  var title = document.getElementById('f-title').value.trim();
+  var relay = document.getElementById('f-relay').value.trim();
+  var prd   = document.getElementById('f-prd').value.trim();
+  var previewUrl = document.getElementById('f-preview').value.trim();
+  var metrics = document.getElementById('f-metrics').value.trim();
+  var cutrate = document.getElementById('f-cutrate').value.trim();
+  var launchVer = document.getElementById('f-launch-ver').value.trim();
+
+  var instanceLabels = selectedInstances.map(function(x){return x.label});
+
+  var statusStr = selectedStatus==='online' ? '已上线'+(cutrate?' · 切量'+cutrate+'%':'') : '未上线'+(launchVer?' · 预计'+launchVer:'');
+
+  var cmd = '/design-reasoning-input';
+  if(relay) cmd += ' '+relay;
+  if(prd) cmd += ' --prd "'+prd+'"';
+  cmd += '\n\n';
+  cmd += '# 需求名称：'+title+'\n';
+  cmd += '# 需求类型：'+selectedType+'\n';
+  if(previewUrl) cmd += '# 预览图：'+previewUrl+'\n';
+  if(instanceLabels.length) cmd += '# 实例标签：'+instanceLabels.join(', ')+'\n';
+  cmd += '# 状态：'+statusStr+'\n';
+  if(abEnabled) cmd += '# AB测：规划中\n';
+  if(metrics) cmd += '# 预期效果：'+metrics+'\n';
+
+  document.getElementById('success-cmd').textContent = cmd;
+  document.querySelectorAll('.step-pane').forEach(function(p){p.classList.remove('active')});
+  document.getElementById('pane-success').classList.add('active');
+  document.getElementById('stepper').style.opacity='0.4';
+  document.getElementById('modal-foot').innerHTML =
+    '<span style="font-size:12px;color:var(--ink3)">已生成录入命令</span>'
+    +'<button class="btn-next" onclick="resetForm()" style="background:var(--ink)">录入下一条</button>';
+}
+
+function copyCmd(){
+  var text = document.getElementById('success-cmd').textContent;
+  navigator.clipboard.writeText(text).then(function(){
+    var btn = document.querySelector('.copy-btn');
+    btn.textContent = '已复制 ✓';
+    btn.style.borderColor='var(--green)';
+    btn.style.color='var(--green-dark)';
+    setTimeout(function(){btn.textContent='复制命令';btn.style.borderColor='';btn.style.color='';},2000);
+  });
+}
+
+function closeModal(){
+  window.parent.postMessage({type:'closeEntry'},'*');
+}
+
+function resetForm(){
+  currentStep=1;
+  selectedType='新增功能';
+  selectedStatus='online';
+  abEnabled=false;
+  instSelectedL1=null;instSelectedL2=null;selectedInstances=[];
+  document.getElementById('f-title').value='';
+  document.getElementById('f-relay').value='';
+  document.getElementById('f-prd').value='';
+  document.getElementById('f-preview').value='';
+  document.getElementById('preview-img-wrap').style.display='none';
+  document.getElementById('f-metrics').value='';
+  document.getElementById('f-cutrate').value='';
+  document.getElementById('f-launch-ver').value='';
+  document.querySelectorAll('.type-btn').forEach(function(b,i){b.classList.toggle('selected',i===0)});
+  document.querySelectorAll('.step-pane').forEach(function(p){p.classList.remove('active')});
+  document.getElementById('pane1').classList.add('active');
+  document.getElementById('pane-success').classList.remove('active');
+  document.getElementById('stepper').style.opacity='1';
+  updateStepper(1);
+  document.getElementById('ab-row').classList.remove('on');
+  document.getElementById('ab-check').innerHTML='';
+  document.getElementById('modal-foot').innerHTML=
+    '<button class="btn-back" id="btn-back" disabled onclick="prevStep()">上一步</button>'
+    +'<div class="progress-dots"><div class="progress-dot active" id="dot1"></div><div class="progress-dot" id="dot2"></div><div class="progress-dot" id="dot3"></div></div>'
+    +'<button class="btn-next" id="btn-next" disabled onclick="nextStep()">下一步 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>';
+  validateStep1();
+}
+
+// 初始化
+validateStep1();
+</script>
+</body>
+</html>

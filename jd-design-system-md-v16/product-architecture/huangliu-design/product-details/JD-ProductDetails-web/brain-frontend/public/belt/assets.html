@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>京东商详腰带 · 资产库</title>
+<style>
+  :root{
+    --bg:#0b0f16; --panel:rgba(255,255,255,.05); --panel2:rgba(255,255,255,.08);
+    --text:rgba(255,255,255,.92); --muted:rgba(255,255,255,.62); --muted2:rgba(255,255,255,.40);
+    --stroke:rgba(255,255,255,.10); --stroke2:rgba(255,255,255,.18);
+    --accent:#22d3ee; --green:#43d787; --orange:#ffb454; --purple:#9d7bff; --cyan:#2ed3d3; --pink:#ff7bce; --danger:#ff5d5d;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Courier New",monospace;
+    --sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    --r-md:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--sans)}
+  body{padding:0 0 80px;-webkit-font-smoothing:antialiased}
+  body::before{content:"";position:fixed;inset:0 0 auto 0;height:min(680px,80vh);z-index:0;pointer-events:none;
+    background:radial-gradient(1200px 640px at 12% 0%,rgba(78,161,255,.16),transparent 56%),
+               radial-gradient(900px 520px at 92% 4%,rgba(157,123,255,.12),transparent 60%)}
+  a{color:inherit;text-decoration:none}
+
+  .top{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
+    background:linear-gradient(180deg,rgba(11,15,22,.92),rgba(11,15,22,.72));border-bottom:1px solid var(--stroke)}
+  .top__in{max-width:1320px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand__dot{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#c41e12,#e83820);
+    box-shadow:0 6px 18px rgba(232,56,32,.4);display:grid;place-items:center;font-weight:800;font-size:14px;color:#fff}
+  .brand__t{font-size:17px;font-weight:700;letter-spacing:.5px}
+  .brand__s{font-size:12px;color:var(--muted2);margin-top:1px}
+  .top__spacer{flex:1}
+  .top__link{font-size:12px;color:var(--muted);border:1px solid var(--stroke);padding:7px 12px;border-radius:9px;transition:.15s}
+  .top__link:hover{color:var(--text);border-color:var(--stroke2)}
+
+  .wrap{max-width:1320px;margin:0 auto;padding:24px;position:relative;z-index:1}
+
+  /* 分类 tab */
+  .cats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+  .cat{display:flex;align-items:center;gap:10px;padding:12px 16px;border:1px solid var(--stroke);border-radius:13px;
+    background:var(--panel);cursor:pointer;transition:.16s;min-width:148px}
+  .cat:hover{border-color:var(--stroke2);background:var(--panel2)}
+  .cat.on{border-color:rgba(78,161,255,.5);background:linear-gradient(160deg,rgba(78,161,255,.2),rgba(78,161,255,.06))}
+  .cat__ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:17px;flex:0 0 auto}
+  .cat__t{font-size:13px;font-weight:600}
+  .cat__c{font-size:11px;color:var(--muted2);margin-top:2px}
+
+  .sec__head{display:flex;align-items:baseline;gap:12px;margin:0 0 16px}
+  .sec__n{font-size:11px;font-weight:700;color:#04111f;background:var(--accent);border-radius:6px;padding:3px 8px}
+  .sec__t{font-size:17px;font-weight:700}
+  .sec__d{font-size:12px;color:var(--muted2)}
+  .toolbar{display:flex;gap:10px;align-items:center;margin-left:auto}
+  .btn{font-size:12px;font-weight:600;padding:8px 14px;border-radius:9px;border:1px solid var(--stroke);background:var(--panel);color:var(--text);cursor:pointer;transition:.15s}
+  .btn:hover{border-color:var(--stroke2);background:var(--panel2)}
+  .btn--primary{background:var(--accent);color:#04111f;border-color:transparent}
+
+  .grid{display:grid;gap:16px}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:1100px){.g4{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:880px){.g4,.g3{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.g4,.g3{grid-template-columns:1fr}}
+
+  .asset{background:var(--panel);border:1px solid var(--stroke);border-radius:var(--r-md);overflow:hidden;transition:.16s;cursor:pointer}
+  .asset:hover{border-color:var(--stroke2);transform:translateY(-2px);box-shadow:0 14px 32px rgba(0,0,0,.35)}
+  .asset__thumb{height:108px;display:grid;place-items:center;position:relative;overflow:hidden}
+  .asset__belt{width:86%;height:54px;border-radius:8px;display:flex;align-items:center;padding:0 12px;gap:8px;
+    box-shadow:0 6px 16px rgba(0,0,0,.3)}
+  .asset__beltPrice{font-weight:800;font-size:17px;font-family:var(--mono)}
+  .asset__beltTag{font-size:10px;padding:2px 6px;border-radius:5px;font-weight:700;background:rgba(255,255,255,.85)}
+  .asset__body{padding:11px 13px}
+  .asset__t{font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:6px}
+  .asset__meta{font-size:11px;color:var(--muted2);margin-top:5px;display:flex;gap:10px;flex-wrap:wrap}
+  .asset__meta b{color:var(--muted);font-weight:600;font-family:var(--mono)}
+  .badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;flex:0 0 auto}
+  .badge--g{background:rgba(67,215,135,.16);color:var(--green)}
+  .badge--o{background:rgba(255,180,84,.16);color:var(--orange)}
+  .badge--r{background:rgba(255,93,93,.16);color:var(--danger)}
+  .badge--b{background:rgba(78,161,255,.16);color:var(--accent)}
+
+  /* 色板资产 */
+  .swatch{height:108px;display:flex}
+  .swatch i{flex:1}
+  /* 氛围图资产 */
+  .atmo{height:108px;position:relative;overflow:hidden}
+  .empty{grid-column:1/-1;text-align:center;color:var(--muted2);font-size:13px;padding:40px 0}
+</style>
+<link rel="stylesheet" href="./side-nav.css?v=20260603-leftnav" />
+</head>
+<body>
+  <header class="top">
+    <div class="top__in">
+      <div class="brand">
+        <div class="brand__dot">腰</div>
+        <div>
+          <div class="brand__t">腰带资产库</div>
+          <div class="brand__s">Belt Asset Library · 沉淀 · 复用 · 治理</div>
+        </div>
+      </div>
+      <div class="top__spacer"></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="cats" id="cats"></div>
+
+    <div class="sec__head">
+      <span class="sec__n" id="secN">02</span>
+      <span class="sec__t" id="secT">历史腰带方案沉淀</span>
+      <span class="sec__d" id="secD"></span>
+      <div class="toolbar">
+        <button class="btn">筛选</button>
+        <button class="btn btn--primary">+ 新增资产</button>
+      </div>
+    </div>
+
+    <div class="grid g4" id="assetGrid"></div>
+  </main>
+
+<script>
+(function(){
+  "use strict";
+  var $=function(id){return document.getElementById(id);};
+  var C={accent:'#22d3ee',green:'#43d787',orange:'#ffb454',purple:'#9d7bff',cyan:'#2ed3d3',pink:'#ff7bce',danger:'#ff5d5d'};
+
+  var CATS=[
+    {id:'history', ic:'🗂', color:C.accent, t:'历史腰带方案', c:'128 个方案', d:'已上线腰带方案归档，可一键复用为新方案模板'},
+    {id:'color',   ic:'🎨', color:C.pink,   t:'品牌色 / 活动色', c:'64 组色值', d:'品牌主色与大促活动色资产，含 HEX / OKLCH 与适用场景'},
+    {id:'tpl',     ic:'🧱', color:C.purple, t:'模板资产', c:'18 套模板', d:'两行 / 三行 / PC 结构模板，含信息位与栅格约束'},
+    {id:'atmo',    ic:'✦',  color:C.cyan,   t:'氛围图资产', c:'42 张素材', d:'闪电 / 光斑 / 品牌符号等氛围图，含尺寸与安全区'},
+    {id:'risk',    ic:'⚠',  color:C.danger, t:'异常案例资产', c:'37 例', d:'对比度 / 截断 / Logo 溢出等异常样本，供审核训练'},
+    {id:'win',     ic:'🏆', color:C.green,  t:'高转化案例', c:'25 例', d:'转化表现 Top 案例，沉淀可复用的高转化组合'}
+  ];
+
+  // ===== mock 资产数据 =====
+  var DATA={
+    history:[
+      {t:'618 主会场红',bg:'#e83820',fg:'#fff',price:'¥99',tag:'立省30',badge:['b','三行'],meta:[['CTR','9.2%'],['转化','3.8%'],['上线','05-21']]},
+      {t:'百亿补贴蓝',bg:'#0088c6',fg:'#fff',price:'¥199',tag:'补贴价',badge:['g','两行'],meta:[['CTR','8.4%'],['转化','3.4%'],['上线','05-18']]},
+      {t:'外卖橙活动',bg:'#ff7a18',fg:'#fff',price:'¥29',tag:'满减',badge:['o','两行'],meta:[['CTR','7.9%'],['转化','3.1%'],['上线','05-12']]},
+      {t:'生鲜绿日常',bg:'#0a8f3c',fg:'#fff',price:'¥39',tag:'每日鲜',badge:['g','三行'],meta:[['CTR','7.2%'],['转化','2.9%'],['上线','05-09']]},
+      {t:'高端黑金',bg:'#1a1a1a',fg:'#e9c987',price:'¥1299',tag:'尊享',badge:['b','PC'],meta:[['CTR','6.8%'],['转化','2.7%'],['上线','05-05']]},
+      {t:'心动购物季红',bg:'#db2c2f',fg:'#fff',price:'¥66',tag:'限时',badge:['b','三行'],meta:[['CTR','8.8%'],['转化','3.5%'],['上线','04-28']]},
+      {t:'企业蓝大促',bg:'#1769c4',fg:'#fff',price:'¥159',tag:'直降50',badge:['g','两行'],meta:[['CTR','8.0%'],['转化','3.2%'],['上线','04-21']]},
+      {t:'新品首发紫',bg:'#6c3fc4',fg:'#fff',price:'¥299',tag:'尝鲜',badge:['o','三行'],meta:[['CTR','7.5%'],['转化','3.0%'],['上线','04-15']]}
+    ],
+    color:[
+      {t:'促销红',hex:'#E83820',sub:'H 8° · 大促 / 秒杀',use:'心动购物季 · 国补'},
+      {t:'外卖黄',hex:'#FFD44C',sub:'H 72° · 到家业务',use:'外卖 · 闪购'},
+      {t:'企业蓝',hex:'#0088C6',sub:'H 230° · 品牌',use:'百亿补贴 · 自营'},
+      {t:'生鲜绿',hex:'#008629',sub:'H 150° · 生鲜',use:'七鲜 · 买菜'},
+      {t:'高端金',hex:'#CAA46A',sub:'L 0.7 · 奢品',use:'奢品 · 尊享'},
+      {t:'活动紫',hex:'#9D5BFF',sub:'H 275° · 新品',use:'新品首发'},
+      {t:'警示橙',hex:'#FF7A18',sub:'H 28° · 团购',use:'满减 · 团买'},
+      {t:'科技青',hex:'#2ED3D3',sub:'H 185° · 数码',use:'数码 · 家电'}
+    ],
+    tpl:[
+      {t:'三行 · 标准',struct:'price + slogan + 优惠条',badge:['b','推荐'],meta:[['信息位','5'],['通过率','98%'],['使用','312']]},
+      {t:'两行 · 紧凑',struct:'price + 优惠/倒计时',badge:['g','稳定'],meta:[['信息位','3'],['通过率','96%'],['使用','268']]},
+      {t:'PC · 横版',struct:'左价格 + 右 IP 横排',badge:['o','PC'],meta:[['信息位','4'],['通过率','94%'],['使用','97']]},
+      {t:'三行 · 多 IP',struct:'price + 3 IP 组合',badge:['o','复杂'],meta:[['信息位','6'],['通过率','91%'],['使用','64']]},
+      {t:'两行 · 极简',struct:'仅 price + 标签',badge:['g','低风险'],meta:[['信息位','2'],['通过率','99%'],['使用','188']]},
+      {t:'三行 · 倒计时',struct:'price + 倒计时强化',badge:['b','大促'],meta:[['信息位','5'],['通过率','95%'],['使用','142']]}
+    ],
+    atmo:[
+      {t:'闪电氛围',grad:'linear-gradient(120deg,#ff8a00,#ffd44c)',sub:'1125×177 · 右侧安全区',badge:['o','大促']},
+      {t:'几何光斑',grad:'radial-gradient(circle at 70% 40%,#4ea1ff,#1a3a6b)',sub:'1125×177 · 通用',badge:['b','通用']},
+      {t:'品牌符号',grad:'linear-gradient(120deg,#e83820,#7a1208)',sub:'1125×177 · 红色系',badge:['r','品牌']},
+      {t:'流光渐变',grad:'linear-gradient(120deg,#9d5bff,#2ed3d3)',sub:'1125×177 · 新品',badge:['b','新品']},
+      {t:'金箔质感',grad:'linear-gradient(120deg,#caa46a,#7a5c2a)',sub:'1125×177 · 高端',badge:['o','奢品']},
+      {t:'清新自然',grad:'linear-gradient(120deg,#43d787,#0a8f3c)',sub:'1125×177 · 生鲜',badge:['g','生鲜']}
+    ],
+    risk:[
+      {t:'对比度不达标',bg:'#ffcf3a',fg:'#fff',price:'¥99',tag:'低对比',badge:['r','P1'],meta:[['对比度','2.1:1'],['标准','≥4.5'],['日期','05-22']]},
+      {t:'文案截断',bg:'#e83820',fg:'#fff',price:'¥99',tag:'超长优惠文…',badge:['r','P1'],meta:[['字数','14'],['上限','8'],['日期','05-20']]},
+      {t:'Logo 溢出',bg:'#0088c6',fg:'#fff',price:'¥199',tag:'4 IP',badge:['r','P1'],meta:[['IP 数','4'],['上限','3'],['日期','05-19']]},
+      {t:'多端错位',bg:'#6c3fc4',fg:'#fff',price:'¥299',tag:'PC 错位',badge:['o','P2'],meta:[['端','PC'],['类型','布局'],['日期','05-17']]},
+      {t:'氛围图遮挡',bg:'#0a8f3c',fg:'#fff',price:'¥39',tag:'遮价格',badge:['o','P2'],meta:[['位置','左偏'],['影响','价格'],['日期','05-15']]},
+      {t:'颜色超区间',bg:'#ff2d6f',fg:'#fff',price:'¥66',tag:'高饱和',badge:['o','P2'],meta:[['C','0.31'],['上限','0.24'],['日期','05-13']]}
+    ],
+    win:[
+      {t:'618 红 + 闪电',bg:'#e83820',fg:'#fff',price:'¥99',tag:'立省30',badge:['g','TOP1'],meta:[['转化','3.9%'],['加购','41%'],['GMV','¥382万']]},
+      {t:'补贴蓝 + 光斑',bg:'#0088c6',fg:'#fff',price:'¥199',tag:'补贴价',badge:['g','TOP2'],meta:[['转化','3.6%'],['加购','38%'],['GMV','¥296万']]},
+      {t:'心动红 + 倒计时',bg:'#db2c2f',fg:'#fff',price:'¥66',tag:'限时',badge:['g','TOP3'],meta:[['转化','3.5%'],['加购','37%'],['GMV','¥241万']]},
+      {t:'外卖橙 + 满减',bg:'#ff7a18',fg:'#fff',price:'¥29',tag:'满减',badge:['b','热门'],meta:[['转化','3.3%'],['加购','35%'],['GMV','¥168万']]},
+      {t:'企业蓝直降',bg:'#1769c4',fg:'#fff',price:'¥159',tag:'直降50',badge:['b','热门'],meta:[['转化','3.2%'],['加购','34%'],['GMV','¥152万']]},
+      {t:'新品紫尝鲜',bg:'#6c3fc4',fg:'#fff',price:'¥299',tag:'尝鲜',badge:['b','热门'],meta:[['转化','3.0%'],['加购','32%'],['GMV','¥118万']]}
+    ]
+  };
+
+  var BADGE_CLS={b:'badge--b',g:'badge--g',o:'badge--o',r:'badge--r'};
+  var active='history';
+
+  function beltCard(a){
+    var badge=a.badge?'<span class="badge '+BADGE_CLS[a.badge[0]]+'">'+a.badge[1]+'</span>':'';
+    var meta=(a.meta||[]).map(function(m){return '<span>'+m[0]+' <b>'+m[1]+'</b></span>';}).join('');
+    return '<div class="asset"><div class="asset__thumb" style="background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.01))">'+
+      '<div class="asset__belt" style="background:'+a.bg+';color:'+a.fg+'">'+
+        '<span class="asset__beltPrice">'+a.price+'</span>'+
+        '<span class="asset__beltTag" style="color:'+a.bg+'">'+a.tag+'</span>'+
+      '</div></div>'+
+      '<div class="asset__body"><div class="asset__t">'+a.t+badge+'</div>'+
+      '<div class="asset__meta">'+meta+'</div></div></div>';
+  }
+  function colorCard(a){
+    return '<div class="asset"><div class="swatch"><i style="background:'+a.hex+'"></i></div>'+
+      '<div class="asset__body"><div class="asset__t">'+a.t+'<span class="badge badge--b" style="font-family:var(--mono)">'+a.hex+'</span></div>'+
+      '<div class="asset__meta"><span>'+a.sub+'</span></div>'+
+      '<div class="asset__meta"><span>适用 <b>'+a.use+'</b></span></div></div></div>';
+  }
+  function tplCard(a){
+    var badge='<span class="badge '+BADGE_CLS[a.badge[0]]+'">'+a.badge[1]+'</span>';
+    var meta=a.meta.map(function(m){return '<span>'+m[0]+' <b>'+m[1]+'</b></span>';}).join('');
+    return '<div class="asset"><div class="asset__thumb" style="background:linear-gradient(135deg,rgba(157,123,255,.12),rgba(78,161,255,.05))">'+
+      '<svg width="120" height="60" viewBox="0 0 120 60"><rect x="6" y="10" width="108" height="40" rx="6" fill="none" stroke="rgba(255,255,255,.25)" stroke-dasharray="4 3"/>'+
+      '<rect x="12" y="18" width="34" height="10" rx="2" fill="rgba(255,255,255,.5)"/>'+
+      '<rect x="12" y="32" width="60" height="6" rx="2" fill="rgba(255,255,255,.3)"/>'+
+      '<rect x="84" y="20" width="24" height="20" rx="3" fill="rgba(78,161,255,.45)"/></svg></div>'+
+      '<div class="asset__body"><div class="asset__t">'+a.t+badge+'</div>'+
+      '<div class="asset__meta"><span>'+a.struct+'</span></div>'+
+      '<div class="asset__meta">'+meta+'</div></div></div>';
+  }
+  function atmoCard(a){
+    var badge='<span class="badge '+BADGE_CLS[a.badge[0]]+'">'+a.badge[1]+'</span>';
+    return '<div class="asset"><div class="atmo" style="background:'+a.grad+'"></div>'+
+      '<div class="asset__body"><div class="asset__t">'+a.t+badge+'</div>'+
+      '<div class="asset__meta"><span>'+a.sub+'</span></div></div></div>';
+  }
+
+  function render(){
+    var cat=CATS.filter(function(c){return c.id===active;})[0];
+    $('secN').textContent=({history:'01',color:'02',tpl:'03',atmo:'04',risk:'05',win:'06'})[active];
+    $('secT').textContent=cat.t;
+    $('secD').textContent=cat.d;
+
+    var list=DATA[active]||[];
+    var grid=$('assetGrid');
+    grid.className='grid '+(active==='atmo'||active==='color'?'g4':'g4');
+    if(!list.length){grid.innerHTML='<div class="empty">暂无资产</div>';return;}
+    grid.innerHTML=list.map(function(a){
+      if(active==='color') return colorCard(a);
+      if(active==='tpl') return tplCard(a);
+      if(active==='atmo') return atmoCard(a);
+      return beltCard(a);
+    }).join('');
+  }
+
+  // 渲染分类 tab
+  $('cats').innerHTML=CATS.map(function(c){
+    return '<div class="cat'+(c.id===active?' on':'')+'" data-cat="'+c.id+'">'+
+      '<div class="cat__ic" style="background:'+c.color+'22;color:'+c.color+'">'+c.ic+'</div>'+
+      '<div><div class="cat__t">'+c.t+'</div><div class="cat__c">'+c.c+'</div></div></div>';
+  }).join('');
+  $('cats').addEventListener('click',function(e){
+    var el=e.target.closest('.cat');if(!el)return;
+    active=el.dataset.cat;
+    $('cats').querySelectorAll('.cat').forEach(function(x){x.classList.toggle('on',x.dataset.cat===active);});
+    render();
+  });
+
+  render();
+})();
+</script>
+<script src="./side-nav.js?v=20260604-no-brand"></script>
+</body>
+</html>

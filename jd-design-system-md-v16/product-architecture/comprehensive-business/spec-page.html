@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>综合业务设计部 · 内容生态 — JD V16 设计系统</title>
+<style>
+  :root {
+    --c-text: #171a26; --c-text-2: #3d414d; --c-text-3: #828794;
+    --c-line: #00000014; --c-bg: #ffffff; --c-bg-sunken: #f5f6fa;
+    --c-brand: #ff0f23; --c-info: #0073ff; --c-info-bg: #e5f5ff;
+    --c-success: #2aa32a; --c-success-bg: #ebfbeb;
+    --r-base: 6px; --r-xl: 12px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--c-bg-sunken); color: var(--c-text); font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif; font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  a { color: var(--c-info); }
+  code { font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace; font-size: 13px; background: var(--c-bg-sunken); padding: 2px 6px; border-radius: 4px; color: var(--c-brand); }
+
+  .top-bar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 16px; padding: 0 24px; background: rgba(255, 255, 255, 0.78); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04); flex-wrap: wrap; }
+  .top-bar__brand { padding: 14px 0; margin-right: 12px; font-size: 13px; font-weight: 600; color: var(--c-text); text-decoration: none; letter-spacing: 0.02em; }
+  .top-bar__brand small { color: var(--c-text-3); font-weight: 500; margin-left: 6px; }
+  .top-bar__nav { display: flex; align-items: stretch; gap: 4px; flex-wrap: wrap; }
+  .top-bar__nav-link { padding: 14px 14px 12px; font-size: 13px; color: var(--c-text-2); text-decoration: none; font-weight: 500; line-height: 1.4; white-space: nowrap; transition: color 150ms; }
+  .top-bar__nav-link:hover { color: var(--c-text); }
+  .top-bar__nav-link.is-current { color: var(--c-text); font-weight: 600; }
+  .top-bar__spacer { flex: 1; }
+
+  .layout { max-width: 1400px; margin: 0 auto; padding: 24px 24px 80px; display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; }
+  .sidebar { position: sticky; top: 64px; align-self: start; max-height: calc(100vh - 88px); overflow-y: auto; background: var(--c-bg); padding: 20px 12px; border-radius: var(--r-xl); box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04); }
+  .sidebar__zone-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-text-3); padding: 6px 12px 12px; border-bottom: 1px solid var(--c-line); margin-bottom: 12px; }
+  .sidebar__group { margin-bottom: 14px; }
+  .sidebar__link { display: block; padding: 7px 12px; font-size: 13px; color: var(--c-text-2); text-decoration: none; border-radius: var(--r-base); font-weight: 500; line-height: 1.5; transition: background 150ms, color 150ms; }
+  .sidebar__link:hover { background: rgba(0, 0, 0, 0.04); color: var(--c-text); }
+  .sidebar__link.is-current { background: var(--c-text); color: var(--c-bg); }
+  .sidebar__link.is-current:hover { background: var(--c-text); }
+  .sidebar__link.is-placeholder { color: var(--c-text-3); cursor: default; font-style: italic; }
+  .sidebar__link.is-placeholder:hover { background: transparent; color: var(--c-text-3); }
+
+  .main { background: var(--c-bg); padding: 56px 64px 64px; border-radius: var(--r-xl); box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04); min-width: 0; }
+  .main h1 { font-size: 32px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 12px; }
+  .main h1 small { font-size: 14px; font-weight: 500; color: var(--c-text-3); margin-left: 12px; }
+  .main > p:first-of-type { color: var(--c-text-2); font-size: 16px; line-height: 1.7; max-width: 720px; margin: 0 0 36px; }
+  .main h2 { font-size: 20px; font-weight: 600; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--c-line); }
+  .main h2 .count { font-size: 12px; font-weight: 500; color: var(--c-text-3); margin-left: 8px; }
+
+  .arch-section { margin-bottom: 28px; }
+  .arch-section__intro { color: var(--c-text-2); font-size: 14px; margin: 8px 0 14px; max-width: 720px; }
+  .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin: 14px 0 24px; }
+  .comp-card { background: var(--c-bg-sunken); border-radius: var(--r-xl); padding: 18px 20px; transition: box-shadow 200ms, transform 200ms; text-decoration: none; color: inherit; display: block; }
+  .comp-card:hover { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); transform: translateY(-2px); }
+  .comp-card--disabled { cursor: default; opacity: 0.72; }
+  .comp-card--disabled:hover { box-shadow: none; transform: none; }
+  .comp-card__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+  .comp-card__name { font-size: 15px; font-weight: 600; color: var(--c-text); }
+  .comp-card__status { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 999px; letter-spacing: 0.05em; white-space: nowrap; }
+  .comp-card__status--ready { background: var(--c-success-bg); color: var(--c-success); }
+  .comp-card__status--draft { background: var(--c-info-bg); color: var(--c-info); }
+  .comp-card__status--todo { background: var(--c-bg-sunken); color: var(--c-text-3); border: 1px solid var(--c-line); }
+  .comp-card__desc { font-size: 13px; color: var(--c-text-2); margin: 0; line-height: 1.6; }
+
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; gap: 16px; padding: 16px 12px 32px; }
+    .sidebar { position: static; max-height: none; }
+    .main { padding: 32px 24px 40px; }
+    .main h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="../../../docs/jd-design-wiki-knowledge-tree.html" class="top-bar__brand">JD Design Wiki <small>· V16</small></a>
+  <nav class="top-bar__nav" aria-label="5 大分区导航">
+    <a href="../../knowledge/spec-page.html" class="top-bar__nav-link">📚 Design 知识</a>
+    <a href="../../foundations/spec-page.html" class="top-bar__nav-link">🎨 Design 基础</a>
+    <a href="../../ai-mechanism/spec-page.html" class="top-bar__nav-link">🤖 AI 机制</a>
+    <a href="../../product-architecture/spec-page.html" class="top-bar__nav-link is-current">🏗 组织架构</a>
+    <a href="../../horizontal/spec-page.html" class="top-bar__nav-link">🚀 横向专项</a>
+  </nav>
+  <span class="top-bar__spacer"></span>
+</div>
+
+<div class="layout">
+
+<aside class="sidebar" aria-label="🏗 组织架构 - 13 部门导览">
+  <div class="sidebar__zone-tag">ZONE 04 · 🏗 组织架构</div>
+  <div class="sidebar__group">
+    <a class="sidebar__link" href="../spec-page.html">页面说明</a>
+  </div>
+  <div class="sidebar__group">
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">搜推与基础产品设计部</span>
+    <a class="sidebar__link" href="../huangliu-design/spec-page.html">黄流导购设计部</a>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">平台交易设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">AI 核心产品设计部</span>
+    <a class="sidebar__link is-current" href="#top">综合业务设计部</a>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">PLUS 与新品频道设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">低价频道设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">本地生活服务设计部</span>
+    <a class="sidebar__link" href="../brand-and-marketing/spec-page.html">品牌与营销设计部</a>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">平台产品设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">商家产品设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">营销与数据设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">用户研究部</span>
+  </div>
+</aside>
+
+<main class="main">
+  <h1 id="top">综合业务设计部 <small>Zone 04 · 内容生态 / 视频</small></h1>
+  <p>综合业务设计部的业务规范入口。当前已录入 <strong>内容生态 · 视频</strong> 业务线：沉浸式视频信息流页面及其组件、视频场域底导、预告页等。按「设计部门 → 业务 → 页面 / 场景 / 组件」层层往下。</p>
+
+  <h2>内容生态 / 视频 · 页面 <span class="count">3 个录入 · 1 个待建</span></h2>
+  <div class="arch-section">
+    <p class="arch-section__intro">视频场域下的页面级规范（Page / Scene Composition Layer）。</p>
+    <div class="comp-grid">
+      <a class="comp-card" href="./content-ecosystem/video/video-feed/spec-page.html">
+        <div class="comp-card__head">
+          <span class="comp-card__name">视频信息流页面 · video-feed</span>
+          <span class="comp-card__status comp-card__status--draft">DRAFT</span>
+        </div>
+        <p class="comp-card__desc">沉浸式视频消费页，组合顶部 Tab、信息区、互动区、底部栏四组件，定义页面层组合、定位与状态联动。</p>
+      </a>
+      <a class="comp-card" href="./content-ecosystem/video/video-tabbar/spec-page.html">
+        <div class="comp-card__head">
+          <span class="comp-card__name">视频场域底导 · video-tabbar</span>
+          <span class="comp-card__status comp-card__status--draft">DRAFT</span>
+        </div>
+        <p class="comp-card__desc">视频场域底部导航业务规范，覆盖逛逛频道的导航形态、单坑原子、使用边界与典型场景。</p>
+      </a>
+      <a class="comp-card" href="./content-ecosystem/video/video-preview/spec-page.html">
+        <div class="comp-card__head">
+          <span class="comp-card__name">预告页 · video-preview</span>
+          <span class="comp-card__status comp-card__status--todo">SCAFFOLD</span>
+        </div>
+        <p class="comp-card__desc">内容上线前的预告 / 预约 / 提醒场景。当前为占位骨架，规范待 Relay 抽稿回填。</p>
+      </a>
+      <div class="comp-card comp-card--disabled" aria-disabled="true">
+        <div class="comp-card__head">
+          <span class="comp-card__name">直播 · live</span>
+          <span class="comp-card__status comp-card__status--todo">待建</span>
+        </div>
+        <p class="comp-card__desc">直播业务线，目录已预留，尚无设计来源与规范录入。</p>
+      </div>
+    </div>
+  </div>
+
+  <h2>video-feed · 组件 <span class="count">4 个组件</span></h2>
+  <div class="arch-section">
+    <p class="arch-section__intro">沉浸视频页 overlay 在视频内容层之上的四个组件，组件视觉由各自 component docs 决定。</p>
+    <div class="comp-grid">
+      <a class="comp-card" href="./content-ecosystem/video/video-feed/components/video-top-tab/spec-page.html">
+        <div class="comp-card__head">
+          <span class="comp-card__name">顶部视频 Tab · video-top-tab</span>
+          <span class="comp-card__status comp-card__status--draft">DRAFT</span>
+        </div>
+        <p class="comp-card__desc">视频顶部频道导航与切换：频道 Tab、游标、返回 / 搜索 / 菜单槽位，含沉浸 / 吸顶 / 活动等态。</p>
+      </a>
+      <a class="comp-card" href="./content-ecosystem/video/video-feed/components/info-layer/spec-page.html">
+        <div class="comp-card__head">
+          <span class="comp-card__name">信息区 · info-layer</span>
+          <span class="comp-card__status comp-card__status--draft">DRAFT</span>
+        </div>
+        <p class="comp-card__desc">左下轻量文案层：昵称、视频文案、原创 / 达人标签，含展开 / 收起承接长文案。</p>
+      </a>
+      <a class="comp-card" href="./content-ecosystem/video/video-feed/components/interactive-area/spec-page.html">
+        <div class="comp-card__head">
+          <span class="comp-card__name">互动区 · interactive-area</span>
+          <span class="comp-card__status comp-card__status--draft">DRAFT</span>
+        </div>
+        <p class="comp-card__desc">右侧垂直 Action Rail：头像、点赞、评论、可选种草、转发、音量，定义组合顺序与事件透传。</p>
+      </a>
+      <a class="comp-card" href="./content-ecosystem/video/video-feed/components/bottom-tab/spec-page.html">
+        <div class="comp-card__head">
+          <span class="comp-card__name">视频页底部 Bottom Bar · bottom-tab</span>
+          <span class="comp-card__status comp-card__status--draft">DRAFT</span>
+        </div>
+        <p class="comp-card__desc">底部吸底组件族：Type A 评论入口 / Type B 复合信息通条（话题 / 合集 / 短剧 / 热榜等）。</p>
+      </a>
+    </div>
+  </div>
+
+  <h2>video-tabbar · 原子 <span class="count">1 个原子</span></h2>
+  <div class="arch-section">
+    <div class="comp-grid">
+      <a class="comp-card" href="./content-ecosystem/video/video-tabbar/atom/spec-page.html">
+        <div class="comp-card__head">
+          <span class="comp-card__name">底导单坑原子 · video-tabbar / atom</span>
+          <span class="comp-card__status comp-card__status--draft">DRAFT</span>
+        </div>
+        <p class="comp-card__desc">视频场域底部导航的单坑原子，承载图标 + 文案 + 选中态等底导最小单元。</p>
+      </a>
+    </div>
+  </div>
+</main>
+
+</div><!-- /layout -->
+</body>
+</html>

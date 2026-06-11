@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>京东 App 标签平台</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/antd@5.27.4/dist/reset.css" />
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/antd@5.27.4/dist/antd.min.js"></script>
+  <style>
+    :root {
+      --jd-red: #e1251b;
+      --bg: #0c1324;
+      --line: rgba(255,255,255,0.1);
+      --muted: #8b97ad;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: #e6edf7;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+    }
+
+    #root { min-height: 100vh; }
+    .app-logo { padding: 20px; border-bottom: 1px solid var(--line); }
+    .app-logo strong { display: block; font-size: 15px; }
+    .app-logo span { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+    .main-content { padding: 24px; }
+    .page-head { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+    .page-title { margin: 0; font-size: 22px; font-weight: 800; }
+    .page-desc { margin: 6px 0 0; color: var(--muted); }
+    .phone-preview { overflow: hidden; border: 10px solid #222832; border-radius: 30px; background: #fff; box-shadow: 0 18px 50px rgba(31,39,51,.18); }
+    .phone-status { display: flex; justify-content: space-between; padding: 9px 16px; color: #fff; background: #202630; font-size: 12px; font-weight: 700; }
+    .product-image { display: grid; place-items: center; height: 220px; background: linear-gradient(145deg, #fff, #f2f4f7); color: #9aa4b5; font-weight: 800; }
+    .product-body { padding: 14px; }
+    .price-line { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+    .price { color: var(--jd-red); font-size: 28px; font-weight: 900; }
+    .preview-tag { display: inline-flex; align-items: center; min-height: 22px; padding: 2px 7px; font-weight: 800; line-height: 1.2; white-space: nowrap; }
+    .preview-box { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; padding: 10px; border-radius: 8px; background: #fafafa; }
+    .buy-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+    .buy-btn { padding: 11px; border-radius: 999px; color: #fff; background: linear-gradient(90deg,#ff9d00,#ff6200); text-align: center; font-weight: 800; }
+    .buy-btn.red { background: linear-gradient(90deg,#ff3b30,var(--jd-red)); }
+    .markdown-preview { max-height: 420px; overflow: auto; margin: 16px 0; padding: 16px; border-radius: 8px; background: #171b22; color: #e6edf3; font-size: 12px; line-height: 1.65; white-space: pre-wrap; }
+    .click-card { height: 100%; cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+    .click-card.active { border-color: #22d3ee; box-shadow: 0 0 0 2px rgba(34,211,238,.18); }
+    .muted { color: var(--muted); line-height: 1.65; }
+    @media (max-width: 992px) {
+      .main-content { padding: 16px; }
+      .page-head { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    const h = React.createElement;
+    const {
+      Alert, Button, Card, Col, ConfigProvider, Descriptions, Drawer, Form, Input, InputNumber,
+      Layout, Menu, Row, Select, Space, Statistic, Steps, Table, Tabs, Tag, Timeline, Typography,
+      message, theme
+    } = antd;
+    const { Header, Sider, Content } = Layout;
+    const { Text, Paragraph } = Typography;
+
+    const sharedStateKey = "jdTagPlatformState";
+
+    const taskFlows = {
+      "新增标签": ["诉求澄清", "查找相似", "定位触点", "冲突判断", "配置预览", "生成方案"],
+      "查询标签": ["输入查询", "匹配标签", "查看路径", "查看详情", "后续操作"],
+      "修改标签": ["选择标签", "选择修改内容", "查看影响", "预览确认", "生成变更方案"],
+      "下线标签": ["选择标签", "查看展示范围", "检查依赖", "影响评估", "确认下线"],
+      "复用标签": ["描述诉求", "匹配相似标签", "选择复用项", "补充配置", "预览生成方案"]
+    };
+
+    const fallbackDesignSources = {
+      tagDesign: "标签设计方案 Relay node 37:7",
+      detailDesign: "商详设计方案 Relay node 37:747"
+    };
+
+    const fallbackTagStyles = [
+      { styleId: "STYLE_PROMO_RED_CAPSULE", styleName: "红底白字促销胶囊", tagType: "促销", shape: "胶囊", backgroundColor: "#E1251B", textColor: "#FFFFFF", fontSize: 12, radius: 4, height: 22, padding: "2px 7px", useScenes: ["商详价格区域", "商详促销区域"], source: fallbackDesignSources.tagDesign },
+      { styleId: "STYLE_PRICE_RED_OUTLINE", styleName: "红色描边价格标签", tagType: "价格", shape: "描边", backgroundColor: "#FFFFFF", textColor: "#E1251B", fontSize: 12, radius: 4, height: 22, padding: "2px 7px", useScenes: ["商详价格区域"], source: fallbackDesignSources.tagDesign },
+      { styleId: "STYLE_MEMBER_BLACK_GOLD", styleName: "黑金会员权益标签", tagType: "会员", shape: "胶囊", backgroundColor: "#2B2118", textColor: "#FFD18A", fontSize: 12, radius: 4, height: 22, padding: "2px 7px", useScenes: ["商详价格区域", "服务保障区域"], source: fallbackDesignSources.tagDesign },
+      { styleId: "STYLE_SERVICE_GRAY", styleName: "灰底服务保障标签", tagType: "服务", shape: "胶囊", backgroundColor: "#F2F4F7", textColor: "#465366", fontSize: 12, radius: 4, height: 22, padding: "2px 7px", useScenes: ["服务保障区域"], source: fallbackDesignSources.tagDesign },
+      { styleId: "STYLE_ATMOS_ORANGE_CORNER", styleName: "橙色氛围角标", tagType: "氛围", shape: "角标", backgroundColor: "#FF7A00", textColor: "#FFFFFF", fontSize: 12, radius: 2, height: 22, padding: "2px 7px", useScenes: ["主图区域", "推荐区域"], source: fallbackDesignSources.tagDesign },
+      { styleId: "STYLE_SERVICE_BLUE", styleName: "蓝色服务能力标签", tagType: "服务", shape: "胶囊", backgroundColor: "#EAF2FF", textColor: "#2F6FED", fontSize: 12, radius: 4, height: 22, padding: "2px 7px", useScenes: ["促销区域", "服务保障区域"], source: fallbackDesignSources.tagDesign }
+    ];
+
+    const fallbackTouchPoints = [
+      { moduleId: "IMAGE_MODULE", moduleName: "主图区域", touchPoint: "主图区域", maxTags: 2, currentTags: 1, supportedTagTypes: ["氛围", "运营"], riskLevel: "低", desc: "适合活动氛围、首发、新品等视觉角标。", source: fallbackDesignSources.detailDesign },
+      { moduleId: "TITLE_MODULE", moduleName: "标题区域", touchPoint: "标题区域", maxTags: 2, currentTags: 1, supportedTagTypes: ["服务", "运营"], riskLevel: "低", desc: "适合自营、官方、商品身份和服务承诺。", source: fallbackDesignSources.detailDesign },
+      { moduleId: "PRICE_MODULE", moduleName: "价格区域", touchPoint: "价格区域", maxTags: 2, currentTags: 2, supportedTagTypes: ["价格", "促销", "会员"], riskLevel: "高", desc: "最适合强化价格心智，但容量敏感，需要冲突检测。", source: fallbackDesignSources.detailDesign },
+      { moduleId: "PROMO_MODULE", moduleName: "促销区域", touchPoint: "促销区域", maxTags: 5, currentTags: 3, supportedTagTypes: ["促销", "服务", "价格"], riskLevel: "中", desc: "承载优惠券、满减、换新等权益，可作为价格区降级位置。", source: fallbackDesignSources.detailDesign },
+      { moduleId: "SERVICE_MODULE", moduleName: "服务保障区域", touchPoint: "服务保障区域", maxTags: 4, currentTags: 2, supportedTagTypes: ["服务", "会员"], riskLevel: "低", desc: "适合价保、赔付、履约、售后保障。", source: fallbackDesignSources.detailDesign },
+      { moduleId: "SHOP_MODULE", moduleName: "店铺区域", touchPoint: "店铺区域", maxTags: 3, currentTags: 1, supportedTagTypes: ["服务", "运营"], riskLevel: "低", desc: "承载店铺身份、服务能力、评分相关标签。", source: fallbackDesignSources.detailDesign },
+      { moduleId: "RECOMMEND_MODULE", moduleName: "推荐区域", touchPoint: "推荐区域", maxTags: 4, currentTags: 2, supportedTagTypes: ["氛围", "价格", "促销"], riskLevel: "中", desc: "适合推荐商品卡片上的外显标签。", source: fallbackDesignSources.detailDesign },
+      { moduleId: "BOTTOM_BAR", moduleName: "底部购买区域", touchPoint: "底部购买区域", maxTags: 1, currentTags: 0, supportedTagTypes: ["运营"], riskLevel: "低", desc: "靠近转化按钮，谨慎承载强运营提醒。", source: fallbackDesignSources.detailDesign }
+    ];
+
+    const fallbackRules = [
+      { touchPoint: "价格区域", maxTags: 2, preferredTypes: ["价格", "促销", "会员"], fallbackTouchPoint: "促销区域", conflictPolicy: "容量满时按优先级排序，命中互斥标签时展示高优先级标签。", source: fallbackDesignSources.detailDesign },
+      { touchPoint: "促销区域", maxTags: 5, preferredTypes: ["促销", "价格", "服务"], fallbackTouchPoint: "服务保障区域", conflictPolicy: "权益类标签可共存，但优惠券、满减、补贴需按业务优先级排序。", source: fallbackDesignSources.detailDesign },
+      { touchPoint: "服务保障区域", maxTags: 4, preferredTypes: ["服务", "会员"], fallbackTouchPoint: "店铺区域", conflictPolicy: "只承载服务保障表达，不建议放置价格促销类强营销标签。", source: fallbackDesignSources.detailDesign },
+      { touchPoint: "主图区域", maxTags: 2, preferredTypes: ["氛围", "运营"], fallbackTouchPoint: "推荐区域", conflictPolicy: "角标类标签需避免遮挡商品主体。", source: fallbackDesignSources.detailDesign },
+      { touchPoint: "标题区域", maxTags: 2, preferredTypes: ["服务", "运营"], fallbackTouchPoint: "服务保障区域", conflictPolicy: "身份类标签优先于活动氛围标签。", source: fallbackDesignSources.detailDesign }
+    ];
+
+    const fallbackProducts = [
+      { sceneId: "NORMAL_SKU", sceneName: "普通商品", skuName: "京东自营 智能恒温电热水壶 1.7L", price: "199", activityPrice: "199", tags: ["京东自营", "价保 30 天"], source: fallbackDesignSources.detailDesign },
+      { sceneId: "PROMO_SKU", sceneName: "促销活动商品", skuName: "京东自营 家用智能空气净化器 高效除醛低噪音", price: "1299", activityPrice: "1099", tags: ["限时低价", "店铺券", "价保 30 天"], source: fallbackDesignSources.detailDesign },
+      { sceneId: "PLUS_SKU", sceneName: "会员权益商品", skuName: "PLUS 专享 无线降噪蓝牙耳机 长续航", price: "899", activityPrice: "799", tags: ["PLUS 专享价", "买贵双倍赔"], source: fallbackDesignSources.detailDesign }
+    ];
+
+    const baseAssets = [
+      { id: "TAG_DETAIL_001", name: "限时低价", type: "价格/促销", pages: ["商品详情页"], touch: "价格区域", status: "待评审", priority: 80, owner: "商详产品组", updated: "2026-05-22", risk: "中", rule: "活动商品 && 降价幅度 >= 10%", style: "红底白字胶囊" },
+      { id: "TAG_DETAIL_002", name: "京东秒杀", type: "促销", pages: ["商品详情页", "搜索结果页"], touch: "价格区域", status: "在线", priority: 95, owner: "营销产品组", updated: "2026-05-18", risk: "高", rule: "秒杀活动商品 && 活动库存 > 0", style: "红底白字胶囊" },
+      { id: "TAG_DETAIL_003", name: "百亿补贴", type: "价格", pages: ["商品详情页", "首页"], touch: "价格区域", status: "在线", priority: 92, owner: "补贴频道", updated: "2026-05-17", risk: "中", rule: "补贴池商品 && 补贴价有效", style: "红底描边" },
+      { id: "TAG_DETAIL_004", name: "PLUS 专享价", type: "会员", pages: ["商品详情页"], touch: "价格区域", status: "在线", priority: 78, owner: "会员产品组", updated: "2026-05-12", risk: "中", rule: "PLUS 用户 && 会员价商品", style: "黑金胶囊" },
+      { id: "TAG_DETAIL_005", name: "京东自营", type: "服务", pages: ["商品详情页", "搜索结果页"], touch: "标题区域", status: "在线", priority: 70, owner: "商详产品组", updated: "2026-05-10", risk: "低", rule: "自营 SKU", style: "红色文字标签" },
+      { id: "TAG_DETAIL_006", name: "新品首发", type: "氛围", pages: ["商品详情页", "首页"], touch: "主图区域", status: "在线", priority: 68, owner: "新品频道", updated: "2026-05-08", risk: "低", rule: "新品池商品 && 首发周期内", style: "角标" },
+      { id: "TAG_DETAIL_007", name: "价保 30 天", type: "服务", pages: ["商品详情页"], touch: "服务保障区域", status: "在线", priority: 62, owner: "服务产品组", updated: "2026-05-06", risk: "低", rule: "支持价保服务商品", style: "灰底服务标签" },
+      { id: "TAG_DETAIL_008", name: "买贵双倍赔", type: "服务", pages: ["商品详情页"], touch: "服务保障区域", status: "在线", priority: 66, owner: "服务产品组", updated: "2026-05-03", risk: "低", rule: "服务承诺池商品", style: "灰底红字" },
+      { id: "TAG_DETAIL_009", name: "店铺券", type: "促销", pages: ["商品详情页"], touch: "促销区域", status: "在线", priority: 58, owner: "店铺营销", updated: "2026-05-01", risk: "中", rule: "可领券商品 && 店铺券有效", style: "红色优惠券" },
+      { id: "TAG_DETAIL_010", name: "以旧换新", type: "服务", pages: ["商品详情页"], touch: "促销区域", status: "在线", priority: 55, owner: "服务产品组", updated: "2026-04-28", risk: "低", rule: "支持以旧换新类目", style: "蓝色服务标签" },
+      { id: "TAG_DETAIL_011", name: "热卖爆品", type: "氛围", pages: ["搜索结果页", "首页"], touch: "商品卡片", status: "在线", priority: 72, owner: "推荐产品组", updated: "2026-04-25", risk: "中", rule: "销量分位 >= 90%", style: "橙色氛围标签" },
+      { id: "TAG_DETAIL_012", name: "即将下线", type: "运营", pages: ["商品详情页"], touch: "标题区域", status: "已下线", priority: 20, owner: "商详产品组", updated: "2026-04-18", risk: "低", rule: "人工运营配置", style: "灰色文字" }
+    ];
+
+    const tagAssetMeta = {
+      TAG_DETAIL_001: ["STYLE_PROMO_RED_CAPSULE", ["样式", "互斥规则"], "与京东秒杀互斥，价格区容量不足时降级促销区"],
+      TAG_DETAIL_002: ["STYLE_PROMO_RED_CAPSULE", ["样式", "互斥规则"], "与低价类标签互斥，秒杀优先"],
+      TAG_DETAIL_003: ["STYLE_PRICE_RED_OUTLINE", ["样式", "规则"], "补贴价有效时优先展示，支持与限时低价排序共存"],
+      TAG_DETAIL_004: ["STYLE_MEMBER_BLACK_GOLD", ["样式", "会员规则"], "PLUS 用户命中时展示，低于秒杀和补贴优先级"],
+      TAG_DETAIL_005: ["STYLE_SERVICE_GRAY", ["触点", "服务表达"], "自营身份稳定展示，不参与价格区排序"],
+      TAG_DETAIL_006: ["STYLE_ATMOS_ORANGE_CORNER", ["样式", "触点"], "主图角标展示，避免遮挡商品主体"],
+      TAG_DETAIL_007: ["STYLE_SERVICE_GRAY", ["规则", "服务表达"], "服务保障区域稳定展示"],
+      TAG_DETAIL_008: ["STYLE_SERVICE_GRAY", ["规则", "服务表达"], "服务保障区域稳定展示"],
+      TAG_DETAIL_009: ["STYLE_PROMO_RED_CAPSULE", ["规则", "触点"], "促销区域展示，按权益优先级排序"],
+      TAG_DETAIL_010: ["STYLE_SERVICE_BLUE", ["规则", "样式"], "促销区域展示，可与券类权益共存"],
+      TAG_DETAIL_011: ["STYLE_ATMOS_ORANGE_CORNER", ["样式", "触点"], "推荐区域和搜索卡片展示"],
+      TAG_DETAIL_012: ["STYLE_SERVICE_GRAY", ["状态流转"], "历史标签，仅保留版本记录"]
+    };
+
+    const enrichedAssets = baseAssets.map(tag => {
+      const [styleId, reusableParts, fallbackRule] = tagAssetMeta[tag.id];
+      return { ...tag, styleId, reusableParts, fallbackRule, designSource: fallbackDesignSources.tagDesign, pageSource: fallbackDesignSources.detailDesign, displayRule: tag.rule };
+    });
+
+    const fallbackKnowledge = {
+      source: "商详标签标准规范",
+      sourcePath: "/Users/liuyewei.5/Documents/Codex/2026-05-27/new-chat/商详标签标准规范",
+      purpose: "作为京东 App 标签平台的底层判断依据，支撑诉求澄清、点位推荐、标签复用、冲突校验、方案导出。",
+      globalPrinciples: ["点位归属优先", "决策价值优先", "数量克制", "语义不重复", "实时信息动态更新"],
+      globalPriority: ["平台身份与经营模式", "核心服务保障", "物流时效与履约保障", "商品核心卖点", "用户行为热度", "店铺信任背书", "榜单与营销氛围标签"],
+      governanceFields: ["标签名称", "标签类型", "适用点位", "优先级", "数据来源", "生效条件", "失效条件", "样式类型", "冲突规则"],
+      pointSlots: [
+        { id: "POINT_01", index: 1, name: "平台模式标签", position: "商品主图/基础信息区域", type: "平台经营身份", displayCount: "1个", definition: "表达商品所属的平台经营身份。", tags: ["京东自营", "自营", "全球购"], priority: ["京东自营", "自营", "全球购"], usageRules: ["多个平台模式标签同时命中时仅展示最高优先级。"], conflictRules: ["平台模式标签互斥。"], displayRules: ["最多展示 1 个标签。"], abnormalRules: ["商品经营身份缺失时不展示。"], examples: ["同时命中京东自营和自营时展示京东自营。"] },
+        { id: "POINT_02", index: 2, name: "业务模式与品牌心智标签", position: "商品标题/商品信息区域", type: "业务模式、品牌背书", displayCount: "分组按优先级展示", definition: "表达商品业务模式、活动属性、频道归属或品牌背书。", tags: ["自营", "预售", "秒杀", "闪购", "旗舰店", "京东超市"], priority: ["拍卖", "预售", "秒杀", "闪购", "自营", "旗舰店"], usageRules: ["业务模式标签与品牌心智标签分组判断。"], conflictRules: ["预售、秒杀、闪购等强业务模式通常互斥。"], displayRules: ["按分组优先级展示。"], abnormalRules: ["活动周期结束后自动隐藏活动类标签。"], examples: ["商品同时命中预售和秒杀，最终展示预售。"] },
+        { id: "POINT_03", index: 3, name: "重点服务标签", position: "标题下方/服务承诺区域", type: "核心服务权益", displayCount: "多个，按优先级控制", definition: "表达直接降低购买顾虑的核心服务权益。", tags: ["免费上门退换", "不要吃包退", "安心质保", "7天价保"], priority: ["免费上门退换", "7天价保", "安心质保", "不要吃包退"], usageRules: ["服务权益按决策价值排序。"], conflictRules: ["语义重复的服务权益需要合并表达。"], displayRules: ["页面容量不足时保留价值最高的服务。"], abnormalRules: ["服务权益失效时不展示。"], examples: ["命中多个服务时按优先级展示。"] },
+        { id: "POINT_04", index: 4, name: "商品亮点标签", position: "商品卖点/服务信息附近", type: "商品功能与卖点", displayCount: "多个，控制数量", definition: "表达商品功能、性能或体验卖点。", tags: ["高音质", "除菌", "快充", "防水", "轻薄", "节能"], priority: ["类目核心功能标签", "技术能力标签", "体验感知标签", "通用卖点标签"], usageRules: ["按类目核心决策因素选择亮点标签。"], conflictRules: ["同类卖点不重复表达。"], displayRules: ["多个亮点需控制数量。"], abnormalRules: ["商品参数无对应信息时不展示。"], examples: ["耳机商品命中高音质、防水、轻薄时优先展示高音质。"] },
+        { id: "POINT_05", index: 5, name: "用户行为标签", position: "商品信息/行为热度区域", type: "用户行为、趋势热度", displayCount: "多个，按相关性展示", definition: "表达用户关注、购买、加购或趋势变化。", tags: ["2万人已种草", "我买过的店", "近24小时热搜提升", "近3天1000+人加购"], priority: ["我买过的店", "近3天1000+人加购", "近24小时热搜提升", "2万人已种草"], usageRules: ["个性化强相关标签优先。"], conflictRules: ["避免重复表达同一热度心智。"], displayRules: ["按相关性和转化价值展示。"], abnormalRules: ["行为数据异常时不展示。"], examples: ["用户买过该店且商品加购高时优先展示我买过的店。"] },
+        { id: "POINT_06", index: 6, name: "物流服务标签", position: "配送信息区域", type: "配送时效", displayCount: "1个或少量", definition: "表达当前地址下的配送时效能力。", tags: ["今日达", "明日达"], priority: ["今日达", "明日达"], usageRules: ["基于地址、库存、截单时间和配送能力判断。"], conflictRules: ["今日达和明日达互斥时展示时效更快者。"], displayRules: ["通常展示 1 个时效标签。"], abnormalRules: ["地址不支持时效承诺时不展示。"], examples: ["同时支持今日达和明日达时展示今日达。"] },
+        { id: "POINT_07", index: 7, name: "履约主体标签", position: "配送/履约信息区域", type: "发货主体、配送主体", displayCount: "多个，按履约链路展示", definition: "表达发货主体、配送主体或履约链路。", tags: ["京东物流", "京东快递", "官方配送", "商家自发", "厂商发货"], priority: ["京东物流", "京东快递", "官方配送", "厂商发货", "商家自发"], usageRules: ["按订单履约链路判断发货主体和配送主体。"], conflictRules: ["发货主体类标签通常互斥。"], displayRules: ["多个标签按履约链路展示。"], abnormalRules: ["履约主体缺失时不展示。"], examples: ["京东仓发货且京东快递配送时可展示京东物流。"] },
+        { id: "POINT_08", index: 8, name: "时效与履约保障标签", position: "履约服务区域", type: "时效保障、配送服务", displayCount: "多个，按保障强度展示", definition: "表达发货、送达、自提、即时配送等履约保障。", tags: ["晚发赔", "晚到赔", "准时保", "可自提", "极速达"], priority: ["极速达", "准时保", "晚到赔", "晚发赔", "可自提"], usageRules: ["履约保障按保障强度排序。"], conflictRules: ["与点位6的配送时效分工展示，不混合判断。"], displayRules: ["多个保障可按强度展示。"], abnormalRules: ["地址不支持时不展示。"], examples: ["商品支持今日达和晚到赔时分点位展示。"] },
+        { id: "POINT_09", index: 9, name: "店铺经营模式标签", position: "店铺信息区域", type: "店铺经营身份", displayCount: "1个或少量", definition: "表达店铺经营身份、资质或评级。", tags: ["自营", "旗舰店", "专卖店", "全球购", "五星店铺"], priority: ["自营", "旗舰店", "专卖店", "全球购", "五星店铺"], usageRules: ["店铺经营身份按资质和信任价值排序。"], conflictRules: ["店铺经营模式不得与点位1的平台模式混合判断。"], displayRules: ["通常展示 1 个或少量标签。"], abnormalRules: ["店铺资质过期时不展示。"], examples: ["店铺为旗舰店且五星店铺时，旗舰店优先。"] },
+        { id: "POINT_10", index: 10, name: "店铺亮点与店铺榜单标签", position: "店铺卡片/店铺信息区域", type: "店铺背书、榜单荣誉", displayCount: "多个，按信任价值展示", definition: "表达店铺榜单、评价、经营年限、粉丝、认证和发货能力等信任背书。", tags: ["闪购TOP1", "好评率96%", "金牌店铺", "十年老店", "超5千粉丝", "达人认证"], priority: ["闪购TOP1", "金牌店铺", "好评率96%", "闪电发货", "十年老店"], usageRules: ["榜单荣誉和信任背书按信任价值排序。"], conflictRules: ["同一榜单多标签需互斥或择优。"], displayRules: ["多个标签按优先级展示。"], abnormalRules: ["榜单周期结束时不展示。"], examples: ["命中闪购TOP1、金牌店铺、好评率96%时按优先级展示。"] }
+      ]
+    };
+
+    function App() {
+      const [activePage, setActivePage] = React.useState("workspace");
+      const [search, setSearch] = React.useState("");
+      const [filters, setFilters] = React.useState({ page: "全部页面", type: "全部类型", status: "全部状态" });
+      const [workflowStatus, setWorkflowStatus] = React.useState("草稿");
+      const [previewMode, setPreviewMode] = React.useState("命中");
+      const [selectedProductScene, setSelectedProductScene] = React.useState("PROMO_SKU");
+      const [selectedKnowledgeSlotId, setSelectedKnowledgeSlotId] = React.useState("POINT_03");
+      const [drawerOpen, setDrawerOpen] = React.useState(false);
+      const [designState, setDesignState] = React.useState({ sourceMode: "内置兜底数据", loaded: false, error: "" });
+      const [knowledgeState, setKnowledgeState] = React.useState({ sourceMode: "内置兜底知识库", loaded: false, error: "" });
+      const [designSources, setDesignSources] = React.useState(fallbackDesignSources);
+      const [tagStyles, setTagStyles] = React.useState(fallbackTagStyles);
+      const [touchPoints, setTouchPoints] = React.useState(fallbackTouchPoints);
+      const [touchRules, setTouchRules] = React.useState(fallbackRules);
+      const [previewProducts, setPreviewProducts] = React.useState(fallbackProducts);
+      const [knowledgeBase, setKnowledgeBase] = React.useState(fallbackKnowledge);
+      const [task, setTask] = React.useState({
+        intentText: "我想在商详价格区新增一个限时低价标签",
+        type: "新增标签",
+        confidence: 92,
+        stepIndex: 0,
+        uncertainty: ["目标商品范围", "活动周期", "是否需要点击跳转"]
+      });
+      const [draftTag, setDraftTag] = React.useState({
+        tagId: "TAG_DRAFT_001",
+        tagName: "限时低价",
+        businessGoal: "提升低价商品转化，强化活动期价格心智",
+        tagType: "价格/促销",
+        page: "商品详情页",
+        touchPoint: "价格区域",
+        targetGoods: "活动商品 && 降价幅度 >= 10%",
+        targetUsers: "全量用户",
+        timeRange: "2026-06-01 至 2026-06-18",
+        clickable: "否",
+        jumpTarget: "无",
+        priority: 80,
+        styleId: "STYLE_PROMO_RED_CAPSULE",
+        text: "限时低价",
+        shape: "胶囊",
+        bgColor: "#E1251B",
+        textColor: "#FFFFFF",
+        fontSize: 12,
+        radius: 4,
+        icon: "",
+        excludeTags: "京东秒杀",
+        owner: "商详产品组"
+      });
+
+      const currentSteps = taskFlows[task.type] || taskFlows["新增标签"];
+      const currentStepName = currentSteps[task.stepIndex] || currentSteps[0];
+      const currentStyle = tagStyles.find(style => style.styleId === draftTag.styleId) || tagStyles[0];
+      const currentProduct = previewProducts.find(product => product.sceneId === selectedProductScene) || previewProducts[0];
+      const selectedKnowledgeSlot = knowledgeBase.pointSlots.find(slot => slot.id === selectedKnowledgeSlotId) || knowledgeBase.pointSlots[0];
+      const currentTouchRule = touchRules.find(rule => rule.touchPoint === draftTag.touchPoint);
+      const sharedChannelRef = React.useRef(null);
+
+      React.useEffect(() => {
+        loadDesignData();
+        loadKnowledgeData();
+        if ("BroadcastChannel" in window) sharedChannelRef.current = new BroadcastChannel(sharedStateKey);
+        return () => sharedChannelRef.current && sharedChannelRef.current.close();
+      }, []);
+
+      React.useEffect(() => {
+        syncSharedState();
+      }, [activePage, search, filters, workflowStatus, previewMode, selectedProductScene, task, draftTag, designState, knowledgeState]);
+
+      async function loadDesignData() {
+        try {
+          const response = await fetch("./data/design-data.json", { cache: "no-store" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const data = await response.json();
+          setDesignSources(data.designSources || fallbackDesignSources);
+          setTagStyles(data.tagStyleLibrary || fallbackTagStyles);
+          setTouchPoints(data.detailPageStructure || fallbackTouchPoints);
+          setTouchRules(data.touchPointRules || fallbackRules);
+          setPreviewProducts(data.previewProducts || fallbackProducts);
+          setDesignState({ sourceMode: "外部 JSON 数据", loaded: true, error: "" });
+        } catch (error) {
+          setDesignState({ sourceMode: "内置兜底数据", loaded: false, error: error.message || "读取失败" });
+        }
+      }
+
+      async function loadKnowledgeData() {
+        try {
+          const response = await fetch("./data/tag-standard-kb.json", { cache: "no-store" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          setKnowledgeBase(await response.json());
+          setKnowledgeState({ sourceMode: "外部 JSON 知识库", loaded: true, error: "" });
+        } catch (error) {
+          setKnowledgeState({ sourceMode: "内置兜底知识库", loaded: false, error: error.message || "读取失败" });
+        }
+      }
+
+      function syncSharedState() {
+        const risk = draftTag.touchPoint === "价格区域" ? "高" : draftTag.touchPoint === "促销区域" ? "中" : "低";
+        const shared = {
+          source: "antd-html-adapter",
+          updatedAt: new Date().toISOString(),
+          activePage,
+          selectedProductScene,
+          previewMode,
+          workflowStatus,
+          risk,
+          taskType: task.type,
+          taskStep: currentStepName,
+          intentText: task.intentText,
+          designDataStatus: {
+            tagStyles: tagStyles.length,
+            detailTouchPoints: touchPoints.length,
+            assets: enrichedAssets.length,
+            products: previewProducts.length,
+            rules: touchRules.length,
+            knowledgeSlots: knowledgeBase.pointSlots.length,
+            sourceMode: designState.sourceMode
+          },
+          draftTag: { ...draftTag }
+        };
+        localStorage.setItem(sharedStateKey, JSON.stringify(shared));
+        if (sharedChannelRef.current) sharedChannelRef.current.postMessage(shared);
+      }
+
+      function setTaskPatch(patch) {
+        setTask(current => ({ ...current, ...patch }));
+      }
+
+      function updateDraft(key, value) {
+        setDraftTag(current => ({ ...current, [key]: value }));
+      }
+
+      function inferTaskType(text) {
+        if (/下线|删除|不用|关掉/.test(text)) return "下线标签";
+        if (/修改|调整|改|换|变更/.test(text)) return "修改标签";
+        if (/复用|类似|沿用/.test(text)) return "复用标签";
+        if (/查|查询|在哪|有哪些|状态/.test(text)) return "查询标签";
+        return "新增标签";
+      }
+
+      function startIntent() {
+        const type = inferTaskType(task.intentText);
+        setTask(current => ({ ...current, type, confidence: type === "新增标签" ? 92 : 86, stepIndex: 0 }));
+        if (task.intentText.includes("低价")) setDraftTag(current => ({ ...current, tagName: "限时低价", text: "限时低价", touchPoint: "价格区域" }));
+        setActivePage("flow");
+      }
+
+      function chooseQuickTask(type) {
+        const examples = {
+          "查询标签": "我想查一下商详价格区有哪些低价标签",
+          "新增标签": "我想在商详价格区新增一个限时低价标签",
+          "修改标签": "我想把限时低价标签调整到促销区域展示",
+          "下线标签": "我想把即将下线标签关掉",
+          "复用标签": "我想复用百亿补贴的标签样式"
+        };
+        setTask(current => ({ ...current, type, intentText: examples[type], confidence: type === "新增标签" ? 92 : 86, stepIndex: 0 }));
+        setActivePage("flow");
+      }
+
+      function nextStep() {
+        if (task.stepIndex < currentSteps.length - 1) {
+          setTaskPatch({ stepIndex: task.stepIndex + 1 });
+          if (["生成方案", "预览生成方案"].includes(currentSteps[task.stepIndex + 1])) setWorkflowStatus("待评审");
+          return;
+        }
+        setWorkflowStatus("待评审");
+        setActivePage("preview");
+      }
+
+      function prevStep() {
+        setTaskPatch({ stepIndex: Math.max(0, task.stepIndex - 1) });
+      }
+
+      function applyRecommendation() {
+        if (currentStepName.includes("定位")) updateDraft("touchPoint", "价格区域");
+        if (currentStepName.includes("冲突")) setDraftTag(current => ({ ...current, excludeTags: "京东秒杀", priority: 80 }));
+        if (currentStepName.includes("配置")) applyStyle("STYLE_PROMO_RED_CAPSULE");
+      }
+
+      function applyStyle(styleId) {
+        const style = tagStyles.find(item => item.styleId === styleId);
+        if (!style) return;
+        setDraftTag(current => ({
+          ...current,
+          styleId: style.styleId,
+          tagType: style.tagType === "促销" ? "价格/促销" : style.tagType,
+          shape: style.shape,
+          bgColor: style.backgroundColor,
+          textColor: style.textColor,
+          fontSize: style.fontSize,
+          radius: style.radius
+        }));
+      }
+
+      function inferKnowledgeSlot() {
+        const text = `${task.intentText} ${draftTag.tagName} ${draftTag.tagType} ${draftTag.touchPoint}`;
+        const matched = knowledgeBase.pointSlots.find(slot => slot.tags && slot.tags.some(tag => text.includes(tag)));
+        if (matched) return matched;
+        if (/价保|质保|退换|服务|保障/.test(text)) return knowledgeBase.pointSlots.find(slot => slot.id === "POINT_03") || selectedKnowledgeSlot;
+        if (/物流|配送|达|发货|履约/.test(text)) return knowledgeBase.pointSlots.find(slot => slot.id === "POINT_06") || selectedKnowledgeSlot;
+        if (/店铺|旗舰|粉丝|好评|榜/.test(text)) return knowledgeBase.pointSlots.find(slot => slot.id === "POINT_09") || selectedKnowledgeSlot;
+        if (/自营|全球购|平台/.test(text)) return knowledgeBase.pointSlots.find(slot => slot.id === "POINT_01") || selectedKnowledgeSlot;
+        return selectedKnowledgeSlot;
+      }
+
+      function statusColor(status) {
+        if (status === "在线") return "green";
+        if (status === "待评审" || status === "草稿") return "orange";
+        if (status === "已下线") return "default";
+        return "blue";
+      }
+
+      function riskColor(risk) {
+        if (risk === "高") return "red";
+        if (risk === "中") return "orange";
+        return "green";
+      }
+
+      function metric(title, value, desc) {
+        return h(Col, { xs: 24, sm: 12, lg: 6 }, h(Card, null, h(Statistic, { title, value }), h("div", { className: "muted" }, desc)));
+      }
+
+      function pageTitle() {
+        return {
+          workspace: "标签任务工作台",
+          flow: "标签处理流程",
+          preview: "预览与方案",
+          assets: "标签资产库",
+          governance: "标签治理导图"
+        }[activePage];
+      }
+
+      function pageDesc() {
+        return {
+          workspace: "用一句话承接模糊诉求，平台基于标准知识库识别任务方向。",
+          flow: "按标签增删改查和复用场景，渐进式完成判断与配置。",
+          preview: "确认商详展示效果，导出产品方案、设计说明、样式参数和测试用例。",
+          assets: "数据库式维护线上标签、商详点位、样式资产和规则依据。",
+          governance: "产品负责人视角，用于查看标签治理链路和平台规划。"
+        }[activePage];
+      }
+
+      return h(ConfigProvider, {
+        theme: {
+          algorithm: theme.darkAlgorithm,
+          token: { colorPrimary: "#22d3ee", borderRadius: 8, colorBgLayout: "#0c1324", colorBgContainer: "rgba(17,26,47,0.72)", colorBorder: "rgba(255,255,255,0.1)", colorBorderSecondary: "rgba(255,255,255,0.08)", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" },
+          components: { Menu: { itemSelectedBg: "rgba(34,211,238,0.18)", itemSelectedColor: "#67e8f9" }, Table: { headerBg: "rgba(255,255,255,0.04)" }, Button: { primaryColor: "#0f172a" } }
+        }
+      }, h(Layout, { style: { minHeight: "100vh" } },
+        h(Sider, { width: 248, theme: "dark", breakpoint: "lg", collapsedWidth: 0, style: { borderRight: "1px solid rgba(255,255,255,0.08)", background: "rgba(15,23,42,0.72)" } },
+          h("div", { className: "app-logo" }, h("strong", null, "京东 App 标签平台"), h("span", null, "现有项目 · AntD 适配版")),
+          h(Menu, {
+            mode: "inline",
+            selectedKeys: [activePage],
+            onClick: event => setActivePage(event.key),
+            items: [
+              { key: "workspace", label: "01 标签任务工作台" },
+              { key: "flow", label: "02 标签处理流程" },
+              { key: "preview", label: "03 预览与方案" },
+              { key: "assets", label: "04 标签资产库" },
+              { key: "governance", label: "05 标签治理导图" }
+            ]
+          })
+        ),
+        h(Layout, null,
+          h(Header, { style: { display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, padding: "0 24px", background: "rgba(15,23,42,0.72)", borderBottom: "1px solid rgba(255,255,255,0.08)" } },
+            h(Input, { allowClear: true, value: search, placeholder: "搜索标签、触点、规则、历史方案", style: { maxWidth: 460 }, onChange: event => setSearch(event.target.value) }),
+            h(Space, null,
+              h(Button, { onClick: () => { loadDesignData(); loadKnowledgeData(); message.success("已同步数据"); } }, "同步知识库"),
+              h(Button, { onClick: downloadMarkdown }, "导出方案"),
+              h(Button, { type: "primary", onClick: () => chooseQuickTask("新增标签") }, "新增标签")
+            )
+          ),
+          h(Content, { className: "main-content" },
+            h("div", { className: "page-head" },
+              h("div", null, h("h1", { className: "page-title" }, pageTitle()), h("p", { className: "page-desc" }, pageDesc())),
+              h(Tag, { color: "cyan" }, `${task.type} · ${currentStepName} · ${workflowStatus}`)
+            ),
+            activePage === "workspace" && renderWorkspace(),
+            activePage === "flow" && renderFlow(),
+            activePage === "preview" && renderPreview(),
+            activePage === "assets" && renderAssets(),
+            activePage === "governance" && renderGovernance(),
+            h(Drawer, { title: "判断依据", width: 560, open: drawerOpen, onClose: () => setDrawerOpen(false) }, renderDecisionBasis())
+          )
+        )
+      ));
+
+      function renderWorkspace() {
+        const standardSlot = inferKnowledgeSlot();
+        return h(Space, { direction: "vertical", size: 16, style: { display: "flex" } },
+          h(Row, { gutter: [16, 16] },
+            metric("标签样式库", tagStyles.length, designSources.tagDesign),
+            metric("商详触点", touchPoints.length, designSources.detailDesign),
+            metric("标签资产", enrichedAssets.length, "已绑定样式来源和触点来源"),
+            metric("标准点位", knowledgeBase.pointSlots.length, knowledgeBase.source)
+          ),
+          h(Card, { title: "你想处理什么标签？", extra: h(Tag, { color: "cyan" }, "渐进式披露") },
+            h(Paragraph, { type: "secondary" }, "不用先理解资产中心、冲突检测、低代码这些专业模块。先用一句话描述诉求，平台会判断你是在查、新增、修改、下线还是复用标签。"),
+            h(Form, { layout: "vertical" },
+              h(Form.Item, { label: "标签诉求" }, h(Input.TextArea, { value: task.intentText, autoSize: { minRows: 3, maxRows: 5 }, onChange: event => setTaskPatch({ intentText: event.target.value }) })),
+              h(Space, { wrap: true }, Object.keys(taskFlows).map(type => h(Button, { key: type, onClick: () => chooseQuickTask(type) }, type)), h(Button, { type: "primary", onClick: startIntent }, "开始处理"))
+            )
+          ),
+          h(Row, { gutter: [16, 16] },
+            h(Col, { xs: 24, xl: 12 }, h(Card, { title: "平台识别结果", extra: h(Tag, { color: "blue" }, `${task.confidence}%`) },
+              h(Alert, { showIcon: true, type: "success", message: `识别任务：${task.type}` }),
+              h(Paragraph, { style: { marginTop: 12 }, type: "secondary" }, `推荐参考：点位${standardSlot.index} ${standardSlot.name}。${standardSlot.definition}`),
+              h(Space, { wrap: true }, task.uncertainty.map(item => h(Tag, { key: item, color: "orange" }, `待确认：${item}`)))
+            )),
+            h(Col, { xs: 24, xl: 12 }, h(Card, { title: "当前任务进度" }, h(Steps, { current: task.stepIndex, items: currentSteps.map(title => ({ title })) })))
+          ),
+          h(Alert, { showIcon: true, type: designState.loaded ? "success" : "warning", message: `设计数据：${designState.sourceMode}`, description: designState.loaded ? "当前页面正在读取外部 JSON。" : `当前使用兜底数据${designState.error ? `，原因：${designState.error}` : "。"}` })
+        );
+      }
+
+      function renderFlow() {
+        return h(Space, { direction: "vertical", size: 16, style: { display: "flex" } },
+          h(Card, { title: "任务链路", extra: h(Select, { value: task.type, style: { width: 150 }, options: Object.keys(taskFlows).map(value => ({ label: value, value })), onChange: value => setTaskPatch({ type: value, stepIndex: 0 }) }) },
+            h(Steps, { current: task.stepIndex, onChange: index => setTaskPatch({ stepIndex: index }), items: currentSteps.map(title => ({ title })) })
+          ),
+          h(Row, { gutter: [16, 16] },
+            h(Col, { xs: 24, xl: 16 }, h(Card, { title: currentStepName }, renderFlowStep(), h(Space, { style: { marginTop: 16 }, wrap: true },
+              h(Button, { onClick: prevStep }, "上一步"),
+              h(Button, { onClick: applyRecommendation }, "我不确定，帮我推荐"),
+              h(Button, { type: "primary", onClick: nextStep }, task.stepIndex === currentSteps.length - 1 ? "进入预览与方案" : "下一步")
+            ))),
+            h(Col, { xs: 24, xl: 8 }, h(Card, { title: "平台推荐" }, h(Timeline, { items: recommendationItems().map((item, index) => ({ color: index === 0 ? "blue" : index === 1 ? "orange" : "green", children: item })) })))
+          )
+        );
+      }
+
+      function renderFlowStep() {
+        if (task.type === "查询标签") return renderQueryStep();
+        if (task.type === "修改标签") return renderModifyStep();
+        if (task.type === "下线标签") return renderOfflineStep();
+        if (task.type === "复用标签") return renderReuseStep();
+        if (currentStepName === "查找相似") return renderSimilarStep();
+        if (currentStepName === "定位触点") return renderTouchChoices();
+        if (currentStepName === "冲突判断") return renderConflicts();
+        if (currentStepName === "配置预览") return renderConfig();
+        if (currentStepName === "生成方案") return renderPreview();
+        return renderCreateClarify();
+      }
+
+      function renderCreateClarify() {
+        return h(Form, { layout: "vertical" }, h(Row, { gutter: 12 },
+          h(Col, { xs: 24, md: 12 }, h(Form.Item, { label: "标签名称" }, h(Input, { value: draftTag.tagName, onChange: event => updateDraft("tagName", event.target.value) }))),
+          h(Col, { xs: 24, md: 12 }, h(Form.Item, { label: "业务目标" }, h(Input, { value: draftTag.businessGoal, onChange: event => updateDraft("businessGoal", event.target.value) }))),
+          h(Col, { xs: 24, md: 12 }, h(Form.Item, { label: "目标页面" }, h(Select, { value: draftTag.page, options: ["商品详情页", "搜索结果页", "首页", "购物车", "不确定"].map(value => ({ label: value, value })), onChange: value => updateDraft("page", value) }))),
+          h(Col, { xs: 24, md: 12 }, h(Form.Item, { label: "展示触点" }, h(Select, { value: draftTag.touchPoint, options: touchPoints.map(item => ({ label: item.touchPoint, value: item.touchPoint })), onChange: value => updateDraft("touchPoint", value) })))
+        ));
+      }
+
+      function renderSimilarStep() {
+        const similarTags = enrichedAssets.filter(tag => ["京东秒杀", "百亿补贴", "PLUS 专享价"].includes(tag.name));
+        return h(Row, { gutter: [12, 12] }, similarTags.map(tag => {
+          const style = tagStyles.find(item => item.styleId === tag.styleId);
+          return h(Col, { key: tag.id, xs: 24, md: 8 }, h(Card, { title: tag.name, extra: h(Tag, { color: riskColor(tag.risk) }, `${tag.risk}风险`) },
+            h(Paragraph, { type: "secondary" }, `类型：${tag.type} / 触点：${tag.touch}`),
+            h(Paragraph, null, `可复用：${tag.reusableParts.join(" / ")}`),
+            h(Paragraph, null, `样式：${style ? style.styleName : tag.style}`),
+            h(Paragraph, { type: "secondary" }, tag.fallbackRule)
+          ));
+        }));
+      }
+
+      function renderTouchChoices() {
+        return h(Row, { gutter: [12, 12] }, touchPoints.map(item => h(Col, { key: item.moduleId, xs: 24, md: 12, lg: 8 },
+          h(Card, { className: `click-card ${draftTag.touchPoint === item.touchPoint ? "active" : ""}`, title: item.moduleName, extra: h(Tag, { color: riskColor(item.riskLevel) }, `${item.riskLevel}风险`), onClick: () => updateDraft("touchPoint", item.touchPoint) },
+            h(Paragraph, { type: "secondary" }, item.desc),
+            h(Text, null, `容量：${item.currentTags}/${item.maxTags}`),
+            h("div", { style: { marginTop: 8 } }, item.supportedTagTypes.map(type => h(Tag, { key: type }, type)))
+          )
+        )));
+      }
+
+      function renderConflicts() {
+        const conflicts = [
+          { level: "高", title: "触点容量冲突", impact: "商详价格区域当前 2/2，新增后超过承载上限。", action: "建议排序或降级到促销区域。" },
+          { level: "中", title: "规则命中冲突", impact: "与京东秒杀存在活动商品重叠。", action: "建议与京东秒杀设置互斥，秒杀优先。" },
+          { level: "中", title: "样式语义冲突", impact: "与到手价、百亿补贴都表达价格优惠。", action: "建议突出“限时”，避免单纯表达优惠。" }
+        ];
+        return h(Row, { gutter: [12, 12] }, conflicts.map(item => h(Col, { key: item.title, xs: 24, md: 8 },
+          h(Card, { title: item.title, extra: h(Tag, { color: riskColor(item.level) }, `${item.level}风险`) },
+            h(Paragraph, { type: "secondary" }, item.impact),
+            h(Text, { strong: true }, "建议："),
+            h(Paragraph, null, item.action),
+            h(Paragraph, { type: "secondary" }, currentTouchRule ? currentTouchRule.conflictPolicy : "按触点规则排序展示")
+          )
+        )));
+      }
+
+      function renderConfig() {
+        return h(Space, { direction: "vertical", size: 16, style: { display: "flex" } },
+          h(Row, { gutter: 12 },
+            h(Col, { xs: 24, md: 8 }, h(Form.Item, { label: "标签文案" }, h(Input, { value: draftTag.text, onChange: event => updateDraft("text", event.target.value) }))),
+            h(Col, { xs: 24, md: 8 }, h(Form.Item, { label: "优先级" }, h(InputNumber, { value: draftTag.priority, style: { width: "100%" }, onChange: value => updateDraft("priority", Number(value || 0)) }))),
+            h(Col, { xs: 24, md: 8 }, h(Form.Item, { label: "互斥标签" }, h(Input, { value: draftTag.excludeTags, onChange: event => updateDraft("excludeTags", event.target.value) })))
+          ),
+          h(Row, { gutter: [12, 12] }, tagStyles.map(style => h(Col, { key: style.styleId, xs: 24, md: 12, lg: 8 },
+            h(Card, { className: `click-card ${currentStyle.styleId === style.styleId ? "active" : ""}`, title: style.styleName, extra: h(Tag, null, style.tagType), onClick: () => applyStyle(style.styleId) },
+              h(Tag, { style: { background: style.backgroundColor, color: style.textColor, borderColor: style.backgroundColor } }, draftTag.text),
+              h(Paragraph, { style: { marginTop: 12 }, type: "secondary" }, `${style.shape} · ${style.fontSize}px · ${style.useScenes.join(" / ")}`)
+            )
+          )))
+        );
+      }
+
+      function renderQueryStep() {
+        return h(Space, { direction: "vertical", size: 16, style: { display: "flex" } },
+          h(Alert, { showIcon: true, type: "info", message: "查询类任务优先返回标签位置、状态、路径和后续操作。" }),
+          renderAssetTable(false)
+        );
+      }
+
+      function renderModifyStep() {
+        return renderChangeStep("修改类任务先选标签，再判断你要改规则、样式、触点还是优先级，并展示修改前后影响。");
+      }
+
+      function renderOfflineStep() {
+        return renderChangeStep("下线不等于删除。平台会先检查展示范围、依赖规则和替代方案，避免直接影响线上体验。");
+      }
+
+      function renderReuseStep() {
+        return renderChangeStep("复用类任务会拆分可复用对象：样式、规则、触点、文案，不再重复建设。");
+      }
+
+      function renderChangeStep(desc) {
+        return h(Space, { direction: "vertical", size: 16, style: { display: "flex" } },
+          h(Alert, { showIcon: true, type: "warning", message: desc }),
+          h(Row, { gutter: 12 },
+            h(Col, { xs: 24, md: 12 }, h(Select, { value: draftTag.tagName, style: { width: "100%" }, options: enrichedAssets.map(item => ({ label: item.name, value: item.name })), onChange: value => {
+              const asset = enrichedAssets.find(item => item.name === value);
+              if (asset) setDraftTag(current => ({ ...current, tagName: asset.name, text: asset.name, styleId: asset.styleId, touchPoint: asset.touch, priority: asset.priority }));
+            } })),
+            h(Col, { xs: 24, md: 12 }, h(Select, { value: draftTag.touchPoint, style: { width: "100%" }, options: touchPoints.map(item => ({ label: item.touchPoint, value: item.touchPoint })), onChange: value => updateDraft("touchPoint", value) }))
+          ),
+          h(Descriptions, { bordered: true, column: 1, size: "small", items: [
+            { key: "range", label: "影响范围", children: `${draftTag.page} · ${draftTag.touchPoint} · 历史覆盖约 90 万曝光` },
+            { key: "dependency", label: "依赖检查", children: task.type === "下线标签" ? "无强依赖，可进入下线评估；建议保留历史版本。" : "可复用样式、触点和部分命中规则。" },
+            { key: "action", label: "处理建议", children: task.type === "复用标签" ? "复用样式，不直接复用互斥规则。" : "先预览变更，再进入方案导出。" }
+          ] })
+        );
+      }
+
+      function recommendationItems() {
+        const tips = {
+          "诉求澄清": ["已识别为新增标签", "推荐页面：商品详情页", "推荐触点：价格区域"],
+          "查找相似": ["发现 3 个相似标签", "可以复用红底白字促销样式", "建议新增并设置互斥"],
+          "定位触点": ["价格区域匹配度最高", "价格区域容量风险高", "促销区域可作为降级位置"],
+          "冲突判断": ["与京东秒杀互斥", "优先级建议 80", "容量不足时降级促销区域"],
+          "配置预览": ["红底白字胶囊符合促销心智", "字号 12px，圆角 4px", "互斥标签：京东秒杀"]
+        };
+        return tips[currentStepName] || ["平台会根据当前任务生成下一步建议", "专业判断会被包装成可操作结论"];
+      }
+
+      function renderPreview() {
+        const standardSlot = inferKnowledgeSlot();
+        return h(Row, { gutter: [16, 16] },
+          h(Col, { xs: 24, xl: 10 }, h(Card, { title: "商详实时预览", extra: h(Tag, { color: "cyan" }, "结果确认") },
+            h(Space, { wrap: true, style: { marginBottom: 14 } }, previewProducts.map(product => h(Button, { key: product.sceneId, type: selectedProductScene === product.sceneId ? "primary" : "default", onClick: () => setSelectedProductScene(product.sceneId) }, product.sceneName))),
+            h(Space, { wrap: true, style: { marginBottom: 14 } }, ["命中", "不命中", "互斥降级"].map(mode => h(Button, { key: mode, type: previewMode === mode ? "primary" : "default", onClick: () => setPreviewMode(mode) }, mode))),
+            productPreview()
+          )),
+          h(Col, { xs: 24, xl: 14 }, h(Card, { title: "方案交付包" },
+            h(Descriptions, { bordered: true, column: 1, size: "small", items: [
+              { key: "product", label: "产品方案", children: "业务目标、展示路径、命中规则、互斥排序。" },
+              { key: "design", label: "设计说明", children: `${currentStyle.styleName} · ${currentStyle.source}` },
+              { key: "standard", label: "标准知识库", children: `点位${standardSlot.index} ${standardSlot.name} · ${standardSlot.position}` },
+              { key: "test", label: "测试用例", children: "命中、不命中、互斥、降级、下线状态。" }
+            ] }),
+            h("pre", { className: "markdown-preview" }, generateMarkdown()),
+            h(Space, { wrap: true }, h(Button, { type: "primary", onClick: copyMarkdown }, "复制方案"), h(Button, { onClick: downloadMarkdown }, "下载 Markdown"), h(Button, { onClick: () => setDrawerOpen(true) }, "查看判断依据"))
+          ))
+        );
+      }
+
+      function previewTag() {
+        const border = draftTag.shape === "描边" ? { border: `1px solid ${draftTag.textColor}`, background: "#fff", color: draftTag.textColor } : { background: draftTag.bgColor, color: draftTag.textColor, border: `1px solid ${draftTag.bgColor}` };
+        return h("span", { className: "preview-tag", style: { ...border, fontSize: draftTag.fontSize, borderRadius: draftTag.radius } }, draftTag.text);
+      }
+
+      function productPreview() {
+        const showDraft = previewMode !== "不命中";
+        const tags = previewMode === "互斥降级" ? currentProduct.tags.filter(tag => tag !== draftTag.text) : currentProduct.tags;
+        return h("div", { className: "phone-preview" },
+          h("div", { className: "phone-status" }, h("span", null, "9:41"), h("span", null, "商品详情"), h("span", null, "5G")),
+          h("div", { className: "product-image" }, "商品主图区域"),
+          h("div", { className: "product-body" },
+            h(Paragraph, { strong: true }, currentProduct.skuName),
+            h("div", { className: "price-line" }, h("span", { className: "price" }, `¥${currentProduct.activityPrice}`), showDraft && draftTag.touchPoint === "价格区域" && previewTag()),
+            h("div", { className: "preview-box" }, showDraft && draftTag.touchPoint === "促销区域" && previewTag(), tags.filter(tag => ["店铺券", "以旧换新", "限时低价"].includes(tag)).map(tag => h(Tag, { key: tag, color: "red" }, tag))),
+            h("div", { className: "preview-box" }, tags.filter(tag => !["店铺券", "以旧换新", "限时低价"].includes(tag)).map(tag => h(Tag, { key: tag }, tag))),
+            h("div", { className: "buy-row" }, h("div", { className: "buy-btn" }, "加入购物车"), h("div", { className: "buy-btn red" }, "立即购买"))
+          )
+        );
+      }
+
+      function renderAssets() {
+        return h(Card, { title: "标签资产库", extra: h(Tag, { color: "blue" }, "数据库式维护场景") },
+          h(Tabs, { items: [
+            { key: "assets", label: "标签资产", children: renderAssetTable(true) },
+            { key: "touchpoints", label: "商详点位", children: renderTouchChoices() },
+            { key: "knowledge", label: "标准知识库", children: renderKnowledge() },
+            { key: "rules", label: "规则依据", children: renderRuleLibrary() }
+          ] })
+        );
+      }
+
+      function renderAssetTable(showFilters) {
+        const filtered = enrichedAssets.filter(tag => {
+          const text = `${tag.name}${tag.id}${tag.owner}`.toLowerCase();
+          const matchSearch = text.includes((search || "").toLowerCase());
+          const matchPage = filters.page === "全部页面" || tag.pages.includes(filters.page);
+          const matchType = filters.type === "全部类型" || tag.type.includes(filters.type);
+          const matchStatus = filters.status === "全部状态" || tag.status === filters.status;
+          return matchSearch && matchPage && matchType && matchStatus;
+        });
+        const columns = [
+          { title: "标签名称", dataIndex: "name", render: text => h(Text, { strong: true }, text) },
+          { title: "ID", dataIndex: "id" },
+          { title: "页面", dataIndex: "pages", render: pages => pages.join(" / ") },
+          { title: "触点", dataIndex: "touch" },
+          { title: "类型", dataIndex: "type", render: type => h(Tag, { color: "blue" }, type) },
+          { title: "状态", dataIndex: "status", render: status => h(Tag, { color: statusColor(status) }, status) },
+          { title: "样式来源", dataIndex: "styleId", render: (_, record) => {
+            const style = tagStyles.find(item => item.styleId === record.styleId);
+            return h("span", null, style ? style.styleName : record.style, h("br"), h(Text, { type: "secondary" }, record.designSource));
+          } },
+          { title: "可复用项", dataIndex: "reusableParts", render: items => h(Space, { wrap: true }, items.map(item => h(Tag, { key: item, color: "green" }, item))) },
+          { title: "操作", key: "action", render: (_, record) => h(Button, { type: "link", onClick: () => { setDraftTag(current => ({ ...current, tagName: record.name, text: record.name, styleId: record.styleId, touchPoint: record.touch, priority: record.priority })); chooseQuickTask("修改标签"); } }, "处理") }
+        ];
+        return h(Space, { direction: "vertical", size: 12, style: { display: "flex" } },
+          showFilters && h(Form, { layout: "inline" },
+            h(Form.Item, { label: "关键词" }, h(Input, { allowClear: true, value: search, placeholder: "搜索标签名称 / ID / 负责人", onChange: event => setSearch(event.target.value), style: { width: 260 } })),
+            h(Form.Item, { label: "页面" }, h(Select, { value: filters.page, style: { width: 150 }, options: ["全部页面", "商品详情页", "搜索结果页", "首页", "购物车"].map(value => ({ label: value, value })), onChange: value => setFilters(current => ({ ...current, page: value })) })),
+            h(Form.Item, { label: "类型" }, h(Select, { value: filters.type, style: { width: 130 }, options: ["全部类型", "价格", "促销", "会员", "服务", "氛围", "运营"].map(value => ({ label: value, value })), onChange: value => setFilters(current => ({ ...current, type: value })) })),
+            h(Form.Item, { label: "状态" }, h(Select, { value: filters.status, style: { width: 130 }, options: ["全部状态", "在线", "待评审", "已下线"].map(value => ({ label: value, value })), onChange: value => setFilters(current => ({ ...current, status: value })) }))
+          ),
+          h(Table, { rowKey: "id", columns, dataSource: filtered, pagination: { pageSize: 8 }, scroll: { x: 1100 } })
+        );
+      }
+
+      function renderKnowledge() {
+        const slot = selectedKnowledgeSlot;
+        return h(Row, { gutter: [16, 16] },
+          h(Col, { xs: 24, xl: 8 }, h(Card, { title: `${knowledgeBase.source}`, extra: h(Tag, { color: knowledgeState.loaded ? "green" : "orange" }, knowledgeState.sourceMode) },
+            h(Paragraph, { type: "secondary" }, knowledgeBase.purpose),
+            h(Space, { direction: "vertical", style: { display: "flex" } }, knowledgeBase.pointSlots.map(item => h(Button, { key: item.id, block: true, type: slot.id === item.id ? "primary" : "default", onClick: () => setSelectedKnowledgeSlotId(item.id) }, `点位${item.index} ${item.name}`)))
+          )),
+          h(Col, { xs: 24, xl: 16 }, h(Card, { title: `点位${slot.index} ${slot.name}`, extra: h(Tag, { color: "green" }, slot.type) },
+            h(Descriptions, { bordered: true, column: 1, size: "small", items: [
+              { key: "position", label: "位置", children: slot.position },
+              { key: "count", label: "展示数量", children: slot.displayCount },
+              { key: "definition", label: "定义", children: slot.definition }
+            ] }),
+            knowledgeBlock("标签清单", slot.tags),
+            knowledgeBlock("优先级", slot.priority),
+            knowledgeBlock("使用逻辑", slot.usageRules),
+            knowledgeBlock("互斥与冲突规则", slot.conflictRules),
+            knowledgeBlock("展示数量规则", slot.displayRules),
+            knowledgeBlock("异常场景", slot.abnormalRules),
+            knowledgeBlock("示例", slot.examples)
+          ))
+        );
+      }
+
+      function knowledgeBlock(title, items = []) {
+        return h("div", { style: { marginTop: 16 } }, h(Text, { strong: true }, title), h("div", { style: { marginTop: 8 } }, h(Space, { wrap: true }, items.map(item => h(Tag, { key: item }, item)))));
+      }
+
+      function renderRuleLibrary() {
+        return h(Row, { gutter: [12, 12] },
+          h(Col, { xs: 24, md: 12 }, h(Card, { title: "全局展示原则" }, h(Space, { wrap: true }, knowledgeBase.globalPrinciples.map(item => h(Tag, { key: item, color: "blue" }, item))))),
+          h(Col, { xs: 24, md: 12 }, h(Card, { title: "治理字段" }, h(Space, { wrap: true }, knowledgeBase.governanceFields.map(item => h(Tag, { key: item, color: "green" }, item))))),
+          ...touchRules.map(rule => h(Col, { key: rule.touchPoint, xs: 24, md: 12 }, h(Card, { title: rule.touchPoint },
+            h(Paragraph, { type: "secondary" }, rule.conflictPolicy),
+            h(Text, null, `降级触点：${rule.fallbackTouchPoint}`),
+            h("div", { style: { marginTop: 8 } }, rule.preferredTypes.map(type => h(Tag, { key: type }, type)))
+          )))
+        );
+      }
+
+      function renderGovernance() {
+        return h(Row, { gutter: [16, 16] },
+          h(Col, { xs: 24, xl: 12 }, h(Card, { title: "标签治理导图", extra: h(Tag, { color: "purple" }, "管理视角") },
+            h(Paragraph, { type: "secondary" }, "治理导图不作为普通用户主流程入口。它用于产品负责人查看标签迭代管理链路、产品功能框架、MVP 覆盖与后续缺口。"),
+            h(Timeline, { items: [
+              { color: "blue", children: "标签迭代管理链路：诉求 → 资产 → 判断 → 生产 → 监控 → 回流。" },
+              { color: "orange", children: "产品功能框架：资产库、触点中心、诉求工作台、冲突检测、低代码搭建器、状态监控。" },
+              { color: "green", children: "实时同步：当前主线任务、标签、触点、状态会同步到 localStorage 与 BroadcastChannel。" }
+            ] })
+          )),
+          h(Col, { xs: 24, xl: 12 }, h(Card, { title: "为什么从主流程降级" }, h(Paragraph, { type: "secondary" }, "普通用户的真实目标是完成标签增删改查，不是理解平台架构。治理导图适合作为产品把控、方案评审和平台规划工具。")))
+        );
+      }
+
+      function generateMarkdown() {
+        const standardSlot = inferKnowledgeSlot();
+        return `# ${draftTag.tagName} 标签方案
+
+## 产品目标
+${draftTag.businessGoal}
+
+## 基础信息
+- 任务类型：${task.type}
+- 展示页面：${draftTag.page}
+- 展示触点：${draftTag.touchPoint}
+- 标签类型：${draftTag.tagType}
+- 当前状态：${workflowStatus}
+
+## 规则与冲突
+- 商品条件：${draftTag.targetGoods}
+- 用户条件：${draftTag.targetUsers}
+- 生效时间：${draftTag.timeRange}
+- 互斥标签：${draftTag.excludeTags}
+- 优先级：${draftTag.priority}
+
+## 样式
+- 文案：${draftTag.text}
+- 样式名称：${currentStyle.styleName}
+- 形态：${currentStyle.shape}
+- 背景色：${currentStyle.backgroundColor}
+- 字体色：${currentStyle.textColor}
+- 字号：${currentStyle.fontSize}px
+- 圆角：${currentStyle.radius}px
+
+## 设计依据
+- 标签样式来源：${currentStyle.source}
+- 商详触点来源：${currentTouchRule ? currentTouchRule.source : designSources.detailDesign}
+- 触点承载规则：${currentTouchRule ? currentTouchRule.conflictPolicy : "按商详触点规则展示"}
+
+## 标准知识库依据
+- 适用点位：点位${standardSlot.index} ${standardSlot.name}
+- 点位位置：${standardSlot.position}
+- 标签类型：${standardSlot.type}
+- 展示规则：${standardSlot.displayRules && standardSlot.displayRules[0] ? standardSlot.displayRules[0] : standardSlot.displayCount}
+- 冲突规则：${standardSlot.conflictRules && standardSlot.conflictRules[0] ? standardSlot.conflictRules[0] : "按标准知识库规则判断"}
+- 方案判断依据：${standardSlot.definition}
+
+## 测试用例
+- 命中活动商品时展示 ${draftTag.text}
+- 同时命中 ${draftTag.excludeTags} 时优先展示 ${draftTag.excludeTags}
+- 未命中活动商品时不展示
+- 价格区域容量满时按降级策略处理`;
+      }
+
+      async function copyMarkdown() {
+        await navigator.clipboard.writeText(generateMarkdown());
+        message.success("已复制方案");
+      }
+
+      function downloadMarkdown() {
+        const blob = new Blob([generateMarkdown()], { type: "text/markdown;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${draftTag.tagName}-标签方案.md`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function renderDecisionBasis() {
+        const standardSlot = inferKnowledgeSlot();
+        return h(Space, { direction: "vertical", size: 16, style: { display: "flex" } },
+          h(Alert, { showIcon: true, type: "success", message: "依据来源", description: "商详标签标准规范、Relay 标签设计方案、Relay 商详设计方案，以及历史任务沉淀结果。" }),
+          h(Descriptions, { bordered: true, column: 1, size: "small", items: [
+            { key: "style", label: "样式来源", children: `${currentStyle.styleName} · ${currentStyle.source}` },
+            { key: "touch", label: "触点规则", children: currentTouchRule ? currentTouchRule.conflictPolicy : "按商详触点规则展示" },
+            { key: "standard", label: "知识库点位", children: `点位${standardSlot.index} ${standardSlot.name}` }
+          ] })
+        );
+      }
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+  </script>
+</body>
+</html>

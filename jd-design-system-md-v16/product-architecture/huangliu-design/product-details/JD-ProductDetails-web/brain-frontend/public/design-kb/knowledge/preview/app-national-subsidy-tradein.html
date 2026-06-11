@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>国补叠加以旧换新利益点感知提升 · 设计决策</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC",sans-serif;background:#f5f4f0;color:#1a1a1a;padding:2rem}
+.wrap{max-width:720px;margin:0 auto}
+.hd{background:#E1251B;color:#fff;border-radius:8px;padding:1.2rem 1.5rem;margin-bottom:1.5rem}
+.hd h1{font-size:18px;font-weight:500;margin-bottom:4px}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.2);margin-right:4px}
+.screenshot img{max-width:100%;border-radius:8px;border:.5px solid #ddd;margin-bottom:1.5rem}
+.screenshot .empty{background:#f0f0ee;border-radius:8px;padding:1.5rem;font-size:12px;color:#aaa;text-align:center;border:.5px solid #e5e5e5;margin-bottom:1.5rem}
+.sec{background:#fff;border-radius:8px;border:.5px solid #e5e5e5;margin-bottom:12px;overflow:hidden}
+.sec-hd{padding:12px 16px;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center;border-bottom:.5px solid #f0f0ee}
+.sec-hd.toggle{cursor:pointer}
+.sec-body{padding:12px 16px;font-size:13px;line-height:1.7}
+.sec-body.hidden{display:none}
+.decision{background:#f7f7f5;border-radius:6px;padding:10px 12px;margin-bottom:10px}
+.decision:last-child{margin-bottom:0}
+.decision-title{font-weight:500;margin-bottom:6px}
+.state-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.state-card{border-radius:6px;padding:8px 10px;font-size:12px}
+.sc-0{background:#f0f0ee;border:.5px solid #ddd}
+.sc-1{background:#e8f4e8;border:.5px solid #b8dcb8}
+.sc-2{background:#fff8e6;border:.5px solid #f5d87a}
+.sc-label{font-weight:500;font-size:11px;margin-bottom:3px;color:#555}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-weight:500;padding:6px 8px;border-bottom:.5px solid #e5e5e5;color:#888;background:#fafafa}
+td{padding:8px;border-bottom:.5px solid #f0f0ee;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.star td{background:#fffbe6}
+.pattern{background:#f0f4ff;border-radius:6px;padding:10px 12px;margin-bottom:8px}
+.pattern-title{font-weight:500;margin-bottom:6px}
+.principle{background:#e8f4e8;border-left:3px solid #0AAD48;padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;margin-top:8px}
+.related-case{display:block;font-size:12px;color:#3C84C4;text-decoration:none;padding:6px 0;border-bottom:.5px solid #f0f0ee}
+.related-case:last-child{border-bottom:none}
+.related-note{color:#888;font-size:11px;margin-top:2px}
+.back{display:inline-block;font-size:12px;color:#888;text-decoration:none;margin-bottom:1rem}
+.todo{display:inline-block;background:#fff8e6;border:.5px solid #EF9F27;padding:1px 6px;font-size:11px;border-radius:3px;color:#b07800}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="index.html">← 返回知识库</a>
+<div class="hd">
+  <h1>国补叠加以旧换新利益点感知提升</h1>
+  <div style="margin-top:6px;font-size:12px;opacity:.8">
+    <span class="tag">App</span><span class="tag">pdp/promotion</span>
+    <span style="opacity:.7;margin-left:4px">最后更新 2026-05-22</span>
+  </div>
+  <div style="margin-top:6px;font-size:11px;opacity:.7">UI：— / UE：— / 产品：— / 2026-05</div>
+</div>
+
+<div class="screenshot">
+  <img src="https://ling-cdn.s3-cache-accelerate.cn-north-1.jdcloud-oss.com/ling-material-image/1990724210050437121/c61a2d72d137cecdb6264628cb2fce4e.png" alt="国补叠加以旧换新利益点感知提升" onerror="this.parentNode.innerHTML='<div class=empty>📎 截图加载失败，可检查 CDN 链接是否有效</div>'">
+</div>
+
+<div class="sec">
+  <div class="sec-hd">需求背景</div>
+  <div class="sec-body">
+    <p style="margin-bottom:8px">App 商详页在国补与以旧换新同时可用时，用户难以感知两项叠加后的到手价优惠，导致利益点传达不充分。同时，用户在不同国补资格状态下看到的页面信息缺乏明确区分，无法快速判断自己处于哪个阶段、还需做什么。</p>
+    <div class="state-grid">
+      <div class="state-card sc-0"><div class="sc-label">0 无资格</div>无腰带，常规到手价</div>
+      <div class="state-card sc-1"><div class="sc-label">1 有资格未领取</div>绿色腰带 + 引导按钮</div>
+      <div class="state-card sc-2"><div class="sc-label">2 已领取</div>腰带按钮消失，叠加以旧换新</div>
+    </div>
+    <p style="font-size:12px;color:#888">来源：设计稿需求背景标注</p>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">核心设计决策</div>
+  <div class="sec-body">
+
+    <div class="decision">
+      <div class="decision-title">Decision 1 · 以国补三态为核心分支，驱动价格楼层和腰带的差异化展示</div>
+      <p style="margin-bottom:6px">将国补资格分为「无资格 / 有资格未领取 / 资格已领取」三个独立状态，每个状态对应不同的价格楼层展示方案和腰带内容。状态由后端接口下发（0/1/2），前端按状态渲染对应组件。</p>
+      <p style="font-size:12px;color:#888">价格楼层、国补腰带、以旧换新弹层均需支持三态切换</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 2 · 有资格未领取态强化引导，区别于已领取态的「确认感」</div>
+      <ul style="padding-left:1.2em;margin-bottom:6px">
+        <li><strong>有资格未领取</strong>：腰带文案「最高减 xxx」+ 带箭头按钮（引导领取）</li>
+        <li><strong>已领取</strong>：文案切换为「再减 xxx」，按钮消失</li>
+      </ul>
+      <p style="font-size:12px;color:#888">「最高减」= 潜在上限，激励领取；「再减」= 已到手确定感；延续自 app-national-subsidy-multisku Decision 2</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 3 · 已领取态下，国补叠加以旧换新利益点聚合展示</div>
+      <p style="margin-bottom:6px">在用户已领取国补且商品支持以旧换新时，价格楼层聚合展示「国补减 xxx + 以旧换新再减 xxx = 叠加到手价 xxx」。</p>
+      <p style="margin-bottom:6px">使用服务金色（ServiceGolden）体系：<code>#ffd4a3</code>（背景）/ <code>#b5691a</code>（文字）/ <code>#994d00</code>（深色），区分于纯国补绿色。</p>
+      <p style="font-size:12px;color:#888">用户已完成领取，核心诉求从「引导领取」转为「确认总优惠」，聚合展示直接给出结论</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">状态覆盖表</div>
+  <div class="sec-body" style="padding:0">
+    <table>
+      <tr><th>状态 / 场景</th><th>视觉处理</th><th>备注</th></tr>
+      <tr><td>无国补资格 · 默认商详</td><td>无国补腰带，常规到手价，无国补入口</td><td style="color:#888;font-size:11px">避免无资格用户点击后的挫败感</td></tr>
+      <tr><td>无国补资格 · 以旧换新弹层</td><td>弹层内无国补优惠行</td><td style="color:#888;font-size:11px">点击跳转国补频道</td></tr>
+      <tr class="star"><td>⭐ 有资格未领取 · 默认商详</td><td>国补腰带（绿色），「京东支付最高减 xxx」，右侧引导按钮</td><td style="color:#b07800;font-size:11px">「最高减」强调潜在利益</td></tr>
+      <tr><td>有资格未领取 · 以旧换新弹层</td><td>弹层内展示国补未领取状态说明行 + 领取入口</td><td style="color:#888;font-size:11px"><span class="todo">TODO 弹层内具体结构待补充</span></td></tr>
+      <tr class="star"><td>⭐ 资格已领取 · 默认商详</td><td>腰带文案「京东支付再减 xxx」，引导按钮消失；已享楼层同步展示国补优惠</td><td style="color:#b07800;font-size:11px">「再减」传达到手确定感</td></tr>
+      <tr class="star"><td>⭐ 资格已领取 · 叠加以旧换新</td><td>价格楼层聚合展示双项利益点，使用服务金色体系（楼层加盖）</td><td style="color:#b07800;font-size:11px">仅在商品支持以旧换新时触发</td></tr>
+      <tr><td>资格已领取 · 以旧换新弹层</td><td>弹层内国补行展示已领取状态，以旧换新行独立展示</td><td style="color:#888;font-size:11px"><span class="todo">TODO 排列规则待补充</span></td></tr>
+      <tr class="star"><td>⭐ 线下门店降级方案</td><td>隐藏在线国补领取入口，展示降级样式</td><td style="color:#b07800;font-size:11px"><span class="todo">TODO 具体降级样式待补充</span></td></tr>
+      <tr><td>E卡购买流程楼层</td><td>包含 E 卡购买引导，与国补展示兼容</td><td style="color:#888;font-size:11px"><span class="todo">TODO E卡与国补叠加规则待确认</span></td></tr>
+      <tr><td>接口异常 / 兜底</td><td><span class="todo">TODO 待补充</span></td><td style="color:#888;font-size:11px">历史遗留问题</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">可复用设计模式</div>
+  <div class="sec-body">
+    <div class="pattern">
+      <div class="pattern-title">Pattern 1 · 三态状态机驱动的促销模块切换</div>
+      <p style="font-size:12px;color:#666;margin-bottom:6px">适用：同一商详页面因用户状态不同（未参与/可参与/已参与）需要展示完全不同的促销内容，状态由后端接口下发</p>
+      <ol style="padding-left:1.2em;font-size:12px;color:#666;margin-bottom:6px">
+        <li>后端返回用户状态字段（0 = 无资格 / 1 = 有资格未领取 / 2 = 已领取）</li>
+        <li>前端对应渲染三套腰带 + 价格楼层模板</li>
+        <li>用户完成领取后，由前端状态变更触发局部更新，无需刷新页面</li>
+      </ol>
+      <div class="principle">核心原则：状态机切换的边界要清晰，每种状态对应唯一的视觉方案，禁止状态之间的视觉混用</div>
+    </div>
+    <div class="pattern">
+      <div class="pattern-title">Pattern 2 · 多优惠聚合呈现——叠加利益点的感知提升</div>
+      <p style="font-size:12px;color:#666;margin-bottom:6px">适用：用户同时享有多项独立优惠，单项优惠金额较小但叠加后总金额具有显著吸引力</p>
+      <div class="principle">核心原则：聚合展示的是「已确定可拿到」的到手价，不是「最高可能」的估算值；估算值用「最高减」，确定值用「再减」或「到手价」</div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd toggle" onclick="toggle(this)">遗留问题 <span>▾</span></div>
+  <div class="sec-body hidden" style="padding:0">
+    <table>
+      <tr><th>问题</th><th>负责人</th><th>状态</th></tr>
+      <tr><td>聚合利益点区块的具体文案规则（格式、优先级）</td><td>待确认</td><td>⏳ 待补充</td></tr>
+      <tr><td>E卡与国补的叠加规则</td><td>待确认</td><td>⏳ 待确认</td></tr>
+      <tr><td>线下门店降级方案的具体展示形态</td><td>待补充</td><td>⏳ 待补充</td></tr>
+      <tr><td>有资格未领取态的以旧换新弹层内结构</td><td>待补充</td><td>⏳ 待补充</td></tr>
+      <tr><td>已领取态以旧换新弹层内国补行与以旧换新行的排列规则</td><td>待补充</td><td>⏳ 待补充</td></tr>
+      <tr><td>需求背景数据（转化率、用户感知调研结论）</td><td>产品补充</td><td>⏳ TODO</td></tr>
+      <tr><td>接口异常兜底展示方案</td><td>UI + 开发</td><td>⏳ 后续迭代</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">关联历史 Case</div>
+  <div class="sec-body">
+    <a class="related-case" href="app-national-subsidy-multisku.html">App国补多商品<div class="related-note">本 Case 是国补 App 端的延伸，在多商品国补基础上新增三态状态分层和以旧换新叠加场景</div></a>
+  </div>
+</div>
+
+</div>
+<script>function toggle(hd){hd.classList.toggle('open');var b=hd.nextElementSibling;b.classList.toggle('hidden');var a=hd.querySelector('span');if(a)a.textContent=b.classList.contains('hidden')?'▾':'▴'}</script>
+</body></html>

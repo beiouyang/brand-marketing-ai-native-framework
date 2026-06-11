@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>信息区 · Info Layer 组件规范 — JD APP V16.0</title>
+<!-- v2.0 frontmatter meta(SEO + AI 探测) -->
+<meta name="component-slug" content="info-layer">
+<meta name="component-version" content="0.4">
+<meta name="component-level" content="component-base">
+<style>
+  :root {
+    --c-text: #171a26;
+    --c-text-2: #3d414d;
+    --c-text-3: #828794;
+    --c-line: #00000014;
+    --c-bg: #ffffff;
+    --c-bg-sunken: #f5f6fa;
+    --c-brand: #ff0f23;
+    --c-success: #2aa32a;
+    --c-success-bg: #ebfbeb;
+    --c-danger: #ff0f23;
+    --c-danger-bg: #fff0f4;
+    --c-warning: #b26b00;
+    --c-warning-bg: #fff9e0;
+    --c-info: #0073ff;
+    --c-info-bg: #e5f5ff;
+    --c-mask: rgba(0, 0, 0, 0.7);
+    --c-code-bg: #f5f6fa;
+    --r-base: 6px;
+    --r-detail: 8px;
+    --r-xl: 12px;
+    --r-xxl: 16px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--c-bg-sunken);
+    color: var(--c-text);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .doc {
+    max-width: 880px;
+    margin: 40px auto;
+    background: var(--c-bg);
+    padding: 64px 72px;
+    border-radius: var(--r-xl);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  h1 { font-size: 32px; font-weight: 600; margin: 0 0 8px; line-height: 1.3; }
+  h1 + .meta { color: var(--c-text-3); font-size: 13px; margin-bottom: 40px; line-height: 1.8; }
+  h1 + .meta code { font-size: 12px; }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 56px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--c-line);
+  }
+  h2 .num {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    background: var(--c-brand);
+    color: #fff;
+    border-radius: var(--r-base);
+    text-align: center;
+    font-size: 16px;
+    margin-right: 12px;
+    vertical-align: middle;
+  }
+
+  h3 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; color: var(--c-text); }
+  h4 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; color: var(--c-text-2); }
+
+  p { margin: 12px 0; color: var(--c-text-2); }
+  strong { color: var(--c-text); font-weight: 600; }
+
+  code {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    background: var(--c-code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--c-brand);
+  }
+
+  pre {
+    background: #1a1a1a;
+    color: #e8e8e8;
+    padding: 20px 24px;
+    border-radius: var(--r-base);
+    overflow-x: auto;
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 16px 0;
+  }
+  pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+
+  blockquote {
+    margin: 16px 0;
+    padding: 12px 20px;
+    background: var(--c-info-bg);
+    border-left: 3px solid var(--c-info);
+    border-radius: 0 var(--r-base) var(--r-base) 0;
+    color: var(--c-text-2);
+  }
+  blockquote p { margin: 4px 0; }
+  blockquote.warn { background: var(--c-warning-bg); border-left-color: var(--c-warning); }
+  blockquote.danger { background: var(--c-danger-bg); border-left-color: var(--c-danger); }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--c-line); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--c-bg-sunken); font-weight: 600; color: var(--c-text); }
+  td code { font-size: 12px; }
+
+  ul, ol { padding-left: 24px; color: var(--c-text-2); }
+  li { margin: 6px 0; }
+
+  /* Case blocks（正反案例 ✅ / ❌）*/
+  .case { margin: 20px 0; padding: 20px 24px; border-radius: var(--r-base); border: 1px solid var(--c-line); }
+  .case.good { background: var(--c-success-bg); border-color: var(--c-success); }
+  .case.bad { background: var(--c-danger-bg); border-color: var(--c-danger); }
+  .case h4 { margin-top: 0; display: flex; align-items: center; gap: 8px; }
+  .case .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; color: #fff; }
+  .case.good .badge { background: var(--c-success); }
+  .case.bad .badge { background: var(--c-danger); }
+
+  /* 色彩 token swatch grid */
+  .color-swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; }
+  .color-swatch { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--c-bg); border: 1px solid var(--c-line); border-radius: var(--r-base); }
+  .color-swatch__chip { width: 40px; height: 40px; border-radius: 6px; flex-shrink: 0; border: 1px solid var(--c-line); }
+  .color-swatch__chip.checker { background-image: linear-gradient(45deg,#ccc 25%,transparent 25%),linear-gradient(-45deg,#ccc 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ccc 75%),linear-gradient(-45deg,transparent 75%,#ccc 75%); background-size: 10px 10px; background-position: 0 0, 0 5px, 5px -5px, -5px 0; }
+  .color-swatch__meta { flex: 1; min-width: 0; }
+  .color-swatch__name { font-size: 13px; font-weight: 600; color: var(--c-text); }
+  .color-swatch__hex { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--c-text-3); word-break: break-all; }
+
+  a { color: var(--c-info); text-decoration: none; border-bottom: 1px solid transparent; }
+  a:hover { border-bottom-color: var(--c-info); }
+
+  hr { border: none; border-top: 1px solid var(--c-line); margin: 40px 0; }
+
+  .toc { background: var(--c-bg-sunken); padding: 20px 28px; border-radius: var(--r-base); margin-bottom: 40px; }
+  .toc h3 { margin: 0 0 8px; font-size: 14px; color: var(--c-text-3); font-weight: 500; }
+  .toc ol { margin: 0; padding-left: 20px; }
+  .toc li { margin: 4px 0; }
+  .toc a { color: var(--c-text-2); border: none; }
+  .toc a:hover { color: var(--c-brand); }
+
+  @media print {
+    body { background: #fff; }
+    .doc { box-shadow: none; margin: 0; padding: 24px 32px; max-width: none; border-radius: 0; }
+    h2 { page-break-after: avoid; }
+    .case, table, pre, blockquote, .showcase { page-break-inside: avoid; }
+    pre { background: #f5f6fa; color: #171a26; border: 1px solid var(--c-line); }
+  }
+
+  @media (max-width: 720px) {
+    .doc { margin: 0; padding: 32px 20px; border-radius: 0; }
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; }
+    table { font-size: 12px; }
+    th, td { padding: 8px 10px; }
+  }
+
+  /* ========== 视图切换(Pro / Basic) ========== */
+  .title-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; border-bottom: 2px solid var(--c-text); padding-bottom: 16px; margin-bottom: 8px; }
+  .title-row h1 { border-bottom: none; padding-bottom: 0; margin: 0; flex: 1 1 auto; }
+  .view-tabs { display: inline-flex; align-items: center; gap: 4px; padding: 4px; background: var(--c-bg-sunken); border-radius: var(--r-base); flex-shrink: 0; }
+  .view-tab { background: transparent; border: none; padding: 6px 14px; font-family: inherit; font-size: 12px; font-weight: 500; color: var(--c-text-2); cursor: pointer; border-radius: 4px; transition: all 150ms; line-height: 1.4; }
+  .view-tab:hover { color: var(--c-text); }
+  .view-tab.is-active { background: var(--c-bg); color: var(--c-text); box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-weight: 600; }
+
+  body.mode-basic .pro-only { display: none !important; }
+  body.mode-pro .basic-only { display: none !important; }
+  body:not(.mode-basic):not(.mode-pro) .pro-only,
+  body:not(.mode-basic):not(.mode-pro) .basic-only { display: none; }
+  body.mode-all .pro-only, body.mode-all .basic-only { display: block !important; }
+  .basic-only.summary { margin: 16px 0; padding: 12px 20px; background: var(--c-info-bg); border-left: 3px solid var(--c-info); border-radius: 0 var(--r-base) var(--r-base) 0; color: var(--c-text-2); font-size: 14px; }
+  .basic-only.summary strong { color: var(--c-text); }
+  body.mode-pro .pro-inline { display: inline; }
+  body.mode-all .pro-inline { display: inline !important; }
+  .pro-inline { color: var(--c-text-3); font-size: 12px; margin-left: 6px; }
+
+  /* ========== 顶部 5-zone nav ========== */
+  .top-bar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 16px; padding: 0 24px; background: rgba(255, 255, 255, 0.78); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04); flex-wrap: wrap; }
+  .top-bar__brand { padding: 14px 0; margin-right: 12px; font-size: 13px; font-weight: 600; color: var(--c-text); text-decoration: none; letter-spacing: 0.02em; }
+  .top-bar__brand small { color: var(--c-text-3); font-weight: 500; margin-left: 6px; }
+  .top-bar__nav { display: flex; align-items: stretch; gap: 4px; flex-wrap: wrap; }
+  .top-bar__nav-link { padding: 14px 14px 12px; font-size: 13px; color: var(--c-text-2); text-decoration: none; font-weight: 500; line-height: 1.4; white-space: nowrap; transition: color 150ms; }
+  .top-bar__nav-link:hover { color: var(--c-text); }
+  .top-bar__nav-link.is-current { color: var(--c-text); font-weight: 600; }
+  .top-bar__spacer { flex: 1; }
+
+  /* ========== Zone-aware sidebar(13 部门导览) ========== */
+  .layout.has-sidebar { max-width: 1200px; margin: 24px auto; padding: 0 24px 40px; display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; }
+  .layout.has-sidebar .doc { margin: 0; max-width: none; padding: 48px 56px; }
+  .sidebar { position: sticky; top: 64px; align-self: start; max-height: calc(100vh - 88px); overflow-y: auto; background: var(--c-bg); padding: 20px 12px; border-radius: var(--r-xl); box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04); }
+  .sidebar__zone-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-text-3); padding: 6px 12px 12px; border-bottom: 1px solid var(--c-line); margin-bottom: 12px; }
+  .sidebar__group { margin-bottom: 14px; }
+  .sidebar__link { display: block; padding: 7px 12px; font-size: 13px; color: var(--c-text-2); text-decoration: none; border-radius: var(--r-base); font-weight: 500; line-height: 1.5; transition: background 150ms, color 150ms; border-bottom: none; }
+  .sidebar__link:hover { background: rgba(0, 0, 0, 0.04); color: var(--c-text); }
+  .sidebar__link.is-current { background: var(--c-text); color: var(--c-bg); }
+  .sidebar__link.is-current:hover { background: var(--c-text); }
+  .sidebar__link.is-placeholder { color: var(--c-text-3); cursor: default; font-style: italic; }
+  .sidebar__link.is-placeholder:hover { background: transparent; color: var(--c-text-3); }
+  @media (max-width: 960px) {
+    .layout.has-sidebar { grid-template-columns: 1fr; gap: 16px; padding: 0 12px 32px; }
+    .sidebar { position: static; max-height: none; }
+    .layout.has-sidebar .doc { padding: 32px 24px; }
+  }
+
+  /* ========== 交互式组件展示台 showcase ========== */
+  .showcase { border: 1px solid var(--c-line); border-radius: var(--r-xl); overflow: hidden; margin: 20px 0; background: var(--c-bg); }
+  .showcase__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px 16px; flex-wrap: wrap; padding: 12px 16px; border-bottom: 1px solid var(--c-line); background: var(--c-bg-sunken); }
+  .showcase__title { font-size: 14px; font-weight: 600; color: var(--c-text); }
+  .showcase__controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .seg { display: inline-flex; padding: 3px; background: var(--c-bg); border: 1px solid var(--c-line); border-radius: var(--r-base); gap: 2px; }
+  .seg__btn { border: none; background: transparent; padding: 5px 12px; font-family: inherit; font-size: 12px; font-weight: 500; color: var(--c-text-2); border-radius: 4px; cursor: pointer; line-height: 1.4; white-space: nowrap; transition: all 120ms; }
+  .seg__btn:hover { color: var(--c-text); }
+  .seg__btn.is-active { background: var(--c-text); color: var(--c-bg); font-weight: 600; }
+  .showcase__stage { padding: 28px 20px; display: flex; justify-content: center; transition: background 200ms; }
+  .showcase[data-theme="light"] .showcase__stage { background: #eef0f4; }
+  .showcase[data-theme="dark"] .showcase__stage { background: #0e1013; }
+  .variant-panel { display: none; width: 100%; }
+  .variant-panel.is-active { display: block; }
+  .variant-panel__cap { text-align: center; font-size: 12px; color: var(--c-text-3); margin-bottom: 12px; }
+  .showcase[data-theme="dark"] .variant-panel__cap { color: #6b7280; }
+  .sc-screen { width: 360px; max-width: 100%; margin: 0 auto; border-radius: 14px; overflow: hidden; min-height: 120px; display: flex; flex-direction: column; justify-content: flex-end; transition: background 200ms; box-shadow: 0 2px 14px rgba(0,0,0,.08); }
+  .tok { font-family: "JetBrains Mono", monospace; font-size: 12px; background: var(--c-code-bg); color: var(--c-brand); padding: 2px 7px; border-radius: 4px; cursor: copy; border: 1px solid transparent; transition: border-color 120ms, background 120ms; }
+  .tok:hover { border-color: var(--c-brand); }
+  .tok.copied { color: var(--c-success); border-color: var(--c-success); }
+  .copy-toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: var(--c-text); color: #fff; padding: 9px 18px; border-radius: var(--r-base); font-size: 13px; opacity: 0; pointer-events: none; transition: opacity 180ms; z-index: 300; }
+  .copy-toast.show { opacity: 1; }
+  @media (max-width: 720px) { .showcase__bar { flex-direction: column; align-items: flex-start; } }
+
+  /* ========== §5 info-layer 组件视觉（内联，主题锚 .showcase[data-theme]）========== */
+  /* 视频底衬：浅视频 / 暗视频两套底，白字 + 阴影策略不变，验证「深浅背景统一白字」 */
+  .il-video { position: relative; width: 100%; min-height: 440px; overflow: hidden; font-family: "PingFang SC", system-ui, sans-serif; }
+  .showcase[data-theme="light"] .il-video { background: linear-gradient(158deg, #a9cdec 0%, #cdd9df 46%, #8497a8 100%); }
+  .showcase[data-theme="dark"]  .il-video { background: linear-gradient(158deg, #2a2f3a 0%, #14171f 50%, #05070b 100%); }
+  .il-video::after { content: ""; position: absolute; inset: auto 0 0 0; height: 58%; background: linear-gradient(0deg, rgba(0,0,0,0.5), transparent); pointer-events: none; }
+
+  /* 右侧互动区占位（仅示边界，信息区不得侵入） */
+  .il-rail { position: absolute; right: 10px; bottom: 70px; z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .il-rail__dot { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.16); }
+  .il-rail__dot::after { content: ""; display: block; width: 10px; height: 10px; margin: 10px auto 0; border-radius: 2px; background: rgba(255,255,255,0.5); }
+
+  /* 信息区本体 */
+  .il { position: absolute; left: 12px; bottom: 64px; z-index: 20; width: 262px; max-width: 70%; display: flex; flex-direction: column; gap: 8px; }
+  .il__head { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .il__name { font-size: 16px; line-height: 20px; font-weight: 500; color: #fff; text-shadow: 0 0 2px rgba(0,0,0,0.3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .il__expert { display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 6px; background: rgba(255,255,255,0.10); border-radius: 3px; flex: 0 0 auto; }
+  .il__expert-badge { width: 12px; height: 12px; border-radius: 50%; background: linear-gradient(38deg, #FFA700 0%, #FF8700 100%); box-shadow: 0 0 0 0.43px #FF9916; display: grid; place-items: center; }
+  .il__expert-badge::before { content: "✦"; color: #fff; font-size: 7px; line-height: 1; }
+  .il__expert-txt { font-size: 11px; line-height: 1; color: #fff; }
+  .il__body { display: flex; align-items: flex-start; gap: 8px; }
+  .il__desc-wrap { flex: 1 1 auto; min-width: 0; }
+  .il__desc { font-size: 14px; line-height: 18px; color: rgba(255,255,255,0.90); text-shadow: 0 0 2px rgba(0,0,0,0.3); margin: 0; }
+  .il__desc.is-ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .il__desc.is-two { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .il__origin { display: inline-block; height: 14px; line-height: 14px; padding: 0 4px; margin-right: 4px; background: rgba(255,255,255,0.10); border-radius: 2px; font-size: 10px; color: #fff; vertical-align: 1px; }
+  .il__topic { color: #fff; }
+  .il__more { flex: 0 0 auto; font-size: 14px; line-height: 18px; color: #fff; text-shadow: 0 0 2px rgba(0,0,0,0.3); cursor: pointer; user-select: none; background: none; border: none; padding: 0; font-family: inherit; }
+
+  /* 底部评论栏占位（仅示边界，归属 BottomTab，不属信息区） */
+  .il-bottombar { position: absolute; left: 0; right: 0; bottom: 0; height: 48px; display: flex; align-items: center; gap: 8px; padding: 0 12px; z-index: 15; }
+  .il-bottombar__input { flex: 1; height: 32px; border-radius: 16px; background: rgba(255,255,255,0.14); display: flex; align-items: center; padding: 0 14px; color: rgba(255,255,255,0.55); font-size: 12px; }
+  /* 进度线 */
+  .il-progress { position: absolute; left: 0; right: 0; bottom: 48px; height: 2px; background: rgba(255,255,255,0.2); z-index: 15; }
+  .il-progress::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 38%; background: #fff; }
+</style>
+</head>
+<body>
+<div class="copy-toast" id="copy-toast" role="status" aria-live="polite"></div>
+
+<!-- 顶部 5 大 Zone nav -->
+<div class="top-bar">
+  <a href="../../../../../../../../docs/jd-design-wiki-knowledge-tree.html" class="top-bar__brand">JD Design Wiki <small>· V16</small></a>
+  <nav class="top-bar__nav" aria-label="5 大分区导航">
+    <a href="../../../../../../../knowledge/spec-page.html" class="top-bar__nav-link ">📚 Design 知识</a>
+    <a href="../../../../../../../foundations/spec-page.html" class="top-bar__nav-link ">🎨 Design 基础</a>
+    <a href="../../../../../../../ai-mechanism/spec-page.html" class="top-bar__nav-link ">🤖 AI 机制</a>
+    <a href="../../../../../../../product-architecture/spec-page.html" class="top-bar__nav-link is-current">🏗 组织架构</a>
+    <a href="../../../../../../../horizontal/spec-page.html" class="top-bar__nav-link ">🚀 横向专项</a>
+  </nav>
+  <span class="top-bar__spacer"></span>
+</div>
+
+<!-- Zone-aware sidebar：bg=product-architecture → 渲染 13 部门导览，当前部门 综合业务设计部 高亮 -->
+<div class="layout has-sidebar">
+<aside class="sidebar" aria-label="🏗 组织架构 - 13 部门导览">
+  <div class="sidebar__zone-tag">ZONE 04 · 🏗 组织架构</div>
+  <div class="sidebar__group">
+    <a class="sidebar__link" href="../../../../../../../product-architecture/spec-page.html">页面说明</a>
+  </div>
+  <div class="sidebar__group">
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">搜推与基础产品设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">黄流导购设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">平台交易设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">AI 核心产品设计部</span>
+    <a class="sidebar__link is-current" href="../../../../../../../product-architecture/comprehensive-business/spec-page.html">综合业务设计部</a>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">PLUS 与新品频道设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">低价频道设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">本地生活服务设计部</span>
+    <a class="sidebar__link" href="../../../../../../../product-architecture/brand-and-marketing/spec-page.html">品牌与营销设计部</a>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">平台产品设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">商家产品设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">营销与数据设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">用户研究部</span>
+  </div>
+</aside>
+
+<div class="doc">
+
+<div class="title-row">
+  <h1>信息区 · Info Layer 组件规范</h1>
+  <div class="view-tabs" role="tablist" aria-label="视图切换">
+    <button class="view-tab is-active" role="tab" data-view="basic" aria-selected="true">常规版</button>
+    <button class="view-tab" role="tab" data-view="pro" aria-selected="false">专业版</button>
+  </div>
+</div>
+<div class="meta">
+  组件族：沉浸式视频信息区（昵称 / 视频文案 / 原创标签 / 达人标签 / 展开收起）· 综合业务设计部 · 内容生态 / 视频<br>
+  样式来源：Relay V16.0 GUIDELINE 节点 <code>2075:2390</code> · Token 版本：<code>tokens.json v2.0.0</code><br>
+  关联 Foundation：<code>color</code> · <code>typography</code> · <code>spacing</code> · <code>materials</code>
+</div>
+
+<div class="toc">
+  <h3>目录</h3>
+  <ol>
+    <li><a href="#sec-1-definition">组件定义</a></li>
+    <li><a href="#sec-2-behavior">行为准则</a></li>
+    <li><a href="#sec-3-types">组件类型</a></li>
+    <li><a href="#sec-4-structure">组件结构</a></li>
+    <li><a href="#sec-5-attributes">组件设计属性</a></li>
+    <li><a href="#sec-6-scenarios">典型场景示意</a></li>
+    <li><a href="#sec-7-donts">错误示例</a></li>
+  </ol>
+</div>
+
+<!-- ===== §1 组件定义 ===== -->
+<h2 id="sec-1-definition"><span class="num">1</span>组件定义</h2>
+
+<p><strong>信息区 Info Layer</strong> 是沉浸式视频页面左下角的轻量文案承载层，用于展示发布者昵称、视频文案、原创标签和达人标签，并通过「展开 / 收起」承接被省略的长文案。</p>
+
+<div class="basic-only summary">
+  <p><strong>一句话理解</strong>：视频画面左下角那一小块白字——发布者是谁、这条视频在讲什么。文案太长就一行省略 + 「展开」，它只负责<strong>说清内容</strong>，不放点赞评论这类按钮。</p>
+</div>
+
+<p>信息区只承载<strong>内容说明</strong>和<strong>轻交互入口</strong>，不承载点赞、评论、分享、音量等强操作。右侧互动区、底部评论栏、播放进度线都应与信息区保持独立层级，避免点击区域重叠。</p>
+
+<table>
+  <thead><tr><th>模块</th><th>是否属于信息区</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>昵称</td><td>✅ 是</td><td>发布者或账号名称，固定在信息区首行</td></tr>
+    <tr><td>视频文案</td><td>✅ 是</td><td>默认单行截断，支持展开 / 收起</td></tr>
+    <tr><td>展开 / 收起入口</td><td>✅ 是</td><td>文案超过默认展示行数时出现</td></tr>
+    <tr><td>原创标签</td><td>◻️ 可选</td><td>与文案同排，位于文案前置位置</td></tr>
+    <tr><td>达人标签</td><td>◻️ 可选</td><td>与昵称同排，位于昵称右侧；当前样例为「数码达人」</td></tr>
+    <tr><td>互动按钮</td><td>❌ 否</td><td>归属 <code>interactive-area</code></td></tr>
+    <tr><td>底部评论输入 / 通条</td><td>❌ 否</td><td>归属 <code>BottomTab</code></td></tr>
+  </tbody>
+</table>
+
+<blockquote class="danger">
+  <p><strong>核心边界</strong>：信息区固定锚定视频左下区域，右侧不得侵入互动区，展开文案不得覆盖底部评论栏与进度线。</p>
+</blockquote>
+
+<!-- ===== §2 行为准则 ===== -->
+<h2 id="sec-2-behavior"><span class="num">2</span>行为准则</h2>
+
+<div class="basic-only summary">
+  <p><strong>核心约定</strong>：① 默认收起、文案只显示 1 行；② 文案没超出就不显示「展开」；③ 点「展开」看双行全文、入口变「收起」；④ 切下一条视频，文案一律回到收起态，不继承上一条的展开状态。</p>
+</div>
+
+<div class="pro-only">
+<ol>
+  <li><strong>默认收起</strong>：页面初始进入时文案默认收起，展示 1 行，超出部分省略。</li>
+  <li><strong>按需出现入口</strong>：文案未超出 1 行时不展示「展开」；超出 1 行时在文案行右侧展示「展开」。</li>
+  <li><strong>点击展开</strong>：点「展开」后文案从 1 行扩展到双行形态，入口文案从「展开」切换为「收起」；展开态保留原创标签和达人标签，不新增商品卡等复杂模块。</li>
+  <li><strong>点击收起</strong>：点「收起」后文案恢复 1 行省略，入口恢复为「展开」。</li>
+  <li><strong>切换视频复位</strong>：上滑 / 下滑切换视频时信息区整体淡出并按方向位移；新视频渲染后文案<strong>必须复位为收起态</strong>，展开状态不跨视频继承。</li>
+  <li><strong>展开不越界</strong>：展开态容器高度随文案增长，但不得覆盖底部栏主要点击区、进度条或右侧互动区。</li>
+  <li><strong>标签仅展示</strong>：原创标签、达人标签默认仅展示；如业务接入可分别跳转原创内容说明 / 达人认证说明。</li>
+  <li><strong>命中区域</strong>：展开 / 收起最小命中 44×28 DP，可通过透明 padding 扩大；昵称建议命中高度不小于 24 DP。</li>
+</ol>
+
+<h3>动效参数</h3>
+<table>
+  <thead><tr><th>场景</th><th>动效</th><th>参数</th></tr></thead>
+  <tbody>
+    <tr><td>上滑切换视频</td><td>向上 22 DP 并淡出</td><td>220ms <code>cubic-bezier(0.2, 0, 0, 1)</code></td></tr>
+    <tr><td>下滑切换视频</td><td>向下 22 DP 并淡出</td><td>220ms <code>cubic-bezier(0.2, 0, 0, 1)</code></td></tr>
+    <tr><td>展开文案</td><td>高度 46 → 64 DP</td><td>180ms ease</td></tr>
+    <tr><td>收起文案</td><td>高度回收，单行省略</td><td>160ms ease</td></tr>
+  </tbody>
+</table>
+</div>
+
+<blockquote class="warn">
+  <p><strong>可访问性</strong>：展开入口用可聚焦按钮语义，<code>aria-expanded</code> 反映当前状态；无障碍文案应包含动作和对象，例如「展开视频文案」「收起视频文案」。</p>
+</blockquote>
+
+<!-- ===== §3 组件类型 ===== -->
+<h2 id="sec-3-types"><span class="num">3</span>组件类型</h2>
+
+<p>信息区由 <strong>4 个组合维度</strong>叠加而成：是否省略、单行 / 双行、是否带原创标签、是否带达人标签。Relay 共定义 <strong>9 个 symbol</strong> 覆盖典型组合。</p>
+
+<table>
+  <thead><tr><th>维度</th><th>取值</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>省略</td><td>有 / 无</td><td>有省略时文案末尾显示 <code>…</code>，并出现「展开」入口</td></tr>
+    <tr><td>行数</td><td>单行 / 双行</td><td>单行 symbol 高 46 DP，双行 symbol 高 64 DP</td></tr>
+    <tr><td>原创标签</td><td>有 / 无</td><td>当前样例为「原创」，位于文案前置位置</td></tr>
+    <tr><td>达人标签</td><td>有 / 无</td><td>当前样例为「数码达人」，位于昵称右侧</td></tr>
+  </tbody>
+</table>
+
+<div class="pro-only">
+<h3>3.1 Relay 变体矩阵（9 symbol）</h3>
+<table>
+  <thead><tr><th>节点 ID</th><th>省略</th><th>行数</th><th>原创标签</th><th>达人标签</th><th>尺寸</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td><code>2075:2410</code></td><td>有</td><td>单行</td><td>无</td><td>无</td><td>274×46</td><td>默认长文案收起态，右侧有「展开」</td></tr>
+    <tr><td><code>2075:2416</code></td><td>有</td><td>单行</td><td>无</td><td>有</td><td>274×46</td><td>昵称右侧增加「数码达人」</td></tr>
+    <tr><td><code>2075:2423</code></td><td>无</td><td>单行</td><td>无</td><td>无</td><td>274×46</td><td>单行完整文案，无「展开」</td></tr>
+    <tr><td><code>2075:2429</code></td><td>无</td><td>单行</td><td>无</td><td>有</td><td>274×46</td><td>单行完整文案 + 达人标签</td></tr>
+    <tr><td><code>2075:2436</code></td><td>无</td><td>双行</td><td>无</td><td>无</td><td>274×64</td><td>双行文案 + 第二行话题文本</td></tr>
+    <tr><td><code>2075:2444</code></td><td>无</td><td>双行</td><td>无</td><td>有</td><td>274×64</td><td>双行文案 + 达人标签</td></tr>
+    <tr><td><code>2075:2453</code></td><td>无</td><td>单行</td><td>有</td><td>无</td><td>274×46</td><td>文案前置「原创」标签</td></tr>
+    <tr><td><code>2075:2471</code></td><td>有</td><td>单行</td><td>有</td><td>无</td><td>274×46</td><td>原创标签 + 单行省略 +「展开」</td></tr>
+    <tr><td><code>2075:2478</code></td><td>无</td><td>双行</td><td>有</td><td>无</td><td>274×64</td><td>双行文案，第一行前置原创标签</td></tr>
+  </tbody>
+</table>
+
+<h3>3.2 组合优先级</h3>
+<p>当多个内容同时存在时，按以下顺序保留：</p>
+<ol>
+  <li>昵称必须展示。</li>
+  <li>达人标签仅跟随昵称展示，不挤压昵称主体。</li>
+  <li>原创标签优先展示在文案前置位置。</li>
+  <li>长文案优先使用「省略=有，行数=单行」形态，通过「展开」承接。</li>
+  <li>展开后按「省略=无，行数=双行」形态展示，不跨视频保留。</li>
+</ol>
+</div>
+
+<!-- ===== §4 组件结构 ===== -->
+<h2 id="sec-4-structure"><span class="num">4</span>组件结构</h2>
+
+<p>信息区为 <strong>纵向两行结构</strong>：昵称行在上、文案行在下，行间距 8 DP；不使用独立背景色 / 圆角 / 描边，文字依赖阴影保证可读性。</p>
+
+<div class="basic-only summary">
+  <p><strong>基础结构</strong>：上面一行是昵称（可带达人标签），下面一行是文案（可带原创标签 + 展开入口）。整块透明叠在视频上，靠白字 + 投影看清。具体 DP / Token 见<strong>专业版</strong>。</p>
+</div>
+
+<div class="pro-only">
+<h3>4.1 层级树</h3>
+<pre><code>InfoLayer  (W=274, H=46 单行 / 64 双行, column, gap=8)
+├── Head 昵称行  (H=20)
+│   ├── Nickname        16/20/500 · 白 · 过长省略
+│   └── ExpertTag?      达人标签（可选, H=18, padding 3, radius 3）
+│       ├── Badge       12×12 橙色圆形徽章
+│       └── Text        11/10/400 · 白 ·「数码达人」
+└── Body 文案行  (H=18 单行 / 36 双行)
+    ├── OriginTag?      原创标签（可选, H=14, padding 3, radius 2, 10/9/400）
+    ├── Description     14/18/400 · 90% 白 · 单行省略 / 双行
+    └── MoreEntry?      展开 / 收起（省略=有时出现, 28×18, 14/18/400 · 白）</code></pre>
+
+<h3>4.2 元素规范表</h3>
+<table>
+  <thead><tr><th>元素</th><th>必配 / 可选</th><th>数量</th><th>字数 / 行数限制</th><th>规则</th></tr></thead>
+  <tbody>
+    <tr><td>昵称</td><td><strong>必配</strong></td><td>1</td><td>单行，过长省略</td><td>固定首行，不换行</td></tr>
+    <tr><td>视频文案</td><td>可选（无文案时整行隐藏）</td><td>0–1</td><td>收起 1 行 / 展开 2 行</td><td>超出 1 行才出「展开」</td></tr>
+    <tr><td>展开 / 收起入口</td><td>条件出现</td><td>0–1</td><td>固定二字</td><td>仅省略=有时出现，宽 28 DP 不换行</td></tr>
+    <tr><td>原创标签</td><td>可选</td><td>0–1</td><td>样例「原创」2 字</td><td>位于文案前置，与文案间距 4 DP</td></tr>
+    <tr><td>达人标签</td><td>可选</td><td>0–1</td><td>样例「数码达人」4 字</td><td>位于昵称右侧，与昵称间距 8 DP</td></tr>
+  </tbody>
+</table>
+
+<h3>4.3 层级关系</h3>
+<table>
+  <thead><tr><th>层级</th><th>元素</th><th>z-index</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>视频内容</td><td><code>video-content</code></td><td>0</td><td>信息区背景</td></tr>
+    <tr><td><strong>信息区</strong></td><td><code>info-layer</code></td><td>20</td><td>内容说明层</td></tr>
+    <tr><td>互动区</td><td><code>interactive-area</code></td><td>30</td><td>点赞 / 评论 / 种草 / 分享</td></tr>
+    <tr><td>底部栏</td><td><code>bottom-tab</code></td><td>45</td><td>评论输入 / 内容通条</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ===== §5 组件设计属性 ===== -->
+<h2 id="sec-5-attributes"><span class="num">5</span>组件设计属性</h2>
+
+<p>下方展示台可切换<strong>浅 / 暗视频背景</strong>与 <strong>5 种典型变体</strong>。信息区统一保留白字 + 阴影策略，不随视频背景动态换色——切到浅色视频时文字阴影仍保证可读。默认变体内的「展开 / 收起」可点击。</p>
+
+<div class="showcase" data-theme="dark">
+  <div class="showcase__bar">
+    <div class="showcase__title">信息区 · 沉浸视频左下浮层</div>
+    <div class="showcase__controls">
+      <div class="seg" role="tablist" aria-label="视频背景">
+        <button class="seg__btn" data-theme-set="light">浅视频</button>
+        <button class="seg__btn is-active" data-theme-set="dark">暗视频</button>
+      </div>
+      <div class="seg" role="tablist" aria-label="变体">
+        <button class="seg__btn is-active" data-variant="0">默认·省略</button>
+        <button class="seg__btn" data-variant="1">完整单行</button>
+        <button class="seg__btn" data-variant="2">双行</button>
+        <button class="seg__btn" data-variant="3">达人标签</button>
+        <button class="seg__btn" data-variant="4">原创标签</button>
+      </div>
+    </div>
+  </div>
+  <div class="showcase__stage">
+
+    <!-- 变体 0：默认 省略=有 单行（含展开/收起交互） -->
+    <div class="variant-panel is-active" data-variant="0">
+      <div class="variant-panel__cap">2075:2410 · 省略=有 / 单行 — 点「展开」看双行全文</div>
+      <div class="sc-screen">
+        <div class="il-video">
+          <div class="il-rail"><span class="il-rail__dot"></span><span class="il-rail__dot"></span><span class="il-rail__dot"></span></div>
+          <div class="il">
+            <div class="il__head"><span class="il__name">阿浩的日常</span></div>
+            <div class="il__body">
+              <div class="il__desc-wrap">
+                <p class="il__desc is-ellipsis" id="il-demo-desc">这家新开的咖啡馆藏在巷子深处，环境特别安静，很适合周末过来坐一下午，看看书喝喝手冲，整个人都松弛下来了</p>
+              </div>
+              <button class="il__more" id="il-demo-more" aria-expanded="false">展开</button>
+            </div>
+          </div>
+          <div class="il-progress"></div>
+          <div class="il-bottombar"><span class="il-bottombar__input">善语评论，文明发言</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 变体 1：完整单行 省略=无 -->
+    <div class="variant-panel" data-variant="1">
+      <div class="variant-panel__cap">2075:2423 · 省略=无 / 单行 — 文案完整，无「展开」</div>
+      <div class="sc-screen">
+        <div class="il-video">
+          <div class="il-rail"><span class="il-rail__dot"></span><span class="il-rail__dot"></span><span class="il-rail__dot"></span></div>
+          <div class="il">
+            <div class="il__head"><span class="il__name">小鹿料理</span></div>
+            <div class="il__body">
+              <div class="il__desc-wrap"><p class="il__desc">今天份的快乐时光分享给大家 🍰</p></div>
+            </div>
+          </div>
+          <div class="il-progress"></div>
+          <div class="il-bottombar"><span class="il-bottombar__input">善语评论，文明发言</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 变体 2：双行 省略=无 -->
+    <div class="variant-panel" data-variant="2">
+      <div class="variant-panel__cap">2075:2436 · 省略=无 / 双行 — 第二行承载续写文案与话题</div>
+      <div class="sc-screen">
+        <div class="il-video">
+          <div class="il-rail"><span class="il-rail__dot"></span><span class="il-rail__dot"></span><span class="il-rail__dot"></span></div>
+          <div class="il">
+            <div class="il__head"><span class="il__name">山野阿野</span></div>
+            <div class="il__body">
+              <div class="il__desc-wrap"><p class="il__desc is-two">周末和朋友一起去爬山看日出，凌晨四点出发，山顶的云海真的太治愈了 <span class="il__topic">#周末去哪儿 #爬山日记</span></p></div>
+            </div>
+          </div>
+          <div class="il-progress"></div>
+          <div class="il-bottombar"><span class="il-bottombar__input">善语评论，文明发言</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 变体 3：达人标签 省略=有 单行 -->
+    <div class="variant-panel" data-variant="3">
+      <div class="variant-panel__cap">2075:2416 · 省略=有 / 单行 / 达人标签 — 昵称右侧「数码达人」</div>
+      <div class="sc-screen">
+        <div class="il-video">
+          <div class="il-rail"><span class="il-rail__dot"></span><span class="il-rail__dot"></span><span class="il-rail__dot"></span></div>
+          <div class="il">
+            <div class="il__head">
+              <span class="il__name">数码小王</span>
+              <span class="il__expert"><span class="il__expert-badge"></span><span class="il__expert-txt">数码达人</span></span>
+            </div>
+            <div class="il__body">
+              <div class="il__desc-wrap"><p class="il__desc is-ellipsis">iPhone 17 Pro 上手实测一周，这次影像系统的提升真的很明显，长焦和夜景都值得入手</p></div>
+              <button class="il__more" aria-expanded="false">展开</button>
+            </div>
+          </div>
+          <div class="il-progress"></div>
+          <div class="il-bottombar"><span class="il-bottombar__input">善语评论，文明发言</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 变体 4：原创标签 省略=无 单行 -->
+    <div class="variant-panel" data-variant="4">
+      <div class="variant-panel__cap">2075:2453 · 省略=无 / 单行 / 原创标签 — 文案前置「原创」</div>
+      <div class="sc-screen">
+        <div class="il-video">
+          <div class="il-rail"><span class="il-rail__dot"></span><span class="il-rail__dot"></span><span class="il-rail__dot"></span></div>
+          <div class="il">
+            <div class="il__head"><span class="il__name">生活家阿瑶</span></div>
+            <div class="il__body">
+              <div class="il__desc-wrap"><p class="il__desc is-ellipsis"><span class="il__origin">原创</span>纯手工法式甜点教程，零基础也能学会，快收藏起来</p></div>
+            </div>
+          </div>
+          <div class="il-progress"></div>
+          <div class="il-bottombar"><span class="il-bottombar__input">善语评论，文明发言</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<h3>5.1 色彩</h3>
+<div class="color-swatch-grid">
+  <div class="color-swatch">
+    <div class="color-swatch__chip" style="background:#ffffff;"></div>
+    <div class="color-swatch__meta"><div class="color-swatch__name">昵称 / 展开收起</div><div class="color-swatch__hex"><span class="tok" data-copy="#FFFFFF">#FFFFFF</span> · color_primary_text</div></div>
+  </div>
+  <div class="color-swatch">
+    <div class="color-swatch__chip checker" style="background:rgba(255,255,255,0.9);"></div>
+    <div class="color-swatch__meta"><div class="color-swatch__name">文案</div><div class="color-swatch__hex"><span class="tok" data-copy="rgba(255,255,255,0.90)">rgba(255,255,255,.90)</span></div></div>
+  </div>
+  <div class="color-swatch">
+    <div class="color-swatch__chip checker" style="background:rgba(255,255,255,0.1);"></div>
+    <div class="color-swatch__meta"><div class="color-swatch__name">标签底色</div><div class="color-swatch__hex"><span class="tok" data-copy="rgba(255,255,255,0.10)">rgba(255,255,255,.10)</span></div></div>
+  </div>
+  <div class="color-swatch">
+    <div class="color-swatch__chip" style="background:linear-gradient(38deg,#FFA700,#FF8700);"></div>
+    <div class="color-swatch__meta"><div class="color-swatch__name">达人徽章</div><div class="color-swatch__hex"><span class="tok" data-copy="linear-gradient(38deg, #FFA700 0%, #FF8700 100%)">#FFA700 → #FF8700</span></div></div>
+  </div>
+  <div class="color-swatch">
+    <div class="color-swatch__chip" style="background:#FF9916;"></div>
+    <div class="color-swatch__meta"><div class="color-swatch__name">达人徽章描边</div><div class="color-swatch__hex"><span class="tok" data-copy="#FF9916">#FF9916</span> · 0.43 DP</div></div>
+  </div>
+  <div class="color-swatch">
+    <div class="color-swatch__chip checker" style="background:rgba(0,0,0,0.3);"></div>
+    <div class="color-swatch__meta"><div class="color-swatch__name">文字阴影</div><div class="color-swatch__hex"><span class="tok" data-copy="0 0 2px rgba(0,0,0,0.30)">0 0 2px rgba(0,0,0,.30)</span></div></div>
+  </div>
+</div>
+
+<div class="pro-only">
+<h3>5.2 文字</h3>
+<table>
+  <thead><tr><th>元素</th><th>Token</th><th>字号 / 行高 / 字重</th><th>规则</th></tr></thead>
+  <tbody>
+    <tr><td>昵称</td><td><code>pingfang_medium/font_size_16_500</code></td><td>16 / 20 / 500</td><td>单行展示，过长省略</td></tr>
+    <tr><td>文案</td><td><code>pingfang_regular/font_size_14_400</code></td><td>14 / 18 / 400</td><td>单行或双行</td></tr>
+    <tr><td>展开 / 收起</td><td><code>pingfang_regular/font_size_14_400</code></td><td>14 / 18 / 400</td><td>固定文案，不换行</td></tr>
+    <tr><td>达人标签</td><td><code>pingfang_regular/font_size_11_400</code></td><td>11 / 10 / 400</td><td>样例「数码达人」</td></tr>
+    <tr><td>原创标签</td><td><code>pingfang_regular/font_size_10_400</code></td><td>10 / 9 / 400</td><td>样例「原创」</td></tr>
+  </tbody>
+</table>
+
+<h3>5.3 尺寸与间距</h3>
+<table>
+  <thead><tr><th>项</th><th>DP</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>容器宽度</td><td>274</td><td>基础形态统一宽度，需避开右侧互动区</td></tr>
+    <tr><td>单行 / 双行高度</td><td>46 / 64</td><td>单行 = 昵称 20 + gap 8 + 文案 18；双行文案区 36</td></tr>
+    <tr><td>左边距 / 顶部</td><td>11 / 672</td><td>375×812 机型实现值，与进度线左边距一致</td></tr>
+    <tr><td>昵称 / 文案间距</td><td>8</td><td>信息层内部主间距</td></tr>
+    <tr><td>展开入口</td><td>28 × 18</td><td>两字中文 14px 固定宽度，高度同文案行</td></tr>
+    <tr><td>原创标签</td><td>H 14 · gap 4</td><td>padding 3，圆角 2，与文案间距 4</td></tr>
+    <tr><td>达人标签</td><td>H 18 · gap 8</td><td>padding 3，圆角 3，与昵称间距 8</td></tr>
+    <tr><td>达人徽章</td><td>12 × 12</td><td>圆形徽章 + 内部 icon</td></tr>
+  </tbody>
+</table>
+
+<blockquote class="warn">
+  <p><strong>Token 待办</strong>：<code>rgba(255,255,255,0.90)</code> 与 <code>rgba(0,0,0,0.30)</code> 暂未在 V16 token 中找到明确语义 token，先保留实际值标记 token-miss；<code>2 / 3 / 4 / 8 / 28 / 274</code> 等 spacing 实现值待与 V16 spacing 表对齐。</p>
+</blockquote>
+</div>
+
+<!-- ===== §6 典型场景示意 ===== -->
+<h2 id="sec-6-scenarios"><span class="num">6</span>典型场景示意</h2>
+
+<p>信息区适用于沉浸式视频流、短视频、直播切片等需要在画面上叠加内容说明的场景。下表覆盖典型组合与状态。</p>
+
+<h3>✅ 适用场景</h3>
+<table>
+  <thead><tr><th>场景</th><th>变体形态</th><th>关键内容</th><th>展开入口</th></tr></thead>
+  <tbody>
+    <tr><td>长文案视频（默认）</td><td>省略=有 / 单行</td><td>昵称 + 单行省略文案</td><td>显示「展开」</td></tr>
+    <tr><td>短文案视频</td><td>省略=无 / 单行</td><td>昵称 + 完整单行文案</td><td>隐藏</td></tr>
+    <tr><td>文案带话题</td><td>省略=无 / 双行</td><td>双行文案 + 第二行 #话题</td><td>隐藏</td></tr>
+    <tr><td>达人发布</td><td>+ 达人标签</td><td>昵称右侧「数码达人」</td><td>按文案长度</td></tr>
+    <tr><td>原创内容</td><td>+ 原创标签</td><td>文案前置「原创」</td><td>按文案长度</td></tr>
+    <tr><td>切换到下一条</td><td>任一形态</td><td>文案立即替换，复位收起态</td><td>重新计算</td></tr>
+    <tr><td>无文案视频</td><td>仅昵称行</td><td>隐藏文案行与展开入口</td><td>隐藏</td></tr>
+  </tbody>
+</table>
+
+<h3>多端适配</h3>
+<table>
+  <thead><tr><th>场景</th><th>规则</th></tr></thead>
+  <tbody>
+    <tr><td>375 DP 宽机型</td><td>使用 274 DP 基础宽度，右侧避开互动区</td></tr>
+    <tr><td>更窄屏</td><td>优先缩短文案可用宽度，保留展开入口</td></tr>
+    <tr><td>更宽屏</td><td>左边距随安全区增加，信息区宽度不无限扩展</td></tr>
+    <tr><td>大字版</td><td>收起态仍保持 1 行，展开态优先保持 2 行</td></tr>
+    <tr><td>深浅视频背景</td><td>统一保留白字 + 阴影策略，不根据视频动态换色</td></tr>
+  </tbody>
+</table>
+
+<!-- ===== §7 错误示例 ===== -->
+<h2 id="sec-7-donts"><span class="num">7</span>错误示例</h2>
+
+<div class="case bad">
+  <h4><span class="badge">DON'T</span> 把互动按钮放进信息区</h4>
+  <p><strong>问题</strong>：将点赞、评论、分享、关注等强操作合并到信息区。这些归属 <code>interactive-area</code> / <code>BottomTab</code>，混入会让点击区域与右侧互动区、底部栏重叠。</p>
+</div>
+
+<div class="case bad">
+  <h4><span class="badge">DON'T</span> 展开文案遮挡底部栏 / 进度条</h4>
+  <p><strong>问题</strong>：展开后容器高度无限增长，覆盖底部评论输入、内容通条、进度条或系统安全区。展开态必须在不越界的前提下增高。</p>
+</div>
+
+<div class="case bad">
+  <h4><span class="badge">DON'T</span> 给信息区整体加不透明底板</h4>
+  <p><strong>问题</strong>：为增强可读性给整个信息区套整块蒙层。应优先使用文字阴影；标签只用 <code>rgba(255,255,255,0.10)</code> 局部半透明底。</p>
+</div>
+
+<div class="case bad">
+  <h4><span class="badge">DON'T</span> 短文案时常驻「展开」</h4>
+  <p><strong>问题</strong>：文案未超出 1 行也展示「展开」入口。入口只在文案确实溢出时出现。</p>
+</div>
+
+<div class="case bad">
+  <h4><span class="badge">DON'T</span> 切换视频后保留上一条的展开状态</h4>
+  <p><strong>问题</strong>：上滑切到新视频后，文案仍停留在已展开形态。展开状态不跨视频继承，新视频必须复位为收起态。</p>
+</div>
+
+<div class="case bad">
+  <h4><span class="badge">DON'T</span> 新增 Relay 未定义的复杂模块</h4>
+  <p><strong>问题</strong>：在信息区内塞入商品卡、切片定位等复杂运营模块。当前节点只定义文案、原创标签和达人标签。</p>
+</div>
+
+<hr>
+
+<h3>API 速查</h3>
+<div class="pro-only">
+<blockquote class="warn">
+  <p>⚠️ <strong>TBD</strong>：本组件 bundle 暂未提供 <code>ai-schema.yaml</code>，API / 字段速查待补全后重跑 <code>/design-md-to-spec-page</code>。</p>
+</blockquote>
+</div>
+<div class="basic-only summary">
+  <p>API 速查为专业版内容，常规版暂不展示。</p>
+</div>
+
+<h3>引用</h3>
+<ul>
+  <li>Relay 源稿：<a href="https://relay.jd.com/file/design?id=1958051135088508929&amp;page_id=291%3A5329&amp;node_id=2075%3A2390" target="_blank">2075:2390 文案 / 信息区</a></li>
+  <li>Page-doc bundle：<code>design.md</code> · <code>spec.md</code> · <code>variants.md</code> · <code>behaviors.md</code></li>
+  <li>同页兄弟组件：<a href="../interactive-area/spec-page.html">互动区 interactive-area</a> · <a href="../bottom-tab/spec-page.html">底部栏 bottom-tab</a> · <a href="../video-top-tab/spec-page.html">顶部 tab video-top-tab</a></li>
+  <li>Token 依赖：<code>foundations/tokens/color.md</code> · <code>typography.md</code> · <code>spacing.md</code></li>
+</ul>
+
+<div style="margin-top:60px; padding-top:20px; border-top:1px solid var(--c-line); color:var(--c-text-3); font-size:12px; text-align:center;">
+  JD APP V16.0 Design System · 信息区 Info Layer 规范 · 生成于 2026-06-04 · 样式 = Relay 节点 2075:2390
+</div>
+
+</div><!-- /.doc -->
+</div><!-- /.layout -->
+
+<!-- 视图切换 + showcase 控制器 + 展开收起交互 -->
+<script>
+(function () {
+  var STORAGE_KEY = 'spec-page-view-mode';
+  var body = document.body;
+  var tabs = document.querySelectorAll('.view-tab');
+  function setMode(mode) {
+    body.classList.remove('mode-basic', 'mode-pro');
+    body.classList.add('mode-' + mode);
+    tabs.forEach(function (t) {
+      var on = t.dataset.view === mode;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    try { localStorage.setItem(STORAGE_KEY, mode); } catch (e) {}
+  }
+  var initial = 'basic';
+  try { var saved = localStorage.getItem(STORAGE_KEY); if (saved === 'pro' || saved === 'basic') initial = saved; } catch (e) {}
+  setMode(initial);
+  tabs.forEach(function (t) { t.addEventListener('click', function () { setMode(t.dataset.view); }); });
+
+  // showcase：主题切换 / 变体 tabs
+  document.querySelectorAll('.showcase').forEach(function (sc) {
+    sc.querySelectorAll('[data-theme-set]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        sc.setAttribute('data-theme', b.dataset.themeSet);
+        sc.querySelectorAll('[data-theme-set]').forEach(function (x) { x.classList.toggle('is-active', x === b); });
+      });
+    });
+    sc.querySelectorAll('.seg [data-variant]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var v = b.dataset.variant;
+        sc.querySelectorAll('.seg [data-variant]').forEach(function (x) { x.classList.toggle('is-active', x === b); });
+        sc.querySelectorAll('.variant-panel').forEach(function (p) { p.classList.toggle('is-active', p.dataset.variant === v); });
+      });
+    });
+  });
+
+  // token 点击复制
+  var toast = document.getElementById('copy-toast');
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('.tok') : null;
+    if (!t) return;
+    var val = t.dataset.copy || t.textContent.trim();
+    try { navigator.clipboard.writeText(val); } catch (err) {}
+    t.classList.add('copied'); setTimeout(function () { t.classList.remove('copied'); }, 900);
+    if (toast) { toast.textContent = '已复制 ' + val; toast.classList.add('show'); clearTimeout(window.__ct); window.__ct = setTimeout(function () { toast.classList.remove('show'); }, 1200); }
+  });
+
+  // 默认变体的展开 / 收起交互（aria-expanded 反映状态）
+  var moreBtn = document.getElementById('il-demo-more');
+  var demoDesc = document.getElementById('il-demo-desc');
+  if (moreBtn && demoDesc) {
+    moreBtn.addEventListener('click', function () {
+      var expanded = moreBtn.getAttribute('aria-expanded') === 'true';
+      var next = !expanded;
+      moreBtn.setAttribute('aria-expanded', next ? 'true' : 'false');
+      demoDesc.classList.toggle('is-ellipsis', !next);
+      demoDesc.classList.toggle('is-two', next);
+      moreBtn.textContent = next ? '收起' : '展开';
+      moreBtn.setAttribute('aria-label', next ? '收起视频文案' : '展开视频文案');
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

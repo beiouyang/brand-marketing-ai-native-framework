@@ -1,0 +1,396 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  background: #0c1324;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+  background: #0c1324;
+}
+
+.app-content {
+  width: min(1680px, 100%);
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.app-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+  padding: 8px 0;
+}
+
+.header-kicker {
+  font-weight: 600;
+}
+
+.app-title.ant-typography {
+  margin: 10px 0 8px;
+  font-size: 32px;
+  line-height: 1.18;
+  letter-spacing: 0;
+}
+
+.app-subtitle.ant-typography {
+  max-width: 780px;
+  margin-bottom: 0;
+}
+
+.side-stack,
+.full-width {
+  width: 100%;
+}
+
+.min-block {
+  min-width: 0;
+}
+
+.muted-line {
+  display: block;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 12px;
+}
+
+.uploaded-file {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.logo-chip {
+  display: flex;
+  min-height: 104px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  background:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.06) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.06) 75%),
+    #11182f;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+  background-size: 16px 16px;
+}
+
+.logo-chip img {
+  display: block;
+  max-width: 100%;
+  max-height: 96px;
+  object-fit: contain;
+}
+
+.panel-alert {
+  margin-top: 12px;
+}
+
+.inline-issue-list {
+  margin-top: 8px;
+}
+
+.inline-issue-list .ant-list-item {
+  padding: 4px 0;
+}
+
+.compact-result {
+  padding: 8px 0 4px;
+}
+
+.compact-result .ant-result-title {
+  font-size: 20px;
+}
+
+.metric-card .ant-statistic-title {
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.metric-card .ant-statistic-content {
+  font-size: 14px;
+}
+
+.preview-card .ant-card-body {
+  min-height: 720px;
+}
+
+.preview-scroll {
+  display: flex;
+  min-height: 680px;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    #0a1020;
+  background-size: 36px 36px;
+}
+
+.preview-matrix {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.preview-subcard .ant-card-body {
+  padding: 12px;
+}
+
+.compact-preview-scroll {
+  min-height: 640px;
+  padding: 12px;
+}
+
+.preview-scale-box {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.preview-scale-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1125px;
+  height: 2436px;
+  transform-origin: top left;
+}
+
+.preview-container,
+.phone-artboard {
+  position: relative;
+  width: 1125px;
+  height: 2436px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  background: #05070c;
+}
+
+.preview-layer {
+  position: absolute;
+  left: 0;
+  display: block;
+  width: 1125px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.layer-base {
+  top: 0;
+  z-index: 1;
+  height: 2436px;
+  object-fit: fill;
+}
+
+.detail-layer-atmosphere {
+  top: 894px;
+  z-index: 2;
+  height: 336px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.layer-core {
+  z-index: 3;
+  object-fit: contain;
+}
+
+.detail-layer-mask {
+  top: 894px;
+  z-index: 4;
+  height: 276px;
+  object-fit: fill;
+}
+
+.detail-layer-top {
+  top: 1062px;
+  z-index: 5;
+  height: 450px;
+  object-fit: fill;
+}
+
+.store-layer-atmosphere {
+  top: 0;
+  z-index: 2;
+  height: 624px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.store-core-clip {
+  position: absolute;
+  z-index: 3;
+  overflow: hidden;
+}
+
+.store-layer-core {
+  display: block;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+}
+
+.store-layer-top-mask {
+  top: 0;
+  z-index: 4;
+  height: 264px;
+  object-fit: fill;
+}
+
+.store-layer-top {
+  top: 390px;
+  z-index: 5;
+  height: 267px;
+  object-fit: fill;
+}
+
+.logo-row {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.preview-logo-box {
+  display: block;
+}
+
+.preview-logo {
+  display: block;
+  max-width: none;
+  max-height: none;
+  object-fit: fill;
+}
+
+.brand-tag {
+  display: block;
+  width: auto;
+  height: auto;
+}
+
+.detail-slogan-text,
+.store-slogan-text {
+  position: absolute;
+  z-index: 7;
+  margin: 0;
+  padding: 0;
+  color: #ffffff;
+  font-family: "PingFang SC", "PingFang-SC", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 30px;
+  text-align: left;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.detail-slogan-text {
+  left: 327.27px;
+  top: 963px;
+}
+
+.store-slogan-text {
+  left: 108px;
+  top: 324px;
+}
+
+.store-benefit-tag {
+  position: absolute;
+  left: 48px;
+  top: 312px;
+  z-index: 6;
+  width: 315px;
+  height: 54px;
+  display: block;
+  object-fit: fill;
+}
+
+.modal-descriptions {
+  margin-top: 18px;
+}
+
+.xbp-layout {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 16px;
+}
+
+.xbp-thumb {
+  width: 180px;
+  height: 390px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: #0a1020;
+}
+
+.xbp-thumb-inner {
+  position: relative;
+  width: 1125px;
+  height: 2436px;
+  transform: scale(0.16);
+  transform-origin: top left;
+}
+
+@media (max-width: 960px) {
+  .app-content {
+    padding: 16px;
+  }
+
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .preview-card .ant-card-body,
+  .preview-scroll {
+    min-height: 540px;
+  }
+
+  .preview-matrix {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .xbp-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .app-title.ant-typography {
+    font-size: 26px;
+  }
+}

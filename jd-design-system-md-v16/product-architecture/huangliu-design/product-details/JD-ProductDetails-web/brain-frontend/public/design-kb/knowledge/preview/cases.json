@@ -1,0 +1,373 @@
+[
+  {
+    "slug": "pc-national-subsidy",
+    "name": "PC 国补",
+    "area": "promotion",
+    "platform": "PC",
+    "updated": "2024-12-05",
+    "isNew": false,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "国补"
+    ],
+    "keywords_component": [
+      "belt",
+      "price"
+    ],
+    "keywords": [
+      "资格判断",
+      "引导行",
+      "tooltip",
+      "PC商详"
+    ],
+    "relay": "https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:571806&node_id=6:571807",
+    "screenshot": ""
+  },
+  {
+    "slug": "app-national-subsidy-multisku",
+    "name": "App 国补多商品",
+    "area": "promotion",
+    "platform": "App",
+    "updated": "2024-12-19",
+    "isNew": false,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "国补"
+    ],
+    "keywords_component": [
+      "belt",
+      "couponSheet",
+      "nationalSubsidySheet"
+    ],
+    "keywords": [
+      "多商品",
+      "政策色",
+      "附件"
+    ],
+    "relay": "https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:569620&node_id=6:569622",
+    "screenshot": ""
+  },
+  {
+    "slug": "app-national-subsidy-belt-claimbar",
+    "name": "国补优化2.12（腰带 / 黄条引导）",
+    "area": "promotion",
+    "platform": "App",
+    "updated": "2026-06-04",
+    "isNew": true,
+    "req_type": "优化迭代",
+    "status": "online",
+    "keywords_business": [
+      "国补"
+    ],
+    "keywords_component": [
+      "belt",
+      "bottomTip"
+    ],
+    "keywords": [
+      "领取后态",
+      "黄条",
+      "引导行",
+      "渐变色",
+      "多套方案",
+      "站内享"
+    ],
+    "relay": "https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:463852&node_id=6:470537",
+    "screenshot": "https://ling-cdn.s3-cache-accelerate.cn-north-1.jdcloud-oss.com/ling-material-image/1990724210050437121/c5f2094496da7c4d74c7f328e85177b1.png"
+  },
+  {
+    "slug": "app-national-subsidy-tradein",
+    "name": "国补叠加以旧换新利益点感知提升",
+    "area": "promotion",
+    "platform": "App",
+    "updated": "2026-05-22",
+    "isNew": false,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "国补",
+      "以旧换新Tab"
+    ],
+    "keywords_component": [
+      "belt",
+      "purchaseTabs",
+      "tradeInFormula"
+    ],
+    "keywords": [
+      "聚合利益点",
+      "服务金",
+      "状态机"
+    ],
+    "relay": "https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:329088&node_id=6:355327",
+    "screenshot": "https://ling-cdn.s3-cache-accelerate.cn-north-1.jdcloud-oss.com/ling-material-image/1990724210050437121/c61a2d72d137cecdb6264628cb2fce4e.png"
+  },
+  {
+    "slug": "app-national-subsidy-validity-countdown",
+    "name": "国补资格有效期 & 倒计时",
+    "area": "promotion",
+    "platform": "App",
+    "updated": "2025-05-25",
+    "isNew": false,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "国补"
+    ],
+    "keywords_component": [
+      "belt",
+      "nationalSubsidySheet"
+    ],
+    "keywords": [
+      "倒计时",
+      "有效期",
+      "24小时阈值",
+      "被动解绑"
+    ],
+    "relay": "https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:230440&node_id=6:238825",
+    "screenshot": "https://img11.360buyimg.com/img/jfs/t1/440702/25/1478/2867495/6a13c1abF3f17759d/0276000000e66227.png"
+  },
+  {
+    "slug": "app-national-subsidy-two-wheel",
+    "name": "二轮车国补感知强化及能力闭环",
+    "area": "promotion",
+    "platform": "App",
+    "updated": "2026-05-25",
+    "isNew": false,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "国补"
+    ],
+    "keywords_component": [
+      "belt"
+    ],
+    "keywords": [
+      "站内闭环",
+      "申请信息",
+      "国补·二轮车"
+    ],
+    "relay": "",
+    "screenshot": ""
+  },
+  {
+    "slug": "app-national-subsidy-final-price",
+    "name": "国补到手价 / 预估价",
+    "area": "promotion",
+    "platform": "App",
+    "updated": "2026-05-25",
+    "isNew": false,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "国补",
+      "以旧换新Tab"
+    ],
+    "keywords_component": [
+      "price",
+      "couponSheet"
+    ],
+    "keywords": [
+      "到手价",
+      "预估价",
+      "横滑"
+    ],
+    "relay": "",
+    "screenshot": ""
+  },
+  {
+    "slug": "app-national-subsidy-address-switch",
+    "name": "国补弹层地址切换",
+    "area": "promotion",
+    "platform": "App",
+    "updated": "2026-05-25",
+    "isNew": false,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "国补"
+    ],
+    "keywords_component": [
+      "couponSheet",
+      "bottomTip"
+    ],
+    "keywords": [
+      "地址切换",
+      "收货地址"
+    ],
+    "relay": "",
+    "screenshot": ""
+  },
+  {
+    "slug": "app-national-subsidy-jt-code",
+    "name": "国补弹层·京通资格码4步引导",
+    "area": "promotion",
+    "platform": "App",
+    "updated": "2026-05-25",
+    "isNew": false,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "国补"
+    ],
+    "keywords_component": [
+      "couponSheet",
+      "nationalSubsidySheet"
+    ],
+    "keywords": [
+      "资格码",
+      "4步引导",
+      "回填",
+      "国补·京通"
+    ],
+    "relay": "",
+    "screenshot": ""
+  },
+  {
+    "slug": "app-national-subsidy-ysf-countdown",
+    "name": "国补弹层·云闪付资格码倒计时",
+    "area": "promotion",
+    "platform": "App",
+    "updated": "2026-05-25",
+    "isNew": false,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "国补"
+    ],
+    "keywords_component": [
+      "couponSheet",
+      "belt"
+    ],
+    "keywords": [
+      "资格码",
+      "倒计时",
+      "30分钟有效期",
+      "国补·云闪付"
+    ],
+    "relay": "",
+    "screenshot": ""
+  },
+  {
+    "slug": "app-national-subsidy-virtual-bundle",
+    "name": "国补虚拟组套",
+    "area": "promotion",
+    "platform": "App",
+    "updated": "2026-05-25",
+    "isNew": false,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "国补"
+    ],
+    "keywords_component": [
+      "nationalSubsidySheet"
+    ],
+    "keywords": [
+      "虚拟组套",
+      "组套楼层",
+      "国补·虚拟组套"
+    ],
+    "relay": "",
+    "screenshot": ""
+  },
+  {
+    "slug": "app-national-subsidy-tradein-bigpromo",
+    "name": "以旧换新国补大促前台感知强化",
+    "area": "promotion",
+    "platform": "App",
+    "updated": "2026-05-25",
+    "isNew": false,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "以旧换新Tab",
+      "国补"
+    ],
+    "keywords_component": [
+      "purchaseTabs",
+      "couponSheet"
+    ],
+    "keywords": [
+      "感知强化",
+      "tab",
+      "辅助决策",
+      "大促"
+    ],
+    "relay": "",
+    "screenshot": ""
+  },
+  {
+    "slug": "app-national-subsidy-rebind-copy",
+    "name": "换绑弹层文案规范化 / 小屏适配",
+    "area": "promotion",
+    "platform": "App",
+    "updated": "2026-05-25",
+    "isNew": false,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "国补"
+    ],
+    "keywords_component": [
+      "nationalSubsidySheet"
+    ],
+    "keywords": [
+      "文案规范",
+      "320px",
+      "小屏适配",
+      "同省跨市"
+    ],
+    "relay": "",
+    "screenshot": ""
+  },
+  {
+    "slug": "app-national-subsidy-lottery",
+    "name": "国补商详弹层·摇号模式（单资格）",
+    "area": "promotion",
+    "platform": "App",
+    "updated": "2026-05-31",
+    "isNew": true,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "国补"
+    ],
+    "keywords_component": [
+      "couponSheet"
+    ],
+    "keywords": [
+      "摇号",
+      "步骤条",
+      "报名Toast",
+      "国补·摇号"
+    ],
+    "relay": "https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:89958&node_id=6:94689",
+    "screenshot": ""
+  },
+  {
+    "slug": "app-trade-in-v15",
+    "name": "以旧换新 v15.0 样式升级",
+    "area": "trade-in",
+    "platform": "App",
+    "updated": "2025-01-14",
+    "isNew": false,
+    "req_type": "新增功能",
+    "status": "online",
+    "keywords_business": [
+      "以旧换新Tab"
+    ],
+    "keywords_component": [
+      "chooseOldSheet",
+      "tradeInSheet",
+      "purchaseTabs"
+    ],
+    "keywords": [
+      "自动识别",
+      "历史标签",
+      "换新流程"
+    ],
+    "relay": "",
+    "screenshot": ""
+  }
+]

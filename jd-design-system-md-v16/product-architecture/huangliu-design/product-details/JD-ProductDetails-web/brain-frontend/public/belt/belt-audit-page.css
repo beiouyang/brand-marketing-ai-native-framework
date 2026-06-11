@@ -1,0 +1,1077 @@
+/* 腰带 AI 审核工作台 · 参考 logo-review-public-site */
+body.beltAuditPage-open {
+  overflow: hidden;
+}
+
+.beltAuditPage {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: var(--space-8);
+  background: rgba(2, 6, 23, 0.78);
+  backdrop-filter: blur(10px);
+}
+
+.beltAuditPage.hidden {
+  display: none !important;
+}
+
+.beltAuditPage__panel {
+  display: flex;
+  flex-direction: column;
+  width: min(1280px, 100%);
+  max-height: calc(100vh - 32px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.96), rgba(10, 15, 27, 0.98));
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.beltAuditPage__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding: var(--space-8) 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.beltAuditPage__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(225, 37, 27, 0.35);
+  background: rgba(225, 37, 27, 0.12);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: #fecaca;
+}
+
+.beltAuditPage__badgeDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e1251b;
+  animation: beltAuditPulse 1.6s ease infinite;
+}
+
+@keyframes beltAuditPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.beltAuditPage__title {
+  margin: var(--space-4) 0 var(--space-2);
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.beltAuditPage__sub {
+  margin: 0;
+  font-size: var(--fs-base);
+  line-height: var(--lh-loose);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.beltAuditPage__body {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: var(--space-8) 20px;
+  /* Webkit 系（Chrome/Safari）使用 overlay，让滚动条悬浮在内容上，避免出现亮色轨道 */
+  overflow-y: overlay;
+  scrollbar-gutter: auto;
+}
+
+/* 暗色滚动条：作用于审核页内所有滚动容器（不展示对比色轨道） */
+.beltAuditPage,
+.beltAuditPage *{
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.32) transparent;
+}
+.beltAuditPage::-webkit-scrollbar,
+.beltAuditPage *::-webkit-scrollbar,
+.beltAuditPage__panel::-webkit-scrollbar,
+.beltAuditPage__body::-webkit-scrollbar,
+.beltAuditPage__previewCol::-webkit-scrollbar,
+.beltAuditPage__side::-webkit-scrollbar{
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+.beltAuditPage::-webkit-scrollbar-track,
+.beltAuditPage *::-webkit-scrollbar-track,
+.beltAuditPage__panel::-webkit-scrollbar-track,
+.beltAuditPage__body::-webkit-scrollbar-track,
+.beltAuditPage__previewCol::-webkit-scrollbar-track,
+.beltAuditPage__side::-webkit-scrollbar-track{
+  background: transparent !important;
+  border: none;
+  box-shadow: none;
+}
+.beltAuditPage::-webkit-scrollbar-thumb,
+.beltAuditPage *::-webkit-scrollbar-thumb,
+.beltAuditPage__panel::-webkit-scrollbar-thumb,
+.beltAuditPage__body::-webkit-scrollbar-thumb,
+.beltAuditPage__previewCol::-webkit-scrollbar-thumb,
+.beltAuditPage__side::-webkit-scrollbar-thumb{
+  background: rgba(148, 163, 184, 0.32);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 10px;
+}
+.beltAuditPage::-webkit-scrollbar-thumb:hover,
+.beltAuditPage *::-webkit-scrollbar-thumb:hover{
+  background: rgba(148, 163, 184, 0.55);
+  background-clip: padding-box;
+}
+.beltAuditPage::-webkit-scrollbar-corner,
+.beltAuditPage *::-webkit-scrollbar-corner{
+  background: transparent;
+}
+
+.beltAuditPage__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+/* 按阶段隐藏 */
+[data-audit-min-stage][hidden],
+[data-audit-max-stage][hidden],
+[data-audit-only-stage][hidden] {
+  display: none !important;
+}
+
+/* 发布上线阶段：隐藏所有审核内容，仅展示「线上预览效果」并占满居中 */
+.beltAuditPage[data-stage="publish"] .beltAuditPage__side {
+  display: none;
+}
+.beltAuditPage[data-stage="publish"] .beltAuditPage__grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+.beltAuditPage[data-stage="publish"] .beltAuditPage__ctaBar {
+  display: none;
+}
+.beltAuditPage[data-stage="publish"] .beltAuditOnline {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.beltAuditCard__cta {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.beltAuditCard__cta .btn {
+  min-width: 220px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* CTA 置底栏：与 modal 底部对齐的固定按钮区 */
+.beltAuditPage__ctaBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+}
+
+.beltAuditPage__ctaBar .btn {
+  min-width: 260px;
+  padding: 11px 28px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* meta 阶段：右侧预览列隐藏时，左侧 aside 占满整行 */
+.beltAuditPage__grid:has(.beltAuditPage__previewCol[hidden]) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* 阶段切换的淡入动画 */
+[data-audit-min-stage]:not([hidden]),
+[data-audit-only-stage]:not([hidden]) {
+  animation: beltAuditStageReveal 0.28s ease;
+}
+
+@keyframes beltAuditStageReveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.beltAuditCard {
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: var(--radius-lg);
+  background: rgba(15, 23, 42, 0.72);
+  padding: var(--space-7);
+  margin-bottom: var(--space-6);
+}
+
+.beltAuditCard__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.beltAuditCard__title {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: #fff;
+}
+
+.beltAuditSpecEntry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  height: 24px;
+  padding: 0 var(--space-6);
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  border-radius: var(--radius-sm);
+  background: rgba(59, 130, 246, 0.12);
+  color: #bfdbfe;
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1;
+  cursor: not-allowed;
+  opacity: 0.86;
+}
+
+.beltAuditSpecEntry::after {
+  margin-left: var(--space-2);
+  color: rgba(191, 219, 254, 0.72);
+  content: "制作中";
+  font-size: var(--fs-xs);
+  font-weight: 500;
+}
+
+.beltAuditBadge {
+  display: inline-flex;
+  padding: 3px var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.beltAuditBadge--good {
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  background: rgba(16, 185, 129, 0.12);
+  color: #a7f3d0;
+}
+
+.beltAuditBadge--bad {
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  background: rgba(239, 68, 68, 0.12);
+  color: #fecaca;
+}
+
+.beltAuditBadge--warn {
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  background: rgba(245, 158, 11, 0.12);
+  color: #fde68a;
+}
+
+.beltAuditBadge--muted {
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(51, 65, 85, 0.35);
+  color: #cbd5e1;
+}
+
+.beltAuditTimeline {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 12px 24px 14px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(10, 16, 30, 0.92));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.beltAuditTimeline__hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.beltAuditTimeline__hint--gate {
+  color: #fde68a;
+}
+
+.beltAuditFlow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.beltAuditFlow__item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  font-size: var(--fs-base);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.beltAuditFlow__dot {
+  flex: 0 0 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-xs);
+  background: rgba(51, 65, 85, 0.8);
+  color: #94a3b8;
+}
+
+.beltAuditFlow__item--done .beltAuditFlow__dot {
+  background: rgba(16, 185, 129, 0.25);
+  color: #6ee7b7;
+}
+
+/* 顶部 timeline 横向布局 */
+.beltAuditFlow--timeline {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0;
+  margin: 0;
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__item {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__item::before,
+.beltAuditFlow--timeline .beltAuditFlow__item::after {
+  content: "";
+  position: absolute;
+  top: 13px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.12);
+  z-index: 0;
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__item::before {
+  left: 0;
+  width: calc(50% - 16px);
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__item::after {
+  right: 0;
+  width: calc(50% - 16px);
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__item:first-child::before,
+.beltAuditFlow--timeline .beltAuditFlow__item:last-child::after {
+  display: none;
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__item--done::before,
+.beltAuditFlow--timeline .beltAuditFlow__item--done::after,
+.beltAuditFlow--timeline .beltAuditFlow__item--active::before {
+  background: rgba(16, 185, 129, 0.7);
+}
+
+/* AI 审核未通过：当前节点与后续连线一律变红/灰 */
+.beltAuditFlow--timeline .beltAuditFlow__item--failed::before {
+  background: rgba(16, 185, 129, 0.7);
+}
+.beltAuditFlow--timeline .beltAuditFlow__item--failed::after,
+.beltAuditFlow--timeline .beltAuditFlow__item--failed ~ .beltAuditFlow__item::before,
+.beltAuditFlow--timeline .beltAuditFlow__item--failed ~ .beltAuditFlow__item::after {
+  background: rgba(255, 255, 255, 0.08);
+}
+.beltAuditFlow--timeline .beltAuditFlow__item--failed .beltAuditFlow__dot {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.9);
+  color: #fca5a5;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.18);
+}
+.beltAuditFlow--timeline .beltAuditFlow__item--failed {
+  color: rgba(252, 165, 165, 0.95);
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__dot {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(30, 41, 59, 0.92);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__item--active .beltAuditFlow__dot {
+  background: rgba(78, 161, 255, 0.18);
+  border-color: rgba(78, 161, 255, 0.85);
+  color: #93c5fd;
+  box-shadow: 0 0 0 4px rgba(78, 161, 255, 0.18);
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__item--active {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__item--done .beltAuditFlow__dot {
+  background: rgba(16, 185, 129, 0.85);
+  border-color: rgba(16, 185, 129, 0.95);
+  color: #042f1c;
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__item--done {
+  color: rgba(110, 231, 183, 0.95);
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__label {
+  display: block;
+  flex: none;
+  font-weight: 600;
+  line-height: 1.3;
+  max-width: 100%;
+  word-break: break-word;
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__hint {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.42);
+  line-height: 1.3;
+}
+
+.beltAuditFlow--timeline .beltAuditFlow__item--active .beltAuditFlow__hint {
+  color: rgba(147, 197, 253, 0.85);
+}
+
+.beltAuditMetricGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.beltAuditMetric {
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  background: rgba(2, 6, 23, 0.35);
+}
+
+.beltAuditMetric__key {
+  font-size: var(--fs-sm);
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.beltAuditMetric__val {
+  margin-top: var(--space-2);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  word-break: break-all;
+}
+
+.beltAuditIssueList,
+.beltAuditAdviceList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.beltAuditIssue {
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-base);
+  line-height: var(--lh-loose);
+}
+
+.beltAuditIssue--error {
+  border: 1px solid rgba(248, 113, 113, 0.28);
+  background: rgba(127, 29, 29, 0.22);
+  color: #fecaca;
+}
+
+.beltAuditIssue__suggest {
+  margin-top: var(--space-3);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: var(--fs-sm);
+}
+
+/* 列表项头：编号徽章 + 标题，与腰带上 marker 一一对应 */
+.beltAuditIssue__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.beltAuditIssue__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+.beltAuditIssue__num--error {
+  background: #ef4444;
+}
+.beltAuditIssue__num--warn {
+  background: #f59e0b;
+  color: #1f1300;
+}
+.beltAuditIssue__num--pass {
+  background: rgba(52, 211, 153, 0.85);
+  color: #042f1c;
+}
+.beltAuditIssue__title {
+  flex: 1 1 auto;
+  font-weight: 700;
+}
+.beltAuditIssue__desc {
+  margin-top: var(--space-2);
+}
+
+.beltAuditFlow__label {
+  flex: 1;
+  line-height: var(--lh-base);
+}
+
+.beltAuditIssue--warn {
+  border: 1px solid rgba(251, 191, 36, 0.22);
+  background: rgba(120, 83, 9, 0.18);
+  color: #fde68a;
+}
+
+.beltAuditIssue--pass {
+  border: 1px solid rgba(52, 211, 153, 0.22);
+  background: rgba(6, 78, 59, 0.2);
+  color: #a7f3d0;
+}
+
+.beltAuditIssue__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.beltAuditIssue__lvl {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  padding: 1px var(--space-3);
+  border-radius: var(--radius-xs);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.beltAuditActions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+}
+.beltAuditActions .btn {
+  min-width: 160px;
+}
+
+/* 返回上一级修改：与底部「进入 AI 自动审核」按钮尺寸一致 */
+.beltAuditActions .btn.beltAuditManualBtn--return {
+  min-width: 260px;
+  padding: 11px 28px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.beltAuditActions .btn:disabled,
+.beltAuditActions .btn[aria-disabled="true"] {
+  border-color: rgba(148, 163, 184, 0.22);
+  background: rgba(148, 163, 184, 0.18);
+  color: rgba(226, 232, 240, 0.45);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.beltAuditPage__previewCol {
+  min-width: 0;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  max-height: calc(100vh - 96px);
+  max-height: calc(100dvh - 96px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* 滚动条 overlay 模式，不占 gutter、不显示对比轨道 */
+  overflow-y: overlay;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: auto;
+}
+
+.beltAuditPreviewStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.beltAuditPreviewBlock__label {
+  font-size: var(--fs-sm);
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: var(--space-3);
+}
+
+.beltAuditPreviewMount {
+  position: relative;
+  overflow: hidden;
+  max-width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.25);
+  padding: var(--space-4);
+  position: relative;
+}
+
+.beltAuditPreviewMount .beltCanvas {
+  transform-origin: top left;
+}
+
+.beltAuditPreviewInner {
+  transform-origin: top left;
+  will-change: transform;
+}
+
+/* ===== 发布上线后的商详线上预览效果 ===== */
+.beltAuditOnline__live {
+  font-size: var(--fs-2xs);
+  letter-spacing: 0.5px;
+}
+
+/* ===== 三端并排：App / 小程序 / Web（克隆「商详预览」真实页面，保持完全一致） ===== */
+.beltAuditOnline__multi {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 20px;
+}
+.beltAuditOnline__device {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.beltAuditOnline__device--phone {
+  width: 250px;
+}
+.beltAuditOnline__device--web {
+  flex: 1 1 100%;
+  width: 100%;
+}
+.beltAuditOnline__cap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+}
+.beltAuditOnline__capDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.18);
+}
+.beltAuditOnline__frame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #f5f5f5;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.4);
+}
+.beltAuditOnline__frame--web {
+  border-radius: 12px;
+}
+.beltAuditOnline__clone {
+  transform-origin: top left;
+  will-change: transform;
+}
+
+.beltAuditOnline__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+.beltAuditOnline__url {
+  font-size: var(--fs-sm);
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--mono);
+}
+.beltAuditOnline__open {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: #4ea1ff;
+  border: 1px solid rgba(78, 161, 255, 0.4);
+  border-radius: 8px;
+  padding: 5px 12px;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.beltAuditOnline__open:hover {
+  background: rgba(78, 161, 255, 0.12);
+  border-color: rgba(78, 161, 255, 0.7);
+}
+
+/* 腰带预览图上的问题标注 */
+.beltAuditAnnotationLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.beltAuditAnnotationGroup {
+  position: absolute;
+  display: flex;
+  gap: 4px;
+  pointer-events: auto;
+  flex-wrap: wrap;
+  max-width: 60%;
+}
+
+.beltAuditAnnotationGroup--left {
+  top: 6px;
+  left: 8px;
+  justify-content: flex-start;
+}
+
+.beltAuditAnnotationGroup--middle {
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  justify-content: center;
+}
+
+.beltAuditAnnotationGroup--right {
+  top: 6px;
+  right: 8px;
+  justify-content: flex-end;
+}
+
+.beltAuditAnnotationGroup--frame {
+  bottom: 6px;
+  right: 8px;
+  justify-content: flex-end;
+}
+
+.beltAuditAnnotation {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(15, 23, 42, 0.85);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 4px 10px rgba(0, 0, 0, 0.35);
+  cursor: help;
+  transition: transform 0.15s ease;
+}
+
+.beltAuditAnnotation:hover {
+  transform: scale(1.12);
+}
+
+.beltAuditAnnotation--error {
+  background: #ef4444;
+}
+
+.beltAuditAnnotation--warn {
+  background: #f59e0b;
+  color: #1f1300;
+}
+
+/* 预览块下方的对应文案列表 */
+.beltAuditPreviewBlock__issues {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm, 6px);
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.beltAuditPreviewBlock__issue {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.beltAuditPreviewBlock__issueNum {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(148, 163, 184, 0.6);
+}
+
+.beltAuditPreviewBlock__issueNum--error {
+  background: #ef4444;
+}
+
+.beltAuditPreviewBlock__issueNum--warn {
+  background: #f59e0b;
+  color: #1f1300;
+}
+
+.beltAuditPreviewBlock__issue--error {
+  color: #fecaca;
+}
+
+.beltAuditPreviewBlock__issue--warn {
+  color: #fde68a;
+}
+
+.beltAuditPreviewBlock__issueSuggest {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.beltAuditPage__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  padding: var(--space-6) 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.beltAuditPage__hint {
+  font-size: var(--fs-sm);
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.beltAuditSubModal {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.beltAuditSubModal.hidden {
+  display: none !important;
+}
+
+.beltAuditSubModal__card {
+  width: min(520px, 100%);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.98), rgba(10, 15, 27, 0.99));
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.beltAuditSubModal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-7) var(--space-8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.beltAuditSubModal__body {
+  padding: var(--space-8);
+}
+
+.beltAuditSubModal__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-8);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.beltAuditAuditor {
+  display: flex;
+  gap: var(--space-6);
+  align-items: center;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.beltAuditAuditor__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ef3128, #9f1239);
+  color: #fff;
+}
+
+.beltAuditDesignerLayout {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: var(--space-6);
+}
+
+.beltAuditThumb {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #1a1a1a;
+  min-height: 64px;
+}
+
+.beltAuditThumb .beltCanvas {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  transform: scale(0.35);
+  transform-origin: top left;
+}
+
+.beltAuditSummaryRow {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  font-size: var(--fs-base);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.beltAuditSummaryRow strong {
+  color: #fff;
+  font-weight: 600;
+  text-align: right;
+}
+
+.beltAuditCard--meta .beltAuditCard__hint {
+  margin: 0 0 var(--space-5);
+}
+
+.beltAuditCard--meta .auditMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.beltAuditCard--meta .field--full {
+  grid-column: 1 / -1;
+}
+
+.beltAuditCard--meta .label {
+  font-size: var(--fs-sm);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.beltAuditCard--meta .input {
+  margin-top: var(--space-2);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.auditTerminalChecks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  margin-top: var(--space-2);
+}
+
+.auditTerminalChecks label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-base);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+@media (max-width: 960px) {
+  .beltAuditPage__grid {
+    grid-template-columns: 1fr;
+  }
+}

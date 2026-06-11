@@ -1,0 +1,842 @@
+{
+  "_label": "功能定义及标识",
+  "_schema": {
+    "depth": {
+      "label": "层级1-层级",
+      "en": "depth",
+      "desc": "universalFloors / secondaryLayers"
+    },
+    "area": {
+      "label": "层级2-区域",
+      "en": "area",
+      "desc": "globalFeatures / heroArea / card1Area ..."
+    },
+    "module": {
+      "label": "层级3-模块",
+      "en": "module",
+      "desc": "items 数组内的每个实例对象"
+    }
+  },
+  "universalFloors": {
+    "label": "通用楼层",
+    "globalFeatures": {
+      "label": "全局功能",
+      "items": [
+        {
+          "id": "topNav",
+          "name": "顶部导航",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/topNav.png"
+        },
+        {
+          "id": "bottomBar",
+          "name": "底Bar",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/bottomBar.png"
+        },
+        {
+          "id": "floatWidget",
+          "name": "悬浮球",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "bottomTip",
+          "name": "底部提示条",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/bottomTip.png"
+        },
+        {
+          "id": "liveWidget",
+          "name": "直播挂件",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/liveWidget.png"
+        }
+      ]
+    },
+    "heroArea": {
+      "label": "主图区",
+      "items": [
+        {
+          "id": "manualWidget",
+          "name": "说明书挂件",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "chatWidget",
+          "name": "问东东挂件",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/chatWidget.png"
+        },
+        {
+          "id": "heroPic",
+          "name": "主图图片",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/heroPic.png"
+        },
+        {
+          "id": "heroVideo",
+          "name": "主图视频",
+          "ytype": "general",
+          "xtype": 1
+        },
+        {
+          "id": "heroXR",
+          "name": "主图XR",
+          "ytype": "general",
+          "xtype": 1
+        },
+        {
+          "id": "heroCustomized",
+          "name": "主图定制帧",
+          "ytype": "general",
+          "xtype": 1
+        }
+      ]
+    },
+    "card1Area": {
+      "label": "首卡区",
+      "items": [
+        {
+          "id": "skuPicker",
+          "name": "小图选款",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/skuPicker.png"
+        },
+        {
+          "id": "belt",
+          "name": "腰带",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "purchaseTabs",
+          "name": "购买方式Tabs",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/purchaseTabs.png"
+        },
+        {
+          "id": "price",
+          "name": "价格",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/price.png"
+        },
+        {
+          "id": "enjoyed",
+          "name": "已享受",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/enjoyed.png"
+        },
+        {
+          "id": "canEnjoy",
+          "name": "可再享",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/canEnjoy.png"
+        },
+        {
+          "id": "activateEnjoy",
+          "name": "开通享",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/activateEnjoy.png"
+        },
+        {
+          "id": "tradeInFormula",
+          "name": "以旧换新公式",
+          "ytype": "secondHand",
+          "xtype": 1
+        },
+        {
+          "id": "medicineFormula",
+          "name": "购药折扣公式",
+          "ytype": "health",
+          "xtype": 1
+        },
+        {
+          "id": "contractPhoneFormula",
+          "name": "京补合约公式",
+          "ytype": "3C",
+          "xtype": 1
+        },
+        {
+          "id": "title",
+          "name": "标题",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/title.png"
+        },
+        {
+          "id": "highlights",
+          "name": "亮点行",
+          "ytype": "general",
+          "xtype": 0,
+          "img": "/pics/previewPics/highlights.png"
+        },
+        {
+          "id": "prescriptionTip",
+          "name": "处方药提醒",
+          "ytype": "health",
+          "xtype": 0
+        },
+        {
+          "id": "adultProductTip",
+          "name": "成人用品提醒",
+          "ytype": "health",
+          "xtype": 0
+        },
+        {
+          "id": "storePriceTip",
+          "name": "门店价格提醒",
+          "ytype": "general",
+          "xtype": 0
+        }
+      ]
+    },
+    "card2Area": {
+      "label": "二卡区",
+      "items": [
+        {
+          "id": "mindCap",
+          "name": "心智加盖",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "gift",
+          "name": "送礼",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "storeUp",
+          "name": "店铺上提",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "selected",
+          "name": "已选",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "param",
+          "name": "参数",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "logistics",
+          "name": "履约",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "service",
+          "name": "服务",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "active",
+          "name": "活动",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "publisher",
+          "name": "出版社",
+          "ytype": "3C",
+          "xtype": 0
+        },
+        {
+          "id": "author",
+          "name": "作家",
+          "ytype": "3C",
+          "xtype": 0
+        },
+        {
+          "id": "artist",
+          "name": "艺术家",
+          "ytype": "home",
+          "xtype": 0
+        },
+        {
+          "id": "artwork",
+          "name": "艺术品",
+          "ytype": "home",
+          "xtype": 0
+        },
+        {
+          "id": "voucher",
+          "name": "代金券",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "shipping",
+          "name": "运费",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "carProfile",
+          "name": "汽车档案",
+          "ytype": "auto",
+          "xtype": 0
+        },
+        {
+          "id": "petProfileNew",
+          "name": "宠物档案（新）",
+          "ytype": "supermarket",
+          "xtype": 0
+        },
+        {
+          "id": "furnitureSize",
+          "name": "家居尺码",
+          "ytype": "home",
+          "xtype": 0
+        }
+      ]
+    },
+    "standaloneFloors": {
+      "label": "独立楼层",
+      "items": [
+        {
+          "id": "medicineFlash",
+          "name": "买药秒送",
+          "ytype": "health",
+          "xtype": 0
+        },
+        {
+          "id": "store",
+          "name": "线下门店",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "tradeIn",
+          "name": "以旧换新",
+          "ytype": "secondHand",
+          "xtype": 0
+        },
+        {
+          "id": "recycle",
+          "name": "高价回收",
+          "ytype": "secondHand",
+          "xtype": 0
+        },
+        {
+          "id": "auction",
+          "name": "荷兰拍",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "installService",
+          "name": "上门安装",
+          "ytype": "home",
+          "xtype": 0
+        },
+        {
+          "id": "processBar",
+          "name": "流程条",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "Customize",
+          "name": "送礼定制",
+          "ytype": "fashion",
+          "xtype": 0
+        },
+        {
+          "id": "reserveProcess",
+          "name": "预约流程",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "preSaleProcess",
+          "name": "预售流程",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "healthCenter",
+          "name": "我的健康中心",
+          "ytype": "health",
+          "xtype": 0
+        },
+        {
+          "id": "simPackage",
+          "name": "号卡套餐",
+          "ytype": "3C",
+          "xtype": 0
+        },
+        {
+          "id": "groupBuyProcess",
+          "name": "拼购参团",
+          "ytype": "jingXi",
+          "xtype": 0
+        },
+        {
+          "id": "healthManual",
+          "name": "健康说明书",
+          "ytype": "health",
+          "xtype": 0
+        },
+        {
+          "id": "sizeAssistant",
+          "name": "尺码助手",
+          "ytype": "fashion",
+          "xtype": 0
+        },
+        {
+          "id": "homappGroupProcess",
+          "name": "家电拼团",
+          "ytype": "home",
+          "xtype": 0
+        },
+        {
+          "id": "buyerZone",
+          "name": "采销运营专区",
+          "ytype": "home",
+          "xtype": 0
+        },
+        {
+          "id": "petLiveProfile",
+          "name": "宠物活体档案",
+          "ytype": "supermarket",
+          "xtype": 0
+        },
+        {
+          "id": "carMaintenanceSet",
+          "name": "汽车保养套装",
+          "ytype": "auto",
+          "xtype": 1
+        },
+        {
+          "id": "medicineSet",
+          "name": "医药套装",
+          "ytype": "health",
+          "xtype": 1
+        },
+        {
+          "id": "regularBuyOption",
+          "name": "定期购选项",
+          "ytype": "supermarket",
+          "xtype": 1
+        },
+        {
+          "id": "planBuyOption",
+          "name": "计划购选项",
+          "ytype": "govEnterprise",
+          "xtype": 1
+        },
+        {
+          "id": "onlyMake",
+          "name": "珠宝定制",
+          "ytype": "fashion",
+          "xtype": 1
+        },
+        {
+          "id": "designerCv",
+          "name": "设计师简介",
+          "ytype": "fashion",
+          "xtype": 1
+        },
+        {
+          "id": "homeCabinetCustom",
+          "name": "上门定制",
+          "ytype": "home",
+          "xtype": 1
+        },
+        {
+          "id": "householdService",
+          "name": "家政服务",
+          "ytype": "home",
+          "xtype": 1
+        },
+        {
+          "id": "try3",
+          "name": "买一试三",
+          "ytype": "fashion",
+          "xtype": 1
+        },
+        {
+          "id": "regulaSet",
+          "name": "定期享套装",
+          "ytype": "home",
+          "xtype": 1
+        },
+        {
+          "id": "customClothing",
+          "name": "工服定制",
+          "ytype": "govEnterprise",
+          "xtype": 1
+        }
+      ]
+    },
+    "contentArea": {
+      "label": "内容区",
+      "items": [
+        {
+          "id": "comments",
+          "name": "评价",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "PGC",
+          "name": "测评",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "QA",
+          "name": "问答",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "HealthCustomer",
+          "name": "用户案例",
+          "ytype": "health",
+          "xtype": 0
+        },
+        {
+          "id": "doctorQA",
+          "name": "医生问答",
+          "ytype": "health",
+          "xtype": 0
+        }
+      ]
+    },
+    "storeArea": {
+      "label": "店铺区",
+      "items": [
+        {
+          "id": "shop",
+          "name": "店铺",
+          "ytype": "general",
+          "xtype": 0
+        }
+      ]
+    },
+    "waistRecommendArea": {
+      "label": "腰部推荐区",
+      "items": [
+        {
+          "id": "waistRecommend",
+          "name": "腰部推荐",
+          "ytype": "general",
+          "xtype": 0
+        }
+      ]
+    },
+    "detailArea": {
+      "label": "详情介绍区",
+      "items": [
+        {
+          "id": "activityZone",
+          "name": "活动专区",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "videoZone",
+          "name": "动态展区",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "storeRecommend",
+          "name": "店内优选",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "productIntro",
+          "name": "商品介绍",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "serviceTerms",
+          "name": "服务说明",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "paramTable",
+          "name": "规格参数",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "jingxiTerms",
+          "name": "京喜质保",
+          "ytype": "jingXi",
+          "xtype": 0
+        }
+      ]
+    },
+    "bottomRecommendArea": {
+      "label": "底部推荐区",
+      "items": [
+        {
+          "id": "recommendFeeds",
+          "name": "推荐FEEDS",
+          "ytype": "general",
+          "xtype": 0
+        }
+      ]
+    }
+  },
+  "secondaryLayers": {
+    "label": "二级承接",
+    "productSpec": {
+      "label": "已选弹层",
+      "items": [
+        {
+          "id": "productInfo",
+          "name": "商品信息",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "giftRow",
+          "name": "赠品行",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "deliveryRow",
+          "name": "时效行",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "installRow",
+          "name": "安装行",
+          "ytype": "home",
+          "xtype": 0
+        },
+        {
+          "id": "purchaseMethod",
+          "name": "购买方式",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "skuSelect",
+          "name": "规格选择",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "accessorySet",
+          "name": "配件套装",
+          "ytype": "3C",
+          "xtype": 0
+        },
+        {
+          "id": "ejiaoService",
+          "name": "熬胶服务",
+          "ytype": "health",
+          "xtype": 0
+        },
+        {
+          "id": "deliveryInstall",
+          "name": "送装服务",
+          "ytype": "home",
+          "xtype": 0
+        },
+        {
+          "id": "flashItem",
+          "name": "秒送商品",
+          "ytype": "supermarket",
+          "xtype": 0
+        },
+        {
+          "id": "deliveryService",
+          "name": "配送服务",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "premiumService",
+          "name": "优质服务",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "bottomBtn",
+          "name": "底部按钮",
+          "ytype": "general",
+          "xtype": 0
+        }
+      ]
+    },
+    "secondarySheet": {
+      "label": "二级弹层",
+      "items": [
+        {
+          "id": "logisticsSheet",
+          "name": "履约弹层",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "serviceSheet",
+          "name": "服务弹层",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "paramSheet",
+          "name": "参数弹层",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "activeSheet",
+          "name": "活动弹层",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "petProfileSheet",
+          "name": "宠物档案弹层",
+          "ytype": "supermarket",
+          "xtype": 0
+        },
+        {
+          "id": "outOfStockSheet",
+          "name": "无货弹层",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "addCartSuccessSheet",
+          "name": "加车成功弹层",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "healthManualSheet",
+          "name": "健康说明书弹层",
+          "ytype": "health",
+          "xtype": 0
+        },
+        {
+          "id": "contractPhoneSheet",
+          "name": "京补合约弹层",
+          "ytype": "3C",
+          "xtype": 0
+        },
+        {
+          "id": "PKSheet",
+          "name": "对比选品弹层",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "recommendSheet",
+          "name": "推荐弹层",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "giftSheet",
+          "name": "赠品弹层",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "tradeInSheet",
+          "name": "以旧换新弹层",
+          "ytype": "secondHand",
+          "xtype": 0
+        },
+        {
+          "id": "chooseOldSheet",
+          "name": "选择旧机弹层",
+          "ytype": "secondHand",
+          "xtype": 0
+        },
+        {
+          "id": "secoHanduponSheet",
+          "name": "以旧换新优惠弹层",
+          "ytype": "secondHand",
+          "xtype": 0
+        },
+        {
+          "id": "accessoriesSheet",
+          "name": "配件弹层",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "couponSheet",
+          "name": "优惠弹层",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "nationalSubsidySheet",
+          "name": "国补弹层",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "homeStoreReserveSheet",
+          "name": "家装到店预约弹层",
+          "ytype": "home",
+          "xtype": 0
+        }
+      ]
+    },
+    "secondaryPage": {
+      "label": "二级页面",
+      "items": [
+        {
+          "id": "ImageView",
+          "name": "大图浏览",
+          "ytype": "general",
+          "xtype": 0
+        }
+      ]
+    },
+    "dialog": {
+      "label": "弹窗",
+      "items": [
+        {
+          "id": "genericDialog",
+          "name": "通用弹窗",
+          "ytype": "general",
+          "xtype": 0
+        },
+        {
+          "id": "marketingDialog",
+          "name": "营销弹窗",
+          "ytype": "general",
+          "xtype": 0
+        }
+      ]
+    }
+  }
+}

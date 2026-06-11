@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>预告页 · Video Preview 组件规范 — JD APP V16.0</title>
+<meta name="component-slug" content="video-preview">
+<meta name="component-version" content="0.1">
+<meta name="component-level" content="page-doc">
+<style>
+  :root {
+    --c-text: #171a26; --c-text-2: #3d414d; --c-text-3: #828794;
+    --c-line: #00000014; --c-bg: #ffffff; --c-bg-sunken: #f5f6fa;
+    --c-brand: #ff0f23; --c-success: #2aa32a; --c-success-bg: #ebfbeb;
+    --c-danger: #ff0f23; --c-danger-bg: #fff0f4; --c-warning: #b26b00; --c-warning-bg: #fff9e0;
+    --c-info: #0073ff; --c-info-bg: #e5f5ff; --c-code-bg: #f5f6fa;
+    --r-base: 6px; --r-detail: 8px; --r-xl: 12px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--c-bg-sunken); color: var(--c-text); font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif; font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  .doc { max-width: 880px; margin: 40px auto; background: var(--c-bg); padding: 64px 72px; border-radius: var(--r-xl); box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+  h1 { font-size: 32px; font-weight: 600; margin: 0 0 8px; line-height: 1.3; }
+  h1 + .meta { color: var(--c-text-3); font-size: 13px; margin-bottom: 40px; line-height: 1.8; }
+  h1 + .meta code { font-size: 12px; }
+  h2 { font-size: 24px; font-weight: 600; margin: 56px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--c-line); }
+  h2 .num { display: inline-block; width: 32px; height: 32px; line-height: 32px; background: var(--c-brand); color: #fff; border-radius: var(--r-base); text-align: center; font-size: 16px; margin-right: 12px; vertical-align: middle; }
+  h3 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; color: var(--c-text); }
+  p { margin: 12px 0; color: var(--c-text-2); }
+  strong { color: var(--c-text); font-weight: 600; }
+  code { font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace; font-size: 13px; background: var(--c-code-bg); padding: 2px 6px; border-radius: 4px; color: var(--c-brand); }
+  blockquote { margin: 16px 0; padding: 12px 20px; background: var(--c-info-bg); border-left: 3px solid var(--c-info); border-radius: 0 var(--r-base) var(--r-base) 0; color: var(--c-text-2); }
+  blockquote p { margin: 4px 0; }
+  blockquote.warn { background: var(--c-warning-bg); border-left-color: var(--c-warning); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--c-line); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--c-bg-sunken); font-weight: 600; color: var(--c-text); }
+  ul, ol { padding-left: 24px; color: var(--c-text-2); }
+  li { margin: 6px 0; }
+  a { color: var(--c-info); text-decoration: none; border-bottom: 1px solid transparent; }
+  a:hover { border-bottom-color: var(--c-info); }
+  hr { border: none; border-top: 1px solid var(--c-line); margin: 40px 0; }
+  .toc { background: var(--c-bg-sunken); padding: 20px 28px; border-radius: var(--r-base); margin-bottom: 40px; }
+  .toc h3 { margin: 0 0 8px; font-size: 14px; color: var(--c-text-3); font-weight: 500; }
+  .toc ol { margin: 0; padding-left: 20px; }
+  .toc li { margin: 4px 0; }
+  .toc a { color: var(--c-text-2); border: none; }
+  .toc a:hover { color: var(--c-brand); }
+  .scaffold-banner { margin: 0 0 32px; padding: 16px 20px; background: var(--c-warning-bg); border: 1px solid var(--c-warning); border-radius: var(--r-base); color: #6b4a00; font-size: 14px; }
+  .scaffold-banner strong { color: #6b4a00; }
+
+  /* 视图切换 */
+  .title-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; border-bottom: 2px solid var(--c-text); padding-bottom: 16px; margin-bottom: 8px; }
+  .title-row h1 { border-bottom: none; padding-bottom: 0; margin: 0; flex: 1 1 auto; }
+  .view-tabs { display: inline-flex; align-items: center; gap: 4px; padding: 4px; background: var(--c-bg-sunken); border-radius: var(--r-base); flex-shrink: 0; }
+  .view-tab { background: transparent; border: none; padding: 6px 14px; font-family: inherit; font-size: 12px; font-weight: 500; color: var(--c-text-2); cursor: pointer; border-radius: 4px; }
+  .view-tab.is-active { background: var(--c-bg); color: var(--c-text); box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-weight: 600; }
+  body.mode-basic .pro-only { display: none !important; }
+  body.mode-pro .basic-only { display: none !important; }
+  body:not(.mode-basic):not(.mode-pro) .pro-only, body:not(.mode-basic):not(.mode-pro) .basic-only { display: none; }
+  .basic-only.summary { margin: 16px 0; padding: 12px 20px; background: var(--c-info-bg); border-left: 3px solid var(--c-info); border-radius: 0 var(--r-base) var(--r-base) 0; color: var(--c-text-2); font-size: 14px; }
+
+  /* 顶部 5-zone nav */
+  .top-bar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 16px; padding: 0 24px; background: rgba(255,255,255,0.78); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 1px 0 rgba(0,0,0,0.04); flex-wrap: wrap; }
+  .top-bar__brand { padding: 14px 0; margin-right: 12px; font-size: 13px; font-weight: 600; color: var(--c-text); text-decoration: none; letter-spacing: 0.02em; }
+  .top-bar__brand small { color: var(--c-text-3); font-weight: 500; margin-left: 6px; }
+  .top-bar__nav { display: flex; align-items: stretch; gap: 4px; flex-wrap: wrap; }
+  .top-bar__nav-link { padding: 14px 14px 12px; font-size: 13px; color: var(--c-text-2); text-decoration: none; font-weight: 500; line-height: 1.4; white-space: nowrap; }
+  .top-bar__nav-link:hover { color: var(--c-text); }
+  .top-bar__nav-link.is-current { color: var(--c-text); font-weight: 600; }
+  .top-bar__spacer { flex: 1; }
+
+  /* Zone-aware sidebar */
+  .layout.has-sidebar { max-width: 1200px; margin: 24px auto; padding: 0 24px 40px; display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; }
+  .layout.has-sidebar .doc { margin: 0; max-width: none; padding: 48px 56px; }
+  .sidebar { position: sticky; top: 64px; align-self: start; max-height: calc(100vh - 88px); overflow-y: auto; background: var(--c-bg); padding: 20px 12px; border-radius: var(--r-xl); box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+  .sidebar__zone-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-text-3); padding: 6px 12px 12px; border-bottom: 1px solid var(--c-line); margin-bottom: 12px; }
+  .sidebar__group { margin-bottom: 14px; }
+  .sidebar__link { display: block; padding: 7px 12px; font-size: 13px; color: var(--c-text-2); text-decoration: none; border-radius: var(--r-base); font-weight: 500; line-height: 1.5; transition: background 150ms, color 150ms; border-bottom: none; }
+  .sidebar__link:hover { background: rgba(0,0,0,0.04); color: var(--c-text); }
+  .sidebar__link.is-current { background: var(--c-text); color: var(--c-bg); }
+  .sidebar__link.is-current:hover { background: var(--c-text); }
+  .sidebar__link.is-placeholder { color: var(--c-text-3); cursor: default; font-style: italic; }
+  .sidebar__link.is-placeholder:hover { background: transparent; color: var(--c-text-3); }
+  @media (max-width: 960px) { .layout.has-sidebar { grid-template-columns: 1fr; gap: 16px; padding: 0 12px 32px; } .sidebar { position: static; max-height: none; } .layout.has-sidebar .doc { padding: 32px 24px; } }
+  @media (max-width: 720px) { .doc { margin: 0; padding: 32px 20px; border-radius: 0; } h1 { font-size: 24px; } h2 { font-size: 20px; } table { font-size: 12px; } th, td { padding: 8px 10px; } }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="../../../../../../docs/jd-design-wiki-knowledge-tree.html" class="top-bar__brand">JD Design Wiki <small>· V16</small></a>
+  <nav class="top-bar__nav" aria-label="5 大分区导航">
+    <a href="../../../../../knowledge/spec-page.html" class="top-bar__nav-link ">📚 Design 知识</a>
+    <a href="../../../../../foundations/spec-page.html" class="top-bar__nav-link ">🎨 Design 基础</a>
+    <a href="../../../../../ai-mechanism/spec-page.html" class="top-bar__nav-link ">🤖 AI 机制</a>
+    <a href="../../../../../product-architecture/spec-page.html" class="top-bar__nav-link is-current">🏗 组织架构</a>
+    <a href="../../../../../horizontal/spec-page.html" class="top-bar__nav-link ">🚀 横向专项</a>
+  </nav>
+  <span class="top-bar__spacer"></span>
+</div>
+
+<div class="layout has-sidebar">
+<aside class="sidebar" aria-label="🏗 组织架构 - 13 部门导览">
+  <div class="sidebar__zone-tag">ZONE 04 · 🏗 组织架构</div>
+  <div class="sidebar__group">
+    <a class="sidebar__link" href="../../../../../product-architecture/spec-page.html">页面说明</a>
+  </div>
+  <div class="sidebar__group">
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">搜推与基础产品设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">黄流导购设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">平台交易设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">AI 核心产品设计部</span>
+    <a class="sidebar__link is-current" href="../../../../../product-architecture/comprehensive-business/spec-page.html">综合业务设计部</a>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">PLUS 与新品频道设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">低价频道设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">本地生活服务设计部</span>
+    <a class="sidebar__link" href="../../../../../product-architecture/brand-and-marketing/spec-page.html">品牌与营销设计部</a>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">平台产品设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">商家产品设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">营销与数据设计部</span>
+    <span class="sidebar__link is-placeholder" title="该设计部门待录入">用户研究部</span>
+  </div>
+</aside>
+
+<div class="doc">
+
+<div class="title-row">
+  <h1>预告页 · Video Preview 组件规范</h1>
+  <div class="view-tabs" role="tablist" aria-label="视图切换">
+    <button class="view-tab is-active" role="tab" data-view="basic" aria-selected="true">常规版</button>
+    <button class="view-tab" role="tab" data-view="pro" aria-selected="false">专业版</button>
+  </div>
+</div>
+<div class="meta">
+  组件族：综合业务设计部 · 内容生态 / 视频 · 预告页（占位骨架）<br>
+  样式来源：<code>TODO 待补 Relay 节点</code> · Token 版本：<code>tokens.json v2.0.0</code><br>
+  关联 Foundation：<code>TBD</code>
+</div>
+
+<div class="scaffold-banner">
+  ⚠️ <strong>占位骨架 v0.1</strong>：本页尚无设计来源，所有章节为 <strong>TBD 占位</strong>，未编造任何尺寸 / token / 行为规范。提供预告页 Relay 链接后走 <code>relay-to-design-md</code> 抽稿回填，再重跑 <code>/design-md-to-spec-page</code> 生成正式规范。
+</div>
+
+<div class="toc">
+  <h3>目录</h3>
+  <ol>
+    <li><a href="#sec-1-definition">组件定义</a></li>
+    <li><a href="#sec-2-behavior">行为准则</a></li>
+    <li><a href="#sec-3-types">组件类型</a></li>
+    <li><a href="#sec-4-structure">组件结构</a></li>
+    <li><a href="#sec-5-attributes">组件设计属性</a></li>
+    <li><a href="#sec-6-scenarios">典型场景示意</a></li>
+    <li><a href="#sec-7-donts">错误示例</a></li>
+  </ol>
+</div>
+
+<h2 id="sec-1-definition"><span class="num">1</span>组件定义</h2>
+<blockquote class="warn"><p>⚠️ <strong>TBD</strong>：预告页的定位、用途与内容范围待补。占位描述——内容生态 · 视频线下的「预告页」，用于内容上线前的预告 / 预约 / 提醒场景，具体语义以 Relay 原稿为准。</p></blockquote>
+
+<h2 id="sec-2-behavior"><span class="num">2</span>行为准则</h2>
+<blockquote class="warn"><p>⚠️ <strong>TBD</strong>：预约 / 提醒 / 跳转等交互行为待 Relay 抽稿回填。</p></blockquote>
+
+<h2 id="sec-3-types"><span class="num">3</span>组件类型</h2>
+<blockquote class="warn"><p>⚠️ <strong>TBD</strong>：变体维度（如 预约前 / 已预约 / 已开播 / 已结束）待界定。</p></blockquote>
+
+<h2 id="sec-4-structure"><span class="num">4</span>组件结构</h2>
+<blockquote class="warn"><p>⚠️ <strong>TBD</strong>：内部组成 / 层级 / 必需与可选元素 / 元素规范表待补。</p></blockquote>
+
+<h2 id="sec-5-attributes"><span class="num">5</span>组件设计属性</h2>
+<blockquote class="warn"><p>⚠️ <strong>TBD</strong>：尺寸 / 颜色 / 字体 / 间距 / 对齐 / token 映射待 Relay 抽稿回填。</p></blockquote>
+
+<h2 id="sec-6-scenarios"><span class="num">6</span>典型场景示意</h2>
+<blockquote class="warn"><p>⚠️ <strong>TBD</strong>：典型使用场景待补。</p></blockquote>
+
+<h2 id="sec-7-donts"><span class="num">7</span>错误示例</h2>
+<blockquote class="warn"><p>⚠️ <strong>TBD</strong>：反面案例 / 误用边界待补。</p></blockquote>
+
+<hr>
+
+<h3>引用</h3>
+<ul>
+  <li>Relay 源稿：<code>TODO 待补</code></li>
+  <li>Page-doc bundle：<code>design.md</code> · <code>spec.md</code> · <code>variants.md</code> · <code>behaviors.md</code></li>
+  <li>放置路径待确认：当前 <code>content-ecosystem/video/video-preview/</code>，若实为直播预告可移至 <code>live/</code> 下</li>
+</ul>
+
+<div style="margin-top:60px; padding-top:20px; border-top:1px solid var(--c-line); color:var(--c-text-3); font-size:12px; text-align:center;">
+  JD APP V16.0 Design System · 预告页 Video Preview 规范（占位骨架）· 生成于 2026-06-08
+</div>
+
+</div><!-- /.doc -->
+</div><!-- /.layout -->
+
+<script>
+(function () {
+  var STORAGE_KEY = 'spec-page-view-mode';
+  var body = document.body;
+  var tabs = document.querySelectorAll('.view-tab');
+  function setMode(mode) {
+    body.classList.remove('mode-basic', 'mode-pro');
+    body.classList.add('mode-' + mode);
+    tabs.forEach(function (t) { var on = t.dataset.view === mode; t.classList.toggle('is-active', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); });
+    try { localStorage.setItem(STORAGE_KEY, mode); } catch (e) {}
+  }
+  var initial = 'basic';
+  try { var saved = localStorage.getItem(STORAGE_KEY); if (saved === 'pro' || saved === 'basic') initial = saved; } catch (e) {}
+  setMode(initial);
+  tabs.forEach(function (t) { t.addEventListener('click', function () { setMode(t.dataset.view); }); });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>设计知识库</title>
+<script src="_cases.js" onerror="console.warn('_cases.js not found')"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC",sans-serif;background:#0c1324;color:#e6edf7;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+/* ── 顶部栏 ── */
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 20px;background:rgba(17,26,47,0.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.08)}
+.brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:#e6edf7;white-space:nowrap}
+.brand .logo{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#22d3ee,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px}
+.topbar input{flex:1;min-width:160px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:7px 12px 7px 32px;font-size:13px;color:#e6edf7;background:rgba(255,255,255,0.05) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b97ad' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E") no-repeat 10px center;outline:none}
+.topbar input::placeholder{color:#6b7689}
+.topbar input:focus{border-color:rgba(34,211,238,0.5);background-color:rgba(255,255,255,0.07)}
+.platform-filters{display:flex;gap:6px;flex-wrap:wrap}
+.filter-btn{border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:5px 14px;font-size:12px;cursor:pointer;background:rgba(255,255,255,0.04);color:#cbd5e1;transition:all .15s;white-space:nowrap}
+.filter-btn.active{background:#22d3ee;color:#06121f;border-color:#22d3ee}
+
+/* ── 首页布局 ── */
+.shell{display:flex;align-items:flex-start}
+.side{width:200px;min-width:200px;align-self:stretch;padding:18px 14px;border-right:1px solid rgba(255,255,255,0.08);position:sticky;top:57px}
+.side-group{margin-bottom:22px}
+.side-title{font-size:11px;color:#8b97ad;font-weight:600;padding:0 8px;margin-bottom:8px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;font-size:13px;color:#cbd5e1;cursor:pointer;transition:background .12s}
+.nav-item:hover{background:rgba(255,255,255,0.05)}
+.nav-item.active{background:rgba(34,211,238,0.15);font-weight:600;color:#fff}
+.nav-item .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nav-item .nav-label{flex:1}
+.nav-item .nav-count{font-size:11px;color:#6b7689}
+.main{flex:1;padding:18px 22px;min-width:0}
+.main-hd{font-size:13px;color:#8b97ad;font-weight:600;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.card{background:rgba(17,26,47,0.6);border-radius:12px;border:1px solid rgba(255,255,255,0.08);overflow:hidden;cursor:pointer;transition:all .15s}
+.card:hover{border-color:rgba(34,211,238,0.4);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.card-cover{height:140px;background:rgba(255,255,255,0.04);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.card-cover img{width:100%;height:100%;object-fit:cover}
+.card-cover .no-img{font-size:11px;color:#6b7689}
+.card-body{padding:12px}
+.card-name{font-size:14px;font-weight:500;margin-bottom:6px;line-height:1.4;color:#e6edf7}
+.card-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,0.08);color:#cbd5e1}
+.badge.app{background:rgba(0,115,255,0.18);color:#5eb3ff}
+.badge.pc{background:rgba(255,255,255,0.08);color:#cbd5e1}
+.badge.both{background:rgba(10,173,72,0.18);color:#4ade80}
+.card-keywords{font-size:11px;color:#6b7689;line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.empty-state{text-align:center;padding:3rem;color:#6b7689;font-size:13px;max-width:900px;margin:0 auto}
+
+/* ── 详情页 ── */
+#page-detail{display:none;padding:2rem}
+.wrap{max-width:720px;margin:0 auto}
+.back-btn{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#8b97ad;margin-bottom:1rem;cursor:pointer;padding:4px 0}
+.back-btn:hover{color:#22d3ee}
+.detail-hd{background:linear-gradient(135deg,rgba(34,211,238,0.18),rgba(124,58,237,0.18));border:1px solid rgba(34,211,238,0.3);color:#fff;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.5rem}
+.detail-hd h1{font-size:18px;font-weight:500;margin-bottom:6px}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.12);margin-right:4px}
+.detail-meta{font-size:11px;opacity:.7;margin-top:6px}
+.screenshot-area{margin-bottom:1.5rem}
+.screenshot-area img{width:100%;border-radius:8px;cursor:zoom-in;border:1px solid rgba(255,255,255,0.1)}
+.screenshot-empty{background:rgba(255,255,255,0.04);border-radius:8px;padding:1.5rem;font-size:12px;color:#8b97ad;text-align:center;border:1px solid rgba(255,255,255,0.08)}
+.sec{background:rgba(17,26,47,0.6);border-radius:12px;border:1px solid rgba(255,255,255,0.08);margin-bottom:12px;overflow:hidden}
+.sec-hd{padding:12px 16px;font-size:13px;font-weight:500;color:#e6edf7;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.sec-hd:hover{background:rgba(255,255,255,0.04)}
+.sec-hd .toggle-icon{font-size:10px;color:#6b7689;transition:transform .2s}
+.sec-hd.collapsed .toggle-icon{transform:rotate(-90deg)}
+.sec-body{padding:14px 16px;font-size:13px;line-height:1.75;border-top:1px solid rgba(255,255,255,0.06)}
+.sec-body.hidden{display:none}
+.decision-card{background:rgba(255,255,255,0.04);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.decision-card:last-child{margin-bottom:0}
+.decision-title{font-weight:500;margin-bottom:6px;font-size:13px;color:#e6edf7}
+.decision-label{font-size:11px;color:#8b97ad;margin-bottom:2px}
+.decision-content{font-size:12px;margin-bottom:8px}
+.decision-content:last-child{margin-bottom:0}
+.excluded{background:rgba(239,68,68,0.1);border-left:2px solid #f87171;padding:5px 8px;border-radius:0 4px 4px 0;font-size:12px;color:#cbd5e1}
+.impact-box{background:rgba(0,115,255,0.12);border-left:2px solid #5eb3ff;padding:5px 8px;border-radius:0 4px 4px 0;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-weight:500;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.08);color:#8b97ad;background:rgba(255,255,255,0.04);font-size:11px}
+td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:top;font-size:12px;color:#cbd5e1}
+tr:last-child td{border-bottom:none}
+tr.star-row td{background:rgba(245,166,35,0.1)}
+.pattern-card{background:rgba(0,115,255,0.08);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.pattern-card:last-child{margin-bottom:0}
+.pattern-title{font-weight:500;margin-bottom:6px;font-size:13px;color:#e6edf7}
+.principle{background:rgba(10,173,72,0.12);border-left:3px solid #4ade80;padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;margin-top:8px;color:#86efac}
+.related-link{display:flex;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer}
+.related-link:last-child{border-bottom:none}
+.related-link:hover .related-name{color:#22d3ee}
+.related-name{font-size:12px;color:#5eb3ff;flex-shrink:0;margin-right:8px}
+.related-note{font-size:11px;color:#8b97ad;line-height:1.5}
+.issue-row td:last-child{color:#fbbf24}
+.todo{display:inline;background:rgba(239,159,39,0.12);border:1px solid #EF9F27;padding:1px 6px;font-size:11px;border-radius:3px;color:#fbbf24;white-space:nowrap}
+.relay-link{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#5eb3ff;padding:6px 10px;background:rgba(0,115,255,0.1);border-radius:6px;margin-bottom:1rem}
+.relay-link:hover{background:rgba(0,115,255,0.18)}
+
+/* ── Markdown 渲染 ── */
+.md-body p{margin-bottom:8px}
+.md-body p:last-child{margin-bottom:0}
+.md-body strong{font-weight:600;color:#e6edf7}
+.md-body em{font-style:italic}
+.md-body code{background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:3px;font-size:11px;font-family:monospace;color:#e6edf7}
+.md-body blockquote{border-left:3px solid #475569;padding:4px 10px;color:#8b97ad;font-size:12px;margin:6px 0}
+.md-body ul,.md-body ol{padding-left:1.4em;margin:6px 0}
+.md-body li{margin-bottom:3px}
+.md-body table{margin:8px 0}
+.md-body h3{font-size:13px;font-weight:600;margin:12px 0 6px;color:#e6edf7}
+
+/* ── Lightbox ── */
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;cursor:zoom-out}
+#lightbox.show{display:flex}
+#lightbox img{max-width:90vw;max-height:90vh;border-radius:4px}
+</style>
+</head>
+<body>
+
+<!-- 首页 -->
+<div id="page-index">
+  <div class="topbar">
+    <div class="brand"><span class="logo">▦</span>设计案例库</div>
+    <input id="search" type="text" placeholder="搜索案例、组件、关键词…" oninput="renderGrid()">
+    <div class="platform-filters">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">全部</button>
+      <button class="filter-btn" data-filter="App" onclick="setFilter('App')">App</button>
+      <button class="filter-btn" data-filter="PC" onclick="setFilter('PC')">PC</button>
+      <button class="filter-btn" data-filter="Both" onclick="setFilter('Both')">双端</button>
+    </div>
+  </div>
+  <div class="shell">
+    <aside class="side">
+      <div class="side-group">
+        <div class="side-title">功能区</div>
+        <div id="area-nav"></div>
+      </div>
+      <div class="side-group">
+        <div class="side-title">常用标签</div>
+        <div id="tag-nav"></div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="main-hd" id="main-hd">商详 · 全部案例</div>
+      <div class="grid" id="grid"></div>
+      <div class="empty-state" id="empty" style="display:none">没有找到匹配的 Case</div>
+    </main>
+  </div>
+</div>
+
+<!-- 详情页 -->
+<div id="page-detail">
+  <div class="wrap">
+    <div class="back-btn" onclick="showIndex()">← 返回知识库</div>
+    <div id="detail-content"></div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+// ── 简易 Markdown 渲染 ──
+function md(text) {
+  if (!text) return '';
+  text = text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/TODO:/g,'<span class="todo">TODO:</span>');
+
+  // 表格
+  const tableReg = /(\|.+\|\n)+/g;
+  text = text.replace(tableReg, match => {
+    const rows = match.trim().split('\n');
+    let html = '<table>';
+    rows.forEach((row, i) => {
+      if (/^\|[-: |]+\|$/.test(row)) return;
+      const cells = row.split('|').filter((_,j,a)=>j>0&&j<a.length-1);
+      if (i === 0) {
+        html += '<thead><tr>' + cells.map(c=>`<th>${c.trim()}</th>`).join('') + '</tr></thead><tbody>';
+      } else {
+        html += '<tr>' + cells.map(c=>`<td>${c.trim()}</td>`).join('') + '</tr>';
+      }
+    });
+    return html + '</tbody></table>';
+  });
+
+  // 列表
+  text = text.replace(/^- (.+)$/gm,'<li>$1</li>');
+  text = text.replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
+  text = text.replace(/^\d+\. (.+)$/gm,'<li>$1</li>');
+
+  // 段落
+  const parts = text.split(/\n{2,}/);
+  return parts.map(p => {
+    p = p.replace(/\n/g,'<br>');
+    if (/^<(h[1-6]|ul|ol|table|blockquote)/.test(p)) return p;
+    return `<p>${p}</p>`;
+  }).join('');
+}
+
+// ── 首页 ──
+let currentFilter = 'all';   // 平台
+let currentArea = 'all';     // 功能区
+let currentTag = null;       // 常用标签
+
+const AREAS = [
+  { key:'all', label:'全部', color:'#1a1a1a' },
+  { key:'promotion', label:'促销组件', color:'#0AAD48' },
+  { key:'trade-in', label:'以旧换新', color:'#EF9F27' },
+];
+const TAGS = [
+  { label:'国补腰带', kw:'腰带', color:'#0AAD48' },
+  { label:'优惠弹层', kw:'弹层', color:'#5C7CFA' },
+  { label:'以旧换新', kw:'以旧换新', color:'#EF9F27' },
+  { label:'倒计时', kw:'倒计时', color:'#E1251B' },
+  { label:'三态状态机', kw:'三态', color:'#F5A623' },
+];
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+  renderGrid();
+}
+
+function setArea(key) {
+  currentArea = key;
+  renderSidebar();
+  renderGrid();
+}
+
+function setTag(kw) {
+  currentTag = (currentTag === kw) ? null : kw;
+  renderSidebar();
+  renderGrid();
+}
+
+function areaCount(key) {
+  const all = window.ALL_CASES || [];
+  if (key === 'all') return all.length;
+  return all.filter(c => (c.product_area||'').includes(key)).length;
+}
+
+function renderSidebar() {
+  const areaNav = document.getElementById('area-nav');
+  if (areaNav) {
+    areaNav.innerHTML = AREAS.map(a => `
+      <div class="nav-item ${currentArea===a.key?'active':''}" onclick="setArea('${a.key}')">
+        <span class="dot" style="background:${a.color}"></span>
+        <span class="nav-label">${a.label}</span>
+        <span class="nav-count">${areaCount(a.key)}</span>
+      </div>`).join('');
+  }
+  const tagNav = document.getElementById('tag-nav');
+  if (tagNav) {
+    tagNav.innerHTML = TAGS.map(t => `
+      <div class="nav-item ${currentTag===t.kw?'active':''}" onclick="setTag('${t.kw}')">
+        <span class="dot" style="background:${t.color}"></span>
+        <span class="nav-label">${t.label}</span>
+      </div>`).join('');
+  }
+}
+
+function renderGrid() {
+  const q = (document.getElementById('search').value||'').toLowerCase();
+  const cases = (window.ALL_CASES||[]).filter(c => {
+    const matchFilter = currentFilter === 'all' || c.platform === currentFilter;
+    const matchArea = currentArea === 'all' || (c.product_area||'').includes(currentArea);
+    const matchTag = !currentTag || c.feature_name.includes(currentTag) || (c.keywords||[]).some(k=>k.includes(currentTag));
+    const matchQ = !q || c.feature_name.toLowerCase().includes(q) || (c.keywords||[]).some(k=>k.toLowerCase().includes(q));
+    return matchFilter && matchArea && matchTag && matchQ;
+  });
+  const areaLabel = (AREAS.find(a=>a.key===currentArea)||{}).label || '全部';
+  const hd = document.getElementById('main-hd');
+  if (hd) hd.textContent = `商详 · ${areaLabel}案例${currentTag?(' · '+currentTag):''}（${cases.length}）`;
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  if (!cases.length) { grid.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = cases.map(c => `
+    <div class="card" onclick="showDetail('${c.slug}')">
+      <div class="card-cover">
+        ${c.cover_url ? `<img src="${c.cover_url}" alt="" loading="lazy">` : '<span class="no-img">暂无截图</span>'}
+      </div>
+      <div class="card-body">
+        <div class="card-name">${c.feature_name}</div>
+        <div class="card-meta">
+          <span class="badge ${(c.platform||'').toLowerCase()}">${c.platform||''}</span>
+          <span class="badge">${(c.product_area||'').split('/').pop()}</span>
+          <span class="badge">${c.last_updated||''}</span>
+        </div>
+        <div class="card-keywords">${(c.keywords||[]).join(' · ')}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── 详情页 ──
+function showDetail(slug) {
+  const s = document.createElement('script');
+  s.src = `cases/${slug}.js`;
+  s.onload = () => renderDetail(slug);
+  s.onerror = () => { renderDetail(slug); };
+  document.head.appendChild(s);
+  document.getElementById('page-index').style.display = 'none';
+  document.getElementById('page-detail').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function showIndex() {
+  document.getElementById('page-index').style.display = 'block';
+  document.getElementById('page-detail').style.display = 'none';
+}
+
+function sec(title, bodyHtml, collapsed) {
+  const cls = collapsed ? ' collapsed' : '';
+  const bodyCls = collapsed ? ' hidden' : '';
+  return `<div class="sec">
+    <div class="sec-hd${cls}" onclick="toggleSec(this)">${title}<span class="toggle-icon">▾</span></div>
+    <div class="sec-body${bodyCls}">${bodyHtml}</div>
+  </div>`;
+}
+
+function toggleSec(hd) {
+  hd.classList.toggle('collapsed');
+  hd.nextElementSibling.classList.toggle('hidden');
+}
+
+function renderDetail(slug) {
+  const d = (window.CASE_DATA||{})[slug];
+  const meta = (window.ALL_CASES||[]).find(c=>c.slug===slug) || {};
+  const info = d || { feature_name: slug, sections:{} };
+  const s = info.sections || {};
+
+  let html = '';
+
+  // Header
+  html += `<div class="detail-hd">
+    <h1>${info.feature_name||meta.feature_name||slug}</h1>
+    <div style="margin-top:6px">
+      <span class="tag">${info.platform||meta.platform||''}</span>
+      <span class="tag">${(info.product_area||meta.product_area||'').split('/').pop()}</span>
+      <span class="tag">最后更新 ${info.last_updated||meta.last_updated||''}</span>
+    </div>
+  </div>`;
+
+  // Relay link
+  if (info.relay_url) {
+    html += `<a class="relay-link" href="${info.relay_url}" target="_blank">🔗 查看 Relay 设计稿</a>`;
+  }
+
+  // Screenshots
+  const shots = info.screenshots || [];
+  if (shots.length) {
+    html += '<div class="screenshot-area">' + shots.map(s =>
+      s.url ? `<div style="margin-bottom:8px"><div style="font-size:11px;color:#aaa;margin-bottom:4px">${s.label||''}</div><img src="${s.url}" alt="${s.label||''}" onclick="openLightbox('${s.url}')"></div>`
+             : `<div class="screenshot-empty">📎 ${s.label||'暂无截图'}</div>`
+    ).join('') + '</div>';
+  }
+
+  // 需求背景
+  if (s.background) {
+    html += sec('需求背景', `<div class="md-body">${md(s.background)}</div>`);
+  }
+
+  // 核心设计决策
+  if (s.decisions && s.decisions.length) {
+    const body = s.decisions.map(d => `
+      <div class="decision-card">
+        <div class="decision-title">${d.title||''}</div>
+        <div class="decision-label">方案</div>
+        <div class="decision-content md-body">${md(d.decision||'')}</div>
+        ${d.reason?`<div class="decision-label">原因</div><div class="decision-content md-body">${md(d.reason)}</div>`:''}
+        ${d.excluded&&d.excluded.trim()&&d.excluded!=='（设计稿中无明确记录）'?`<div class="excluded">排除方案：${d.excluded}</div>`:''}
+        ${d.impact?`<div class="impact-box" style="margin-top:6px"><div class="decision-label">对其他模块的影响</div><div class="md-body">${md(d.impact)}</div></div>`:''}
+      </div>`).join('');
+    html += sec('核心设计举措', body);
+  }
+
+  // 状态枚举
+  if (s.states && s.states.length) {
+    const rows = s.states.map(st => {
+      const isStar = st.star || (st.name||'').includes('⭐');
+      return `<tr class="${isStar?'star-row':''}">
+        <td>${st.name||''}</td>
+        <td class="md-body">${md(st.visual||'')}</td>
+        <td>${st.note||''}</td>
+      </tr>`;
+    }).join('');
+    const body = `<div style="padding:0"><table>
+      <thead><tr><th>状态 / 条件</th><th>视觉处理</th><th>备注</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>`;
+    html += sec('状态枚举', body);
+  }
+
+  // 交互流程
+  if (s.flow) {
+    html += sec('交互流程及逻辑判断', `<div class="md-body">${md(s.flow)}</div>`);
+  }
+
+  // 待确认
+  if (s.issues && s.issues.length) {
+    const rows = s.issues.map(i=>`<tr class="issue-row">
+      <td>${i.problem||''}</td>
+      <td>${i.owner||''}</td>
+      <td>${i.status||''}</td>
+    </tr>`).join('');
+    const body = `<div style="padding:0"><table>
+      <thead><tr><th>问题</th><th>找谁</th><th>状态</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>`;
+    html += sec('人工待确认', body, true);
+  }
+
+  // 可复用 Pattern
+  if (s.patterns && s.patterns.length) {
+    const body = s.patterns.map(p=>`
+      <div class="pattern-card">
+        <div class="pattern-title">${p.title||''}</div>
+        ${p.applies?`<div style="font-size:12px;margin-bottom:4px"><strong>适用：</strong>${p.applies}</div>`:''}
+        ${p.not_applies?`<div style="font-size:12px;margin-bottom:4px"><strong>不适用：</strong>${p.not_applies}</div>`:''}
+        ${p.principle?`<div class="principle">${p.principle}</div>`:''}
+      </div>`).join('');
+    html += sec('可复用设计模式', body, true);
+  }
+
+  // 关联 Case
+  if (info.related_cases && info.related_cases.length) {
+    const body = info.related_cases.map(r=>`
+      <div class="related-link" onclick="showDetail('${r.slug}')">
+        <span class="related-name">${(window.ALL_CASES||[]).find(c=>c.slug===r.slug)?.feature_name||r.slug}</span>
+        <span class="related-note">${r.note||''}</span>
+      </div>`).join('');
+    html += sec('关联 Case', body, true);
+  }
+
+  document.getElementById('detail-content').innerHTML = html;
+}
+
+// ── Lightbox ──
+function openLightbox(url) {
+  document.getElementById('lightbox-img').src = url;
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('show');
+}
+
+// ── 初始化 ──
+document.addEventListener('DOMContentLoaded', () => {
+  renderSidebar();
+  renderGrid();
+  // 支持 URL hash 直接跳转到详情，如 #app-national-subsidy-multisku
+  const hash = location.hash.slice(1);
+  if (hash) showDetail(hash);
+});
+</script>
+</body>
+</html>

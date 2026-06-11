@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>京东商详腰带 · 生产与审核全流程</title>
+  <style>
+    @page { size: A4; margin: 18mm 16mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+      font-size: 11pt;
+      line-height: 1.65;
+      color: #1a1a1a;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    h1 { font-size: 20pt; margin: 0 0 6px; color: #c41e12; border-bottom: 2px solid #c41e12; padding-bottom: 8px; }
+    h2 { font-size: 14pt; margin: 22px 0 10px; color: #222; page-break-after: avoid; }
+    h3 { font-size: 12pt; margin: 16px 0 8px; color: #333; page-break-after: avoid; }
+    h4 { font-size: 11pt; margin: 12px 0 6px; color: #444; }
+    p.meta { color: #666; font-size: 10pt; margin: 0 0 18px; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; font-size: 10pt; page-break-inside: avoid; }
+    th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; vertical-align: top; }
+    th { background: #f5f5f5; font-weight: 600; }
+    ul { margin: 6px 0 12px; padding-left: 20px; }
+    li { margin: 3px 0; }
+    .flow-box {
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin: 10px 0 16px;
+      font-size: 10pt;
+      line-height: 1.8;
+    }
+    .tag { display: inline-block; background: #c41e12; color: #fff; font-size: 9pt; padding: 1px 6px; border-radius: 3px; margin-right: 4px; }
+    .section-note { font-size: 10pt; color: #555; margin-bottom: 10px; }
+    .page-break { page-break-before: always; }
+    code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 9.5pt; }
+  </style>
+</head>
+<body>
+
+<h1>京东商详腰带 · 生产与审核全流程</h1>
+<p class="meta">文档版本：v2.0.1 · 生成日期：2026-05-29 · 工具：京东商详腰带 AI 改造工具</p>
+
+<h2>一、总览</h2>
+<p class="section-note">工具定位：<strong>HEX / 场景 / 取色 → OKLCH → 腰带配色 + 内容编排 → 多端预览 → AI 规则审核 → 人工复核 → 上线</strong></p>
+
+<div class="flow-box">
+  ① 品牌色 → ② 价促信息 → ③ 氛围 icon → ④ 右侧 IP+利益点 → 腰带预览 → 商详预览 / JSON 导出 → 进入 AI 审核 → AI 自动审核 → 人工审核 → 发布上线（效果数据在数据看板沉淀）
+</div>
+
+<h2>二、腰带生产阶段（运营配置）</h2>
+
+<h3>Step 1 · 品牌色来源（三选一）</h3>
+<table>
+  <tr><th>模式</th><th>功能诉求</th></tr>
+  <tr><td>颜色输入</td><td>输入 HEX（#RRGGBB / RRGGBB / #RGB），点击「应用并映射」</td></tr>
+  <tr><td>场景推荐</td><td>9 大业务场景（促销/外卖/超市/酒旅等），按 OKLCH 安全区间（H/L/C）选色</td></tr>
+  <tr><td>OKLCH 微调</td><td>选中场景后可滑动调节 L、C，输出 HEX</td></tr>
+  <tr><td>图片取色</td><td>上传图片 → OKLab 聚类 → 过滤 C/L → 点选候选色作为品牌色</td></tr>
+  <tr><td>自定义腰带背景</td><td>上传背景图（建议 ≥750px 宽）；内容色可选「自动生成」或「自定义 HEX」</td></tr>
+</table>
+<h4>配色输出（scheme）</h4>
+<ul>
+  <li><code>beltBg</code>：腰带背景色</li>
+  <li><code>textPrimary</code> / <code>textSecondary</code>：主/副文字色（OKLCH 自动推导）</li>
+  <li><code>logoColor</code>：品牌 IP 着色</li>
+  <li><code>beltBgOklch</code>：背景 OKLCH 值（便于审核）</li>
+</ul>
+<p><strong>前置条件：</strong>完成配色映射后，预览、导出、审核按钮才可用。</p>
+
+<h3>Step 2 · 价促信息（腰带左侧）</h3>
+<table>
+  <tr><th>字段</th><th>规则</th><th>展示位置</th></tr>
+  <tr><td>价格</td><td>必填，到手价</td><td>两行/三行左侧主价区</td></tr>
+  <tr><td>划线价格</td><td>必填</td><td>副行（删除线）</td></tr>
+  <tr><td>优惠信息 1</td><td>必填，≤9 字</td><td>两行第 2 行 / 三行底栏</td></tr>
+  <tr><td>优惠信息 2</td><td>必填，≤9 字</td><td>与优惠 1 用竖线分隔</td></tr>
+  <tr><td>已售</td><td>必现，≤12 字</td><td>副行</td></tr>
+</table>
+<p><strong>功能诉求：</strong>左侧文案与预览实时同步；纯文本 + 竖线分隔（无闪电 icon、无箭头）；三行底栏为「已享受: 优惠1 | 优惠2」，右侧保留 8×8 跳转箭头。</p>
+
+<h3>Step 3 · 氛围 icon</h3>
+<table>
+  <tr><th>能力</th><th>说明</th></tr>
+  <tr><td>AI 生成</td><td>固定提示词模板 + 可编辑变量（品牌元素/图形风格/主色/辅助色）</td></tr>
+  <tr><td>参考图</td><td>支持多图上传</td></tr>
+  <tr><td>图库</td><td>上传透明 PNG/WebP/SVG；内置「闪电氛围」示例</td></tr>
+  <tr><td>位置调节</td><td>水平/垂直/缩放/透明度滑块</td></tr>
+  <tr><td>图层关系</td><td>在腰带底色之上、价格与右侧文案之下</td></tr>
+</table>
+<p><strong>设计约束：</strong>偏右、大尺寸、低透明度、弱装饰，不遮挡文字。</p>
+
+<div class="page-break"></div>
+
+<h3>Step 4 · 腰带右侧氛围区</h3>
+<h4>档期与组合规范</h4>
+<table>
+  <tr><th>档期</th><th>IP 上限</th><th>说明</th></tr>
+  <tr><td>大促期</td><td>≤3</td><td>可 3 logo 组合</td></tr>
+  <tr><td>日常</td><td>≤2</td><td>无三 logo 组合</td></tr>
+</table>
+<p><strong>右侧组合规范：</strong></p>
+<ul>
+  <li><span class="tag">01</span>大促 IP / 增强心智</li>
+  <li><span class="tag">02</span>单 IP · 交叉 × · IP+氛围</li>
+  <li><span class="tag">03</span>Slogan / 倒计时 / 领券（利益点，仅 1 个）</li>
+</ul>
+<p><strong>整体约束：</strong>右侧 ≤3 行 · 利益点 1 个 · 增强心智 ≤1</p>
+
+<h4>品牌 IP 组合规则</h4>
+<table>
+  <tr><th>模式</th><th>结构</th><th>尺寸</th></tr>
+  <tr><td>单 logo</td><td>1 行</td><td>高 14px，宽 ≤90px</td></tr>
+  <tr><td>双 logo</td><td>上下 2 行</td><td>每行 11px，间距 4px</td></tr>
+  <tr><td>三 logo</td><td>上：大促；下：IP × IP</td><td>11px；× 固定 11px（不缩小）</td></tr>
+  <tr><td>PC 端</td><td>最多 2 个 logo 横向组合</td><td>高 18px，442×52</td></tr>
+</table>
+
+<h4>利益点（单选）</h4>
+<table>
+  <tr><th>类型</th><th>优先级</th><th>字数限制</th></tr>
+  <tr><td>倒计时</td><td>P1 · 限时功能</td><td>≤16 字</td></tr>
+  <tr><td>领券/多件优惠</td><td>P2 · 核心优惠</td><td>≤9 字</td></tr>
+  <tr><td>营销口号</td><td>P3 · Slogan</td><td>≤7 字</td></tr>
+</table>
+
+<h3>Step 5 · 腰带预览（右侧固定栏）</h3>
+<table>
+  <tr><th>预览类型</th><th>尺寸</th><th>用途</th></tr>
+  <tr><td>两行样式</td><td>375×64</td><td>移动端常规</td></tr>
+  <tr><td>三行样式</td><td>375×82</td><td>移动端含底栏优惠</td></tr>
+  <tr><td>PC 端</td><td>442×52</td><td>Web 商详</td></tr>
+</table>
+<p><strong>操作：</strong>商详预览（App/小程序/Web）· 文件导出 · 复制 JSON · 进入 AI 审核流程</p>
+
+<h2>三、审核阶段（5 步流程）</h2>
+<p class="section-note">审核引擎：<strong>v0.21</strong>（纯前端演示，无真实后端）</p>
+
+<div class="flow-box">
+  ① 运营填写基础信息 → ② AI 自动审核 → ③ 人工审核 → ④ 发布上线<br>
+  （AI 不通过 → 返回运营修改，不进入后续步骤）
+</div>
+
+<h3>① 运营填写基础信息</h3>
+<table>
+  <tr><th>字段</th><th>必填</th><th>说明</th></tr>
+  <tr><td>项目名称</td><td>✓</td><td>非空、格式合规</td></tr>
+  <tr><td>业务线</td><td>✓</td><td>全品类/3C/家电/超市/时尚/健康</td></tr>
+  <tr><td>活动类型</td><td>✓</td><td>大促/S级/A级/B级/品类日等</td></tr>
+  <tr><td>上线端</td><td>✓</td><td>移动端 2 行 / 3 行 / PC（多选）</td></tr>
+  <tr><td>上线日期</td><td>✓</td><td>合法且不早于今天</td></tr>
+  <tr><td>提审人 ERP</td><td>✓</td><td>非空、格式合规</td></tr>
+</table>
+
+<h3>② AI 自动审核</h3>
+<table>
+  <tr><th>类别</th><th>检查项</th><th>级别</th></tr>
+  <tr><td>配色</td><td>背景色/主文字色缺失；对比度 WCAG AA ≥4.5:1；倒计时对比度</td><td>P1/P2</td></tr>
+  <tr><td>LOGO/IP</td><td>未选 IP / IP 超 3 个 / 组合拥挤</td><td>P1/P2</td></tr>
+  <tr><td>右侧氛围区</td><td>未选利益点 / Slogan 超 7 字 / 领券超 9 字 / 3IP+复杂利益点同屏</td><td>P1/P2</td></tr>
+  <tr><td>氛围 icon</td><td>非透明 PNG / 尺寸过小 / S+ 活动需复核</td><td>P1/P2</td></tr>
+  <tr><td>排版</td><td>文案截断 / 组合规则警告</td><td>P2</td></tr>
+</table>
+
+<h4>审核结果分支</h4>
+<table>
+  <tr><th>结果</th><th>条件</th><th>下一步</th></tr>
+  <tr><td>AI 不通过</td><td>存在 P1</td><td>返回运营修改</td></tr>
+  <tr><td>AI 通过但有风险</td><td>有 P2 或需设计师复核</td><td>发送设计师复审核</td></tr>
+  <tr><td>AI 通过</td><td>无 P1/P2</td><td>仍进入设计师复审核（演示策略）</td></tr>
+</table>
+
+<h3>③ 人工审核 → ④ 发布上线</h3>
+<ul>
+  <li><strong>人工审核：</strong>展示审核员信息，发起审批流程；AI 不通过时可返回修改</li>
+  <li><strong>发布上线：</strong>演示流程完成后，效果数据在「数据看板」沉淀（含 Top10 腰带排名）</li>
+  <li>支持「重新审核」「复制审核结果」</li>
+</ul>
+
+<div class="page-break"></div>
+
+<h2>四、导出与交付物</h2>
+<table>
+  <tr><th>动作</th><th>内容</th></tr>
+  <tr><td>复制 JSON</td><td><code>belt</code> 配色对象（brand/beltBg/textPrimary 等）</td></tr>
+  <tr><td>文件导出</td><td>完整 payload：配色 + IP/利益点/价促/氛围/审核元数据/审核报告</td></tr>
+  <tr><td>线上部署</td><td><code>./deploy.sh</code> → http://111.228.7.174/</td></tr>
+</table>
+
+<h2>五、角色与职责</h2>
+<table>
+  <tr><th>角色</th><th>职责</th></tr>
+  <tr><td>运营</td><td>配置品牌色、价促、IP、利益点、氛围 icon</td></tr>
+  <tr><td>AI 规则引擎</td><td>自动校验配色/排版/规范，打分并给出建议</td></tr>
+  <tr><td>设计师</td><td>复核 S+ 氛围、复杂组合、截断/超宽等边界情况</td></tr>
+  <tr><td>发布</td><td>审核通过后上线（当前为演示流程）</td></tr>
+</table>
+
+<h2>六、关键设计规范速查</h2>
+<table>
+  <tr><th>项目</th><th>规范</th></tr>
+  <tr><td>移动端两行</td><td>375×64</td></tr>
+  <tr><td>移动端三行</td><td>375×82（上区 59px + 底栏 23px）</td></tr>
+  <tr><td>PC 腰带</td><td>442×52</td></tr>
+  <tr><td>右侧 IP 槽</td><td>91px 宽</td></tr>
+  <tr><td>三 logo 第二行</td><td>IP × IP，× 固定 11px</td></tr>
+  <tr><td>右侧总行数</td><td>≤3</td></tr>
+  <tr><td>利益点</td><td>仅 1 个</td></tr>
+  <tr><td>大促 IP / 日常 IP</td><td>≤3 / ≤2</td></tr>
+</table>
+
+<p class="meta" style="margin-top:24px;">— 文档结束 —</p>
+</body>
+</html>

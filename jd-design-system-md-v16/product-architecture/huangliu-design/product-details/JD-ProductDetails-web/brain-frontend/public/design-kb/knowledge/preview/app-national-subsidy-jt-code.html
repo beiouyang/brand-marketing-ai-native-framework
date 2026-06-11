@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>京通资格码领取及回填简化 · 设计决策</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC",sans-serif;background:#f5f4f0;color:#1a1a1a;padding:2rem}
+.wrap{max-width:720px;margin:0 auto}
+.hd{background:#E1251B;color:#fff;border-radius:8px;padding:1.2rem 1.5rem;margin-bottom:1.5rem}
+.hd h1{font-size:18px;font-weight:500;margin-bottom:4px}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.2);margin-right:4px}
+.screenshot .empty{background:#f0f0ee;border-radius:8px;padding:1.5rem;font-size:12px;color:#aaa;text-align:center;border:.5px solid #e5e5e5;margin-bottom:1.5rem}
+.sec{background:#fff;border-radius:8px;border:.5px solid #e5e5e5;margin-bottom:12px;overflow:hidden}
+.sec-hd{padding:12px 16px;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center;border-bottom:.5px solid #f0f0ee}
+.sec-hd.toggle{cursor:pointer}
+.sec-body{padding:12px 16px;font-size:13px;line-height:1.7}
+.sec-body.hidden{display:none}
+.decision{background:#f7f7f5;border-radius:6px;padding:10px 12px;margin-bottom:10px}
+.decision:last-child{margin-bottom:0}
+.decision-title{font-weight:500;margin-bottom:6px}
+.steps{background:#f0f4ff;border-radius:6px;padding:10px 12px;margin:8px 0}
+.steps ol{padding-left:1.4em;font-size:13px}
+.steps li{margin-bottom:4px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-weight:500;padding:6px 8px;border-bottom:.5px solid #e5e5e5;color:#888;background:#fafafa}
+td{padding:8px;border-bottom:.5px solid #f0f0ee;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.star td{background:#fffbe6}
+.warn{background:#fee;border-left:3px solid #E1251B;padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;margin-top:6px}
+.pattern{background:#f0f4ff;border-radius:6px;padding:10px 12px;margin-bottom:8px}
+.pattern-title{font-weight:500;margin-bottom:6px}
+.principle{background:#e8f4e8;border-left:3px solid #0AAD48;padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;margin-top:8px}
+.related-case{display:block;font-size:12px;color:#3C84C4;text-decoration:none;padding:6px 0;border-bottom:.5px solid #f0f0ee}
+.related-case:last-child{border-bottom:none}
+.related-note{color:#888;font-size:11px;margin-top:2px}
+.back{display:inline-block;font-size:12px;color:#888;text-decoration:none;margin-bottom:1rem}
+.todo{display:inline-block;background:#fff8e6;border:.5px solid #EF9F27;padding:1px 6px;font-size:11px;border-radius:3px;color:#b07800}
+.code{font-family:monospace;font-size:11px;background:#f0f0ee;padding:1px 5px;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="index.html">← 返回知识库</a>
+<div class="hd">
+  <h1>京通资格码领取及回填简化</h1>
+  <div style="margin-top:6px;font-size:12px;opacity:.8">
+    <span class="tag">App</span><span class="tag">pdp/promotion</span>
+    <span style="opacity:.7;margin-left:4px">最后更新 2026-05-25</span>
+  </div>
+  <div style="margin-top:6px;font-size:11px;opacity:.7">UX：阮蓝蝶 / 产品：王金 / 2025.02.18</div>
+</div>
+
+<div class="screenshot"><div class="empty">📎 暂无设计稿截图 · 可在 reasoning.md frontmatter 的 screenshots 字段填入 CDN 链接</div></div>
+
+<div class="sec">
+  <div class="sec-hd">需求背景</div>
+  <div class="sec-body">
+    <p style="margin-bottom:8px">北京购新立减场景，领取国补资格需跳转至政府平台「京通」App，再返回京东使用，链路长达 <strong>12 步</strong>，跨端操作割裂，资格码需用户手动回填。</p>
+    <p style="font-size:12px;color:#666">目标：从 12 步压缩至 5 步甚至 1 步（站内闭环 + 自动回填）。竞对线上 1 步领取，但无国补后价格感知。</p>
+    <p style="margin-top:6px;font-size:12px;color:#888">来源：PRD §4.1.1 购新立减·北京8大类数据</p>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">核心设计决策</div>
+  <div class="sec-body">
+
+    <div class="decision">
+      <div class="decision-title">Decision 1 · 国补弹层内嵌 4 步流程引导图</div>
+      <div class="steps">
+        <ol>
+          <li>点击去领取</li>
+          <li>跳转京通</li>
+          <li>返回京东下单</li>
+          <li>优惠下单（提交订单时自动享受国家补贴优惠）</li>
+        </ol>
+      </div>
+      <p style="font-size:12px;color:#888">来源：设计稿「4步领取流程」区块标注</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 2 · 资格码绑定卡片区分「绑定前」和「绑定后」</div>
+      <ul style="padding-left:1.2em;margin-bottom:8px">
+        <li><strong>绑定资格码前</strong>：「绑定资格码享受补贴」+「先去领取资格码哦」+「立即绑定」按钮</li>
+        <li><strong>绑定资格码后</strong>：展示已回填的码串（如 <span class="code">78ccc75dae9bfe10egl</span>），国补优惠自动计入结算</li>
+      </ul>
+      <p style="font-size:12px;color:#888">来源：设计稿子画板标注「绑定资格码前」/「绑定资格码后」</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 3 · 复用国补腰带框架，延续地址匹配和弹层标题</div>
+      <ul style="padding-left:1.2em">
+        <li>商详绿色腰带（<span class="code">#0AAD48</span>），弹层标题：「领取国家补贴」</li>
+        <li>地址匹配提示：「已按收货地址为你自动匹配"北京微波炉补贴"」</li>
+        <li>底部汇总：「共减¥888.00 / 国家补贴 -¥888.00」</li>
+      </ul>
+      <p style="margin-top:4px;font-size:12px;color:#888">来源：设计稿颜色 + 文案标注；延续多商品方案框架，降低认知切换成本</p>
+    </div>
+
+    <div class="warn">⚠️ 上线前必须确认：scheme 跳转回调的技术可行性。若回调失败无兜底，4步引导会成为迷途路径</div>
+
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">状态覆盖表</div>
+  <div class="sec-body" style="padding:0">
+    <table>
+      <tr><th>状态 / 场景</th><th>视觉处理</th><th>备注</th></tr>
+      <tr><td>商详腰带 · 绑定前</td><td>绿色腰带展示到手价，国家补贴 -¥888.00</td><td style="color:#888;font-size:11px">—</td></tr>
+      <tr><td>弹层 · 绑定资格码前</td><td>4步流程引导图 + 「立即绑定」按钮</td><td style="color:#888;font-size:11px">设计稿区块「绑定资格码前」</td></tr>
+      <tr><td>弹层 · 绑定资格码后</td><td>码串展示 + 自动核销标识 + 「共减¥888」汇总</td><td style="color:#888;font-size:11px">设计稿区块「绑定资格码后」</td></tr>
+      <tr class="star"><td>⭐ 跳转京通失败</td><td><span class="todo">TODO 待设计</span>降级提示</td><td style="color:#b07800;font-size:11px">⚠️ 高优先级：用户未装京通/网络异常场景</td></tr>
+      <tr class="star"><td>⭐ 用户中途返回 · 码串未回传</td><td><span class="todo">TODO 待设计</span>兜底弹层或手动填写入口</td><td style="color:#b07800;font-size:11px">⚠️ 高优先级：scheme 回调失败兜底</td></tr>
+      <tr><td>码串过期 / 失效</td><td><span class="todo">TODO 待设计</span></td><td style="color:#888;font-size:11px">待产品确认资格码有效期规则</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">可复用设计模式</div>
+  <div class="sec-body">
+    <div class="pattern">
+      <div class="pattern-title">Pattern 1 · 跨端流程的站内引导——「N步完成」流程图</div>
+      <p style="font-size:12px;color:#666;margin-bottom:6px">适用：用户需要离开当前 App 完成操作后返回继续（跳转政府平台领券、跳转银行App绑卡等）</p>
+      <ol style="padding-left:1.2em;font-size:13px">
+        <li>弹层内展示完整 N 步流程图（包含「跳出」和「返回」步骤）</li>
+        <li>用户完成跳转并返回后，关键数据（码串/凭证）自动回填</li>
+        <li>自动回填成功 → 弹层状态更新为「已完成」</li>
+        <li>自动回填失败 → 展示手动填写入口或重试提示</li>
+      </ol>
+      <div class="principle">核心原则：引导图必须包含「返回后自动完成」的步骤，让用户在跳转前知道「回来不用再做什么」，降低流失风险</div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd toggle" onclick="toggle(this)">遗留问题 <span>▾</span></div>
+  <div class="sec-body hidden" style="padding:0">
+    <table>
+      <tr><th>问题</th><th>负责人</th><th>状态</th></tr>
+      <tr class="star"><td>⭐ 跳转京通失败时的降级提示设计</td><td>UX（阮蓝蝶）</td><td>⏳ 高优先级</td></tr>
+      <tr class="star"><td>⭐ 码串未回传时的兜底方案</td><td>UX + 研发</td><td>⏳ 高优先级</td></tr>
+      <tr><td>scheme 回调的技术可行性及超时时间</td><td>研发</td><td>⏳ 出视觉稿前需确认</td></tr>
+      <tr><td>资格码有效期规则（是否会失效）</td><td>产品（王金）</td><td>⏳ 待确认</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">关联历史 Case</div>
+  <div class="sec-body">
+    <a class="related-case" href="app-national-subsidy-multisku.html">App 国补多商品<div class="related-note">国补腰带及弹层基础框架来源；本 Case 复用弹层框架，新增资格码领取引导</div></a>
+  </div>
+</div>
+
+</div>
+<script>function toggle(hd){hd.classList.toggle('open');var b=hd.nextElementSibling;b.classList.toggle('hidden');var a=hd.querySelector('span');if(a)a.textContent=b.classList.contains('hidden')?'▾':'▴'}</script>
+</body></html>

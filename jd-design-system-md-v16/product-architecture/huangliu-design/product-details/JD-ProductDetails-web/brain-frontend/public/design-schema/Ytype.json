@@ -1,0 +1,22 @@
+{
+  "_label": "类型",
+  "general": {
+    "label": "通用",
+    "id": "general"
+  },
+  "business": {
+    "label": "事业群",
+    "items": {
+      "supermarket":   { "label": "大商超" },
+      "3C":            { "label": "3C数码" },
+      "home":          { "label": "家电家居" },
+      "fashion":       { "label": "大时尚" },
+      "life":          { "label": "生活服务" },
+      "auto":          { "label": "汽车" },
+      "health":        { "label": "大健康" },
+      "secondHand":    { "label": "拍拍二手" },
+      "govEnterprise": { "label": "集团政企" },
+      "jingXi":        { "label": "京喜" }
+    }
+  }
+}

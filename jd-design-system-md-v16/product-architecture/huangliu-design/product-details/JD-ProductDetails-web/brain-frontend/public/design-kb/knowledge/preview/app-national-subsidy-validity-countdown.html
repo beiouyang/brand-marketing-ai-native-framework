@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>国补资格增加有效期&倒计时 · 设计决策</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC",sans-serif;background:#f5f4f0;color:#1a1a1a;padding:2rem}
+.wrap{max-width:720px;margin:0 auto}
+.hd{background:#E1251B;color:#fff;border-radius:8px;padding:1.2rem 1.5rem;margin-bottom:1.5rem}
+.hd h1{font-size:18px;font-weight:500;margin-bottom:4px}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.2);margin-right:4px}
+.screenshot img{max-width:100%;border-radius:8px;border:.5px solid #ddd;margin-bottom:1.5rem}
+.screenshot .empty{background:#f0f0ee;border-radius:8px;padding:1.5rem;font-size:12px;color:#aaa;text-align:center;border:.5px solid #e5e5e5;margin-bottom:1.5rem}
+.sec{background:#fff;border-radius:8px;border:.5px solid #e5e5e5;margin-bottom:12px;overflow:hidden}
+.sec-hd{padding:12px 16px;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center;border-bottom:.5px solid #f0f0ee}
+.sec-hd.toggle{cursor:pointer}
+.sec-body{padding:12px 16px;font-size:13px;line-height:1.7}
+.sec-body.hidden{display:none}
+.decision{background:#f7f7f5;border-radius:6px;padding:10px 12px;margin-bottom:10px}
+.decision:last-child{margin-bottom:0}
+.decision-title{font-weight:500;margin-bottom:6px}
+.threshold{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}
+.threshold-card{border-radius:6px;padding:8px 10px;font-size:12px}
+.tc-a{background:#fee;border:.5px solid #ffb3b3}
+.tc-b{background:#f0f0ee;border:.5px solid #ddd}
+.tc-c{background:#f0f4ff;border:.5px solid #b3c6f5}
+.tc-label{font-weight:500;margin-bottom:3px;font-size:11px}
+.countdown-demo{display:inline-flex;align-items:center;background:#FF0F23;color:#fff;border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600;letter-spacing:1px;margin:8px 0}
+.ab-box{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.ab-card{border-radius:6px;padding:8px 10px;font-size:12px;line-height:1.6}
+.ab-a{background:#e8f4e8;border:.5px solid #b8dcb8}
+.ab-b{background:#fff8e6;border:.5px solid #f5d87a}
+.ab-label{font-weight:500;margin-bottom:4px;font-size:11px;color:#555}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-weight:500;padding:6px 8px;border-bottom:.5px solid #e5e5e5;color:#888;background:#fafafa}
+td{padding:8px;border-bottom:.5px solid #f0f0ee;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.star td{background:#fffbe6}
+.pattern{background:#f0f4ff;border-radius:6px;padding:10px 12px}
+.pattern-title{font-weight:500;margin-bottom:6px}
+.principle{background:#e8f4e8;border-left:3px solid #0AAD48;padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;margin-top:8px}
+.related-case{display:block;font-size:12px;color:#3C84C4;text-decoration:none;padding:6px 0;border-bottom:.5px solid #f0f0ee}
+.related-case:last-child{border-bottom:none}
+.related-note{color:#888;font-size:11px;margin-top:2px}
+.back{display:inline-block;font-size:12px;color:#888;text-decoration:none;margin-bottom:1rem}
+.todo{display:inline-block;background:#fff8e6;border:.5px solid #EF9F27;padding:1px 6px;font-size:11px;border-radius:3px;color:#b07800}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="index.html">← 返回知识库</a>
+<div class="hd">
+  <h1>国补资格增加有效期&amp;倒计时</h1>
+  <div style="margin-top:6px;font-size:12px;opacity:.8">
+    <span class="tag">App</span><span class="tag">PC</span><span class="tag">pdp/promotion</span>
+    <span style="opacity:.7;margin-left:4px">最后更新 2025-05-25</span>
+  </div>
+  <div style="margin-top:6px;font-size:11px;opacity:.7">UX：刘迎 / 产品：沈天义 / 2025.5.6</div>
+</div>
+
+<div class="screenshot">
+  <img src="https://img11.360buyimg.com/img/jfs/t1/440702/25/1478/2867495/6a13c1abF3f17759d/0276000000e66227.png" alt="国补资格增加有效期&倒计时·设计稿全览" onerror="this.parentNode.innerHTML='<div class=empty>📎 截图加载失败，可检查 CDN 链接是否有效</div>'">
+</div>
+
+<div class="sec">
+  <div class="sec-hd">需求背景</div>
+  <div class="sec-body">
+    <p style="margin-bottom:8px">云闪付资格领取有失效时间（不同政府不同，有30分钟失效，有1-7天失效）。站内领取完成后未告知用户资格的使用时间限制，导致大量被动解绑。</p>
+    <p style="background:#fff3cd;border-radius:4px;padding:6px 10px;font-size:13px;margin-bottom:8px">📊 平均被动解绑率（资格失效）：<strong>64.24%</strong>（79% 的城市设置了资格使用期限）</p>
+    <table style="margin-bottom:8px">
+      <tr><th>高风险地区</th><th>被动解绑率</th><th>有效期</th></tr>
+      <tr><td>重庆</td><td style="color:#E1251B;font-weight:500">77.70%</td><td>当日有效</td></tr>
+      <tr><td>浙江</td><td style="color:#E1251B;font-weight:500">67.77%</td><td>30分钟内有效</td></tr>
+      <tr><td>陕西</td><td style="color:#E1251B;font-weight:500">70.77%</td><td>当日有效</td></tr>
+      <tr><td>厦门</td><td style="color:#E1251B;font-weight:500">71.00%</td><td>当日23:00前失效</td></tr>
+    </table>
+    <p style="font-size:12px;color:#888">来源：PRD §1.1 数据表 / 数据周期：2025.1.1-4.10</p>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">核心设计决策</div>
+  <div class="sec-body">
+
+    <div class="decision">
+      <div class="decision-title">Decision 1 · 以 24h 为阈值区分「倒计时」与「静态过期时间」</div>
+      <div class="countdown-demo">距失效还剩 08:08:08</div>
+      <div class="threshold">
+        <div class="threshold-card tc-a"><div class="tc-label">&lt; 24h → 实时倒计时</div>格式：「距失效还剩 HH:MM:SS」<br>颜色：#FF0F23</div>
+        <div class="threshold-card tc-b"><div class="tc-label">≥ 24h → 静态日期</div>格式：「YYYY.MM.DD HH:MM 前有效」<br>示例：「2024.11.11 23:59前有效」</div>
+        <div class="threshold-card tc-c"><div class="tc-label">无有效期配置</div>不渲染该信息行，组件支持此状态</div>
+      </div>
+      <p style="font-size:12px;color:#888">来源：PRD §3.2 a-i/a-ii + 设计稿批注</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-title">Decision 2 · 商详已领态并行输出两套方案</div>
+      <div class="ab-box">
+        <div class="ab-card ab-a">
+          <div class="ab-label">方案一：腰带内展示倒计时</div>
+          倒计时信息直接展示在国补腰带区域，用户无需额外操作即可感知
+        </div>
+        <div class="ab-card ab-b">
+          <div class="ab-label">方案二：底部黄条展示倒计时</div>
+          倒计时信息通过底部固定黄条展示，腰带保持简洁
+        </div>
+      </div>
+      <p style="margin-top:8px;font-size:12px;color:#888">来源：设计稿区块「方案一：腰带展示倒计时」「方案二：底部黄条展示倒计时」· 最终方案待评审</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">状态覆盖表</div>
+  <div class="sec-body" style="padding:0">
+    <table>
+      <tr><th>状态 / 场景</th><th>视觉处理</th><th>备注</th></tr>
+      <tr><td>领取弹层·领取前</td><td><span class="todo">TODO 待补充</span></td><td style="color:#888;font-size:11px">来源：设计稿区块名</td></tr>
+      <tr class="star"><td>⭐ 领取弹层·已领取·距过期 &lt; 24h</td><td>资格行下方展示红色倒计时「距失效还剩 HH:MM:SS」</td><td style="color:#b07800;font-size:11px">来源：PRD §3.2 a-i + PRD 截图设计示例</td></tr>
+      <tr class="star"><td>⭐ 领取弹层·已领取·距过期 ≥ 24h</td><td>资格行下方展示红色日期「YYYY.MM.DD HH:MM 前有效」</td><td style="color:#b07800;font-size:11px">来源：PRD §3.2 a-ii</td></tr>
+      <tr><td>领取弹层·已领取·无有效期限制</td><td>不展示有效期行</td><td style="color:#888;font-size:11px">来源：设计稿「无倒计时」状态标注</td></tr>
+      <tr><td>商详·方案一·腰带·距过期 &lt; 24h</td><td><span class="todo">TODO 待补充</span></td><td style="color:#888;font-size:11px">设计稿区块名，具体视觉未展开</td></tr>
+      <tr><td>商详·方案一·腰带·距过期 ≥ 24h</td><td><span class="todo">TODO 待补充</span></td><td style="color:#888;font-size:11px">设计稿区块名，具体视觉未展开</td></tr>
+      <tr><td>商详·方案一·腰带·无倒计时</td><td><span class="todo">TODO 待补充</span></td><td style="color:#888;font-size:11px">—</td></tr>
+      <tr><td>商详·方案二·底部黄条·距过期 &lt; 24h</td><td><span class="todo">TODO 待补充</span></td><td style="color:#888;font-size:11px">设计稿区块名，具体视觉未展开</td></tr>
+      <tr><td>商详·方案二·底部黄条·距过期 ≥ 24h</td><td><span class="todo">TODO 待补充</span></td><td style="color:#888;font-size:11px">—</td></tr>
+      <tr><td>商详·方案二·无倒计时</td><td>不展示底部黄条</td><td style="color:#888;font-size:11px">来源：设计稿「无倒计时」状态标注</td></tr>
+      <tr class="star"><td>⭐ 同一活动多个资格</td><td><span class="todo">TODO 待补充</span>（取哪个时间展示？）</td><td style="color:#b07800;font-size:11px">PRD §3.2 c 提到「多个资格都要加」，取值规则待确认</td></tr>
+      <tr><td>接口异常/过期时间获取失败</td><td><span class="todo">TODO 待补充</span></td><td style="color:#888;font-size:11px">PRD 及设计稿均未说明</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">可复用设计模式</div>
+  <div class="sec-body">
+    <div class="pattern">
+      <div class="pattern-title">Pattern 1 · 双阈值时间展示切换（倒计时 vs 静态日期）</div>
+      <p style="font-size:12px;color:#666;margin-bottom:8px">适用：资格/券码有有效期限制，且不同场景下有效期长短差异大，需要根据剩余时间选择合适的展示形式</p>
+      <p style="font-size:12px;margin-bottom:6px"><strong>核心规则（来源：PRD §3.2 + 设计稿批注）：</strong></p>
+      <div class="threshold">
+        <div class="threshold-card tc-a"><div class="tc-label">&lt; 24h → 倒计时</div>时分秒格式，颜色 #FF0F23</div>
+        <div class="threshold-card tc-b"><div class="tc-label">≥ 24h → 静态日期</div>年月日时分格式</div>
+        <div class="threshold-card tc-c"><div class="tc-label">无有效期配置</div>不渲染该信息行</div>
+      </div>
+      <div class="principle">核心原则：有效期不是装饰，是用户行动的触发器；展示形式决定紧迫感强度，阈值选择要与用户实际决策时间对齐</div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd toggle" onclick="toggle(this)">遗留问题 <span>▾</span></div>
+  <div class="sec-body hidden" style="padding:0">
+    <table>
+      <tr><th>问题</th><th>负责人</th><th>状态</th></tr>
+      <tr><td>商详页方案一（腰带）vs 方案二（底部黄条）最终落地哪个</td><td>待补充</td><td>⏳ 设计稿两套方案均有输出，未标注最终结论</td></tr>
+      <tr><td>多个资格时展示哪个时间（PRD §3.2 c 只说「多个资格都要加」，未说明取值规则）</td><td>待补充</td><td>⏳ 待向产品确认</td></tr>
+      <tr><td>Toast 文案中的时间字段是否随活动动态下发</td><td>待补充</td><td>⏳ 设计稿注明「根据实际情况展示」，规则待确认</td></tr>
+      <tr><td>接口异常/过期时间获取失败时的兜底方案</td><td>待补充</td><td>⏳ PRD 及设计稿均未说明</td></tr>
+      <tr><td>特殊活动 ID 的黑名单屏蔽规则</td><td>待补充</td><td>⏳ 未在可见 PRD 截图中说明</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-hd">关联历史 Case</div>
+  <div class="sec-body">
+    <a class="related-case" href="app-national-subsidy-multisku.html">App国补多商品<div class="related-note">国补腰带基础设计来源</div></a>
+    <a class="related-case" href="app-national-subsidy-tradein.html">国补叠加以旧换新利益点感知提升<div class="related-note">国补三态状态框架来源</div></a>
+    <a class="related-case" href="app-national-subsidy-ysf-countdown.html">云闪付浙江资格码倒计时<div class="related-note">浙江30分钟场景的扩展录入，基于本 Case 的24h阈值规则</div></a>
+  </div>
+</div>
+
+</div>
+<script>function toggle(hd){hd.classList.toggle('open');var b=hd.nextElementSibling;b.classList.toggle('hidden');var a=hd.querySelector('span');if(a)a.textContent=b.classList.contains('hidden')?'▾':'▴'}</script>
+</body></html>

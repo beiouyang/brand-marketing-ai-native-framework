@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>设计建议 — 国补商品搭配组合优惠</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+    background: #F5F4F0;
+    color: #1A1A1A;
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+  .container { max-width: 800px; margin: 0 auto; }
+  
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #0AAD48 0%, #14BA57 100%);
+    color: #fff;
+    border-radius: 16px;
+    padding: 32px 36px;
+    margin-bottom: 28px;
+  }
+  .header h1 { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+  .header .meta { font-size: 13px; opacity: 0.85; line-height: 1.8; }
+  .header .meta span { display: inline-block; margin-right: 16px; }
+
+  /* Section */
+  .section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0AAD48;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #E8F5E9;
+  }
+
+  /* 4-grid cards for 需求解读 */
+  .grid-4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .grid-card {
+    background: #F8FBF6;
+    border-radius: 10px;
+    padding: 18px 20px;
+    border-left: 4px solid #0AAD48;
+  }
+  .grid-card .label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #0AAD48;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .grid-card .value {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  /* Reference card */
+  .ref-card {
+    border: 1px solid #E8E8E0;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .ref-card:last-child { margin-bottom: 0; }
+  .ref-card.red { border-left: 4px solid #FF0F23; }
+  .ref-card.yellow { border-left: 4px solid #b5691a; }
+  .ref-card .ref-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .ref-card .ref-title .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .badge.red { background: #FFE3E8; color: #FF0F23; }
+  .badge.yellow { background: #FFF3E0; color: #b5691a; }
+  .ref-card .ref-desc {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 12px;
+  }
+  .ref-card .ref-link {
+    display: inline-block;
+    font-size: 13px;
+    color: #0073FF;
+    text-decoration: none;
+    margin-bottom: 12px;
+  }
+  .ref-card .ref-link:hover { text-decoration: underline; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .tag {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .tag.reuse { background: #E8F5E9; color: #2E7D32; }
+  .tag.modify { background: #FFF8E1; color: #F57F17; }
+  .tag.new { background: #E3F2FD; color: #1565C0; }
+  .tag.warn { background: #FFEBEE; color: #C62828; }
+  .tag.ask { background: #F3E5F5; color: #7B1FA2; }
+
+  /* Task list */
+  .task-group { margin-bottom: 16px; }
+  .task-group:last-child { margin-bottom: 0; }
+  .task-group-label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  .task-group-label.reuse { background: #E8F5E9; color: #2E7D32; }
+  .task-group-label.modify { background: #FFF8E1; color: #F57F17; }
+  .task-group-label.new { background: #E3F2FD; color: #1565C0; }
+  .task-group-label.exclude { background: #F5F5F5; color: #9E9E9E; }
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 14px;
+    color: #333;
+  }
+  .task-item input[type="checkbox"] {
+    margin-top: 3px;
+    width: 16px;
+    height: 16px;
+    accent-color: #0AAD48;
+    flex-shrink: 0;
+  }
+  .task-item .task-text { flex: 1; }
+
+  /* Status table */
+  .status-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .status-table th {
+    text-align: left;
+    padding: 10px 12px;
+    background: #F8FBF6;
+    color: #555;
+    font-weight: 600;
+    border-bottom: 2px solid #E8F5E9;
+  }
+  .status-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #F0F0E8;
+    vertical-align: top;
+  }
+  .status-table tr.highlight {
+    background: #FFFDE7;
+  }
+  .status-table tr.warning td:first-child {
+    border-left: 3px solid #FF9800;
+  }
+  .risk-badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .risk-badge.star { background: #FFF8E1; color: #F57F17; }
+  .risk-badge.warn { background: #FFEBEE; color: #C62828; }
+
+  /* Confirm questions */
+  .question-card {
+    display: flex;
+    gap: 14px;
+    padding: 16px 18px;
+    background: #FAF8F6;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid #7F77DD;
+  }
+  .question-card:last-child { margin-bottom: 0; }
+  .question-num {
+    font-size: 14px;
+    font-weight: 700;
+    color: #7F77DD;
+    min-width: 24px;
+  }
+  .question-body { flex: 1; }
+  .question-body .q { font-size: 14px; color: #333; margin-bottom: 4px; }
+  .question-body .consequence {
+    font-size: 12px;
+    color: #999;
+  }
+  .question-body .who {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    background: #EDE7F6;
+    color: #5E35B1;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+
+  /* History */
+  .history-card {
+    border: 1px solid #E8E8E0;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+  .history-card:last-child { margin-bottom: 0; }
+  .history-card .h-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .history-card .h-title .h-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 8px;
+  }
+  .h-badge.red { background: #FFE3E8; color: #FF0F23; }
+  .h-badge.yellow { background: #FFF3E0; color: #b5691a; }
+  .history-card .h-quote {
+    background: #F8FBF6;
+    border-left: 3px solid #0AAD48;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #444;
+    line-height: 1.7;
+    border-radius: 0 6px 6px 0;
+  }
+  .history-card .h-quote .source {
+    display: block;
+    font-size: 11px;
+    color: #999;
+    margin-top: 4px;
+  }
+  .history-card .h-link {
+    font-size: 12px;
+    color: #0073FF;
+  }
+  .history-card .h-link a { color: #0073FF; text-decoration: none; }
+  .history-card .h-link a:hover { text-decoration: underline; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    font-size: 13px;
+    color: #999;
+    padding: 20px 0;
+  }
+
+  @media (max-width: 600px) {
+    .grid-4 { grid-template-columns: 1fr; }
+    .header { padding: 24px 20px; }
+    .section { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🎯 国补商品搭配组合优惠</h1>
+    <div class="meta">
+      <span>📅 2026-05-29 16:49</span>
+      <span>📚 引用 4 个历史 Case</span>
+    </div>
+  </div>
+
+  <!-- 一、需求解读 -->
+  <div class="section">
+    <div class="section-title">一、需求解读</div>
+    <div class="grid-4">
+      <div class="grid-card">
+        <div class="label">📌 要解决的问题</div>
+        <div class="value">用户购买国补商品时，无法直观看到该商品与其他商品组合购买能享受的叠加优惠，缺乏联动购买的决策依据。</div>
+      </div>
+      <div class="grid-card">
+        <div class="label">🎯 业务目标</div>
+        <div class="value">借助国补商品的引流优势，将国补商品与非国补关联商品打包为组合优惠，带动非国补商品销售，拓宽营收边界。</div>
+      </div>
+      <div class="grid-card">
+        <div class="label">⚡ 设计挑战</div>
+        <div class="value">组合内商品可能有不同的补贴状态（全部未领/部分未领/全部已领/全部已用），需要在有限的空间内清晰传达每件商品的补贴进度和组合后的到手价。</div>
+      </div>
+      <div class="grid-card">
+        <div class="label">✅ 成功标准</div>
+        <div class="value">用户一眼能看出「组合购买比单买省多少」，知道哪些补贴已领、哪些还需操作，并能顺畅完成组合购买。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 二、推荐参考的设计稿 -->
+  <div class="section">
+    <div class="section-title">二、推荐参考的设计稿</div>
+
+    <div class="ref-card red">
+      <div class="ref-title"><span class="badge red">🔴 最强参考</span>国补支持新虚拟组套</div>
+      <div class="ref-desc">最直接相关的历史 Case，完整实现了「商详主页组套楼层 → 套装详情弹层 → 补贴领取 → 组合购买」的完整流程，框架可直接复用。</div>
+      <a class="ref-link" href="https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:44579&node_id=6:49261" target="_blank">🔗 打开设计稿 →</a>
+      <div class="tag-list">
+        <span class="tag reuse">✅ 组套楼层框架</span>
+        <span class="tag reuse">✅ 套装详情弹层结构</span>
+        <span class="tag reuse">✅ 四态分层逻辑</span>
+        <span class="tag reuse">✅ 底部工具栏联动</span>
+        <span class="tag modify">✏️ 组合商品数量适配</span>
+        <span class="tag modify">✏️ 非国补商品价格行</span>
+        <span class="tag new">🆕 组合优惠定价展示</span>
+        <span class="tag warn">⚠️ 需补充定价规则</span>
+        <span class="tag ask">❓ 是否与国补叠加</span>
+      </div>
+    </div>
+
+    <div class="ref-card yellow">
+      <div class="ref-title"><span class="badge yellow">🟡 辅助参考</span>App 国补多商品</div>
+      <div class="ref-desc">国补腰带+优惠弹层基础框架，以及「领取前 vs 领取后」的文案切换模式（「最高减」→「再减」）。</div>
+      <a class="ref-link" href="https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:569620&node_id=6:569622" target="_blank">🔗 打开设计稿 →</a>
+    </div>
+
+    <div class="ref-card yellow">
+      <div class="ref-title"><span class="badge yellow">🟡 辅助参考</span>以旧换新国补大促感知强化</div>
+      <div class="ref-desc">弹层内多优惠叠加展示模式，有tab/无tab弹层结构，以及 Before/After 对比设计稿规范。</div>
+      <a class="ref-link" href="https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:58100&node_id=6:726169" target="_blank">🔗 打开设计稿 →</a>
+    </div>
+  </div>
+
+  <!-- 三、设计任务清单 -->
+  <div class="section">
+    <div class="section-title">三、设计任务清单</div>
+
+    <div class="task-group">
+      <span class="task-group-label reuse">✅ 直接复用（无需设计）</span>
+      <div class="task-item">
+        <input type="checkbox" id="t1"><label for="t1" class="task-text">组套楼层基础框架 — 沿用虚拟组套 Case 的楼层布局，无需改动</label>
+      </div>
+      <div class="task-item">
+        <input type="checkbox" id="t2"><label for="t2" class="task-text">套装详情弹层结构 — 沿用虚拟组套 Case 的弹层框架</label>
+      </div>
+      <div class="task-item">
+        <input type="checkbox" id="t3"><label for="t3" class="task-text">四态分层逻辑 — 沿用虚拟组套 Case 的全部未领/部分未领/全部已领/全部已用</label>
+      </div>
+    </div>
+
+    <div class="task-group">
+      <span class="task-group-label modify">✏️ 修改现有设计</span>
+      <div class="task-item">
+        <input type="checkbox" id="t4"><label for="t4" class="task-text">组合商品数量适配 — 根据实际商品数量上限调整楼层展示规格</label>
+      </div>
+      <div class="task-item">
+        <input type="checkbox" id="t5"><label for="t5" class="task-text">非国补商品价格行 — 明确非国补商品在组合中的价格展示方式</label>
+      </div>
+      <div class="task-item">
+        <input type="checkbox" id="t6"><label for="t6" class="task-text">底部工具栏按钮文案 — 根据组合状态动态切换</label>
+      </div>
+    </div>
+
+    <div class="task-group">
+      <span class="task-group-label new">🆕 全新设计</span>
+      <div class="task-item">
+        <input type="checkbox" id="t7"><label for="t7" class="task-text">组合优惠价 vs 单买总价的对比展示 — 突出「组合省多少」的核心利益点</label>
+      </div>
+      <div class="task-item">
+        <input type="checkbox" id="t8"><label for="t8" class="task-text">组合优惠的入口引导文案 — 在商详主页引导用户进入组合楼层</label>
+      </div>
+      <div class="task-item">
+        <input type="checkbox" id="t9"><label for="t9" class="task-text">组合优惠的兜底状态 — 当组合内所有补贴已用尽时的展示</label>
+      </div>
+    </div>
+
+    <div class="task-group">
+      <span class="task-group-label exclude">⏸️ 暂不设计（本次排除）</span>
+      <div class="task-item">
+        <span class="task-text" style="color:#999;">以旧换新叠加场景 — 待确认组合优惠是否支持以旧换新叠加</span>
+      </div>
+      <div class="task-item">
+        <span class="task-text" style="color:#999;">结算页的组合优惠展示 — 结算页独立设计，本次不涉及</span>
+      </div>
+      <div class="task-item">
+        <span class="task-text" style="color:#999;">PC 端适配 — 本次为 App 端专属</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 四、需要覆盖的状态 -->
+  <div class="section">
+    <div class="section-title">四、需要覆盖的状态</div>
+    <table class="status-table">
+      <thead>
+        <tr><th>状态 / 场景</th><th>视觉处理方向</th><th>风险提示</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>全部未领</td><td>所有商品补贴均未领取，展示「领取全部补贴」引导按钮</td><td>—</td></tr>
+        <tr class="highlight"><td>⭐ 部分未领</td><td>混合展示已领/未领状态，区分商品行样式</td><td><span class="risk-badge star">来自虚拟组套 Case</span></td></tr>
+        <tr><td>全部已领</td><td>所有补贴已领，展示组合最低到手价</td><td>—</td></tr>
+        <tr class="highlight"><td>⭐ 全部已用</td><td>补贴已全部使用的兜底终态</td><td><span class="risk-badge star">历史易遗漏的终态</span></td></tr>
+        <tr class="warning"><td>⚠️ 组合内无国补商品</td><td>所有商品均为非国补商品，楼层降级为普通组合推荐</td><td><span class="risk-badge warn">需与产品确认</span></td></tr>
+        <tr><td>组合楼层无腰带态</td><td>国补腰带不存在时的楼层兜底展示</td><td>—</td></tr>
+        <tr class="warning"><td>⚠️ 暗黑模式</td><td>楼层和弹层的暗黑模式适配</td><td><span class="risk-badge warn">需确认本期是否覆盖</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 五、动笔前需要确认的问题 -->
+  <div class="section">
+    <div class="section-title">五、动笔前需要确认的问题</div>
+
+    <div class="question-card">
+      <div class="question-num">#1</div>
+      <div class="question-body">
+        <div class="q">组合内商品数量上限是多少？</div>
+        <div class="consequence">不确认的后果：楼层布局无法确定，影响设计稿输出</div>
+        <span class="who">👤 找产品确认</span>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-num">#2</div>
+      <div class="question-body">
+        <div class="q">组合优惠的定价规则是什么？（固定折扣/满减/叠加补贴）</div>
+        <div class="consequence">不确认的后果：无法确定到手价的计算方式和展示逻辑</div>
+        <span class="who">👤 找产品确认</span>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-num">#3</div>
+      <div class="question-body">
+        <div class="q">非国补商品在组合中的优惠来源是什么？</div>
+        <div class="consequence">不确认的后果：无法确定非国补商品的价格行展示内容</div>
+        <span class="who">👤 找产品确认</span>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-num">#4</div>
+      <div class="question-body">
+        <div class="q">组合优惠是否支持以旧换新叠加？</div>
+        <div class="consequence">不确认的后果：可能遗漏以旧换新场景的状态覆盖</div>
+        <span class="who">👤 找产品确认</span>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-num">#5</div>
+      <div class="question-body">
+        <div class="q">组合优惠的入口位置在哪里？（商详页哪个楼层插入）</div>
+        <div class="consequence">不确认的后果：楼层在商详页的插入位置不确定，影响页面布局</div>
+        <span class="who">👤 找产品确认</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 六、历史依据 -->
+  <div class="section">
+    <div class="section-title">六、历史依据</div>
+
+    <div class="history-card">
+      <div class="h-title"><span class="h-badge red">🔴</span>国补支持新虚拟组套</div>
+      <div class="h-quote">
+        在商详页新增「虚拟组套」楼层模块，将 1 件国补商品与 1～4 件非国补关联商品打包，通过套装详情弹层承载补贴领取和组套购买流程。
+        <span class="source">— 来源：虚拟组套 Case §二、设计核心打法</span>
+      </div>
+      <div class="h-quote">
+        商详楼层是流量最集中的曝光位，在此新增组套入口可最大化带动非国补商品的连带购买；以弹层形式承载套装详情，保持商详主页结构不变。
+        <span class="source">— 来源：虚拟组套 Case §二、设计核心打法</span>
+      </div>
+      <div class="h-quote">
+        四态分层：全部未领 → 部分未领 → 全部已领 → 全部已用，每一态都要给用户一个明确的下一步行动指引。
+        <span class="source">— 来源：虚拟组套 Case §附：可复用的设计模式·Pattern 1</span>
+      </div>
+      <div class="h-link">
+        🔗 <a href="https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:44579&node_id=6:49261" target="_blank">查看历史设计稿</a>
+        · <a href="https://ling-cdn.s3-cache-accelerate.cn-north-1.jdcloud-oss.com/ling-material-image/1990724210050437121/27a07d85e80c172e880595fe75541298.png" target="_blank">查看截图</a>
+      </div>
+    </div>
+
+    <div class="history-card">
+      <div class="h-title"><span class="h-badge yellow">🟡</span>App 国补多商品</div>
+      <div class="h-quote">
+        领取前文案「京东支付最高减 xxx」，领取后文案「京东支付再减 xxx」——「最高减」传达潜在上限激励领取，「再减」表达已到手确定感。
+        <span class="source">— 来源：多商品 Case §4·Decision 2</span>
+      </div>
+      <div class="h-quote">
+        国补腰带作为商详主页的国补入口，独立于已享楼层，绿色（#0AAD48）为国补活动专属色。
+        <span class="source">— 来源：多商品 Case §4·Decision 1</span>
+      </div>
+      <div class="h-link">
+        🔗 <a href="https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:569620&node_id=6:569622" target="_blank">查看历史设计稿</a>
+      </div>
+    </div>
+
+    <div class="history-card">
+      <div class="h-title"><span class="h-badge yellow">🟡</span>国补到手价</div>
+      <div class="h-quote">
+        「预估价」和「到手价」的文案切换必须严格对应状态：未满足条件时展示「预估价」，用户完成前置操作后切换为「到手价」。
+        <span class="source">— 来源：到手价 Case §8·Pattern 1</span>
+      </div>
+      <div class="h-quote">
+        优惠条目超出屏宽时横滑，不折叠。
+        <span class="source">— 来源：到手价 Case §4·Decision 2</span>
+      </div>
+      <div class="h-link">
+        🔗 <a href="https://relay.jd.com/file/design?id=2046484439810203649&page_id=6:507680&node_id=6:549509" target="_blank">查看历史设计稿</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    设计建议由 AI 生成 · 基于 design-knowledge-base 知识库<br>
+    引用 Case：虚拟组套 · 多商品 · 大促感知强化 · 到手价
+  </div>
+
+</div>
+</body>
+</html>

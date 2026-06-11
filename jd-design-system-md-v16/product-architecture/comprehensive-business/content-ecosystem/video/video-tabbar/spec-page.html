@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>视频场域底导 · Video Tabbar — JD APP V16.0</title>
+<style>
+  :root {
+    --c-text: #171a26;
+    --c-text-2: #3d414d;
+    --c-text-3: #828794;
+    --c-line: #00000014;
+    --c-bg: #ffffff;
+    --c-bg-sunken: #f5f6fa;
+    --c-brand: #ff0f23;
+    --c-info: #0073ff;
+    --c-info-bg: #e5f5ff;
+    --c-success: #2aa32a;
+    --c-success-bg: #ebfbeb;
+    --c-warning: #b26b00;
+    --c-warning-bg: #fff9e0;
+    --r-base: 6px;
+    --r-detail: 8px;
+    --r-xl: 12px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--c-bg-sunken);
+    color: var(--c-text);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--c-info); }
+  code {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    background: var(--c-bg-sunken);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--c-brand);
+  }
+
+  .top-bar {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 16px;
+    padding: 0 24px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+    flex-wrap: wrap;
+  }
+  .top-bar__brand { padding: 14px 0; margin-right: 12px; font-size: 13px; font-weight: 600; color: var(--c-text); text-decoration: none; letter-spacing: 0.02em; }
+  .top-bar__brand small { color: var(--c-text-3); font-weight: 500; margin-left: 6px; }
+  .top-bar__nav { display: flex; align-items: stretch; gap: 4px; flex-wrap: wrap; }
+  .top-bar__nav-link {
+    padding: 14px 14px 12px;
+    font-size: 13px;
+    color: var(--c-text-2);
+    text-decoration: none;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+  .top-bar__nav-link:hover { color: var(--c-text); }
+  .top-bar__nav-link.is-current { color: var(--c-text); font-weight: 600; }
+  .top-bar__spacer { flex: 1; }
+
+  .layout {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 24px 80px;
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+  .sidebar {
+    position: sticky;
+    top: 64px;
+    align-self: start;
+    max-height: calc(100vh - 88px);
+    overflow-y: auto;
+    background: var(--c-bg);
+    padding: 20px 12px;
+    border-radius: var(--r-xl);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .sidebar__zone-tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c-text-3);
+    padding: 6px 12px 12px;
+    border-bottom: 1px solid var(--c-line);
+    margin-bottom: 12px;
+  }
+  .sidebar__group { margin-bottom: 18px; }
+  .sidebar__group:last-child { margin-bottom: 0; }
+  .sidebar__link,
+  .sidebar__sub-link {
+    display: block;
+    text-decoration: none;
+  }
+  .sidebar__link {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--c-text-2);
+    border-radius: var(--r-base);
+    font-weight: 500;
+    line-height: 1.5;
+    transition: background 150ms, color 150ms;
+  }
+  .sidebar__sub {
+    margin: 8px 0 8px 12px;
+    padding-left: 10px;
+    border-left: 1px solid var(--c-line);
+  }
+  .sidebar__sub-link {
+    padding: 6px 10px;
+    font-size: 12px;
+    color: var(--c-text-3);
+    border-radius: 4px;
+    line-height: 1.6;
+    transition: background 150ms, color 150ms;
+  }
+  .sidebar__link:hover { background: rgba(0, 0, 0, 0.04); color: var(--c-text); }
+  .sidebar__link.is-current { background: var(--c-text); color: var(--c-bg); }
+  .sidebar__link.is-current:hover { background: var(--c-text); }
+  .sidebar__sub-link:hover { background: rgba(0, 0, 0, 0.03); color: var(--c-text-2); }
+  .sidebar__sub-link.is-current { background: var(--c-bg-sunken); color: var(--c-text); font-weight: 500; }
+
+  .doc {
+    min-width: 0;
+    background: var(--c-bg);
+    padding: 56px 64px 64px;
+    border-radius: var(--r-xl);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    line-height: 1.3;
+    border-bottom: 2px solid var(--c-text);
+    padding-bottom: 16px;
+  }
+  .meta { color: var(--c-text-3); font-size: 13px; margin-bottom: 32px; line-height: 1.8; }
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 44px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--c-line);
+  }
+  h2 .num {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    background: var(--c-brand);
+    color: #fff;
+    border-radius: var(--r-base);
+    text-align: center;
+    font-size: 15px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  h3 { font-size: 17px; font-weight: 600; margin: 24px 0 10px; }
+  p { color: var(--c-text-2); margin: 12px 0; }
+  ul { margin: 12px 0; padding-left: 22px; color: var(--c-text-2); }
+  li { margin: 6px 0; }
+  blockquote {
+    margin: 16px 0;
+    padding: 12px 20px;
+    background: var(--c-info-bg);
+    border-left: 3px solid var(--c-info);
+    border-radius: 0 var(--r-base) var(--r-base) 0;
+    color: var(--c-text-2);
+  }
+
+  .toc {
+    background: var(--c-bg-sunken);
+    padding: 18px 28px;
+    border-radius: var(--r-base);
+    margin-bottom: 30px;
+  }
+  .toc h3 { margin: 0 0 10px; font-size: 14px; color: var(--c-text-2); }
+  .toc ol { margin: 0; padding-left: 18px; font-size: 14px; color: var(--c-text-2); }
+  .toc a { color: var(--c-text-2); text-decoration: none; }
+  .toc a:hover { color: var(--c-brand); }
+
+  .route-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 16px 0 8px;
+  }
+  .route-card {
+    border: 1px solid var(--c-line);
+    background: var(--c-bg-sunken);
+    border-radius: var(--r-detail);
+    padding: 16px;
+    min-height: 120px;
+  }
+  .route-card h3 { margin-top: 0; font-size: 15px; }
+  .route-card p { margin-bottom: 0; font-size: 13px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .spec-card {
+    display: block;
+    min-height: 128px;
+    padding: 18px;
+    border-radius: var(--r-detail);
+    background: var(--c-bg-sunken);
+    color: inherit;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform 160ms, box-shadow 160ms, border-color 160ms;
+  }
+  .spec-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    border-color: var(--c-line);
+  }
+  .spec-card__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-weight: 600;
+    color: var(--c-text);
+    margin-bottom: 8px;
+  }
+  .spec-card__status {
+    flex: 0 0 auto;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--c-info-bg);
+    color: var(--c-info);
+  }
+  .spec-card__status.todo { background: var(--c-warning-bg); color: var(--c-warning); }
+  .spec-card--disabled { opacity: 0.55; cursor: not-allowed; }
+  .spec-card--disabled:hover { transform: none; box-shadow: none; border-color: transparent; }
+  .spec-card p { margin: 0; font-size: 13px; }
+
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; gap: 16px; padding: 16px 12px 40px; }
+    .sidebar { position: static; max-height: none; }
+    .doc { padding: 40px 24px; }
+    .route-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="../../../../../../docs/jd-design-wiki-knowledge-tree.html" class="top-bar__brand">JD Design Wiki <small>· V16</small></a>
+  <nav class="top-bar__nav" aria-label="5 大分区导航">
+    <a href="../../../../../knowledge/spec-page.html" class="top-bar__nav-link">📚 Design 知识</a>
+    <a href="../../../../../foundations/spec-page.html" class="top-bar__nav-link">🎨 Design 基础</a>
+    <a href="../../../../../ai-mechanism/spec-page.html" class="top-bar__nav-link">🤖 AI 机制</a>
+    <a href="../../../../../product-architecture/spec-page.html" class="top-bar__nav-link is-current">🏗 组织架构</a>
+    <a href="../../../../../horizontal/spec-page.html" class="top-bar__nav-link">🚀 横向专项</a>
+  </nav>
+  <span class="top-bar__spacer"></span>
+</div>
+
+<div class="layout">
+  <aside class="sidebar" aria-label="🏗 组织架构 - 子目录">
+    <div class="sidebar__zone-tag">ZONE 04 · 🏗 组织架构</div>
+    <div class="sidebar__group">
+      <a class="sidebar__link" href="../../../../../product-architecture/spec-page.html#top">页面说明</a>
+    </div>
+    <div class="sidebar__group">
+      <a class="sidebar__link is-current" href="#top">综合业务设计部</a>
+      <div class="sidebar__sub">
+        <a class="sidebar__sub-link is-current" href="#top">内容生态</a>
+        <a class="sidebar__sub-link is-current" href="#top">视频 / 逛底导</a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="doc">
+    <h1 id="top">视频场域底导 · Video Tabbar</h1>
+    <div class="meta">
+      归属:组织架构 / 综合业务设计部 / 内容生态 / 视频场域 · slug=<code>video-tabbar</code> · level=<code>page</code><br>
+      来源:Relay <code>286:16020</code>「导航类-逛底导状态」· 关联通用规范:<a href="../../../../../foundations/components-base/tabbar/spec-page.html">Tabbar 底部导航</a>
+    </div>
+
+    <div class="toc">
+      <h3>目录</h3>
+      <ol>
+        <li><a href="#ch-1">业务定位</a></li>
+        <li><a href="#ch-2">导航形态</a></li>
+        <li><a href="#ch-3">使用边界</a></li>
+        <li><a href="#ch-4">子规范入口</a></li>
+      </ol>
+    </div>
+
+    <h2 id="ch-1"><span class="num">1</span>业务定位</h2>
+    <p>视频场域底导用于承载逛逛频道、沉浸视频播放与相关内容生态场景下的底部一级导航。它不重新定义通用 Tabbar 的坑位数、安全区、容器结构，而是在视频业务语境下收敛导航形态、Joy Agent 入口和选中状态的差异。</p>
+    <blockquote>本页是业务层说明，回答“视频 / 逛底导在什么场景用、有哪些形态、从哪里继续看细节”。原子、token、节点和组件变体细节进入子规范。</blockquote>
+
+    <h2 id="ch-2"><span class="num">2</span>导航形态</h2>
+    <div class="route-grid">
+      <section class="route-card">
+        <h3>普通形态</h3>
+        <p>用于没有 Joy Agent 头像挂载的基础底导，核心差异来自视频频道选中态与业务图标插槽。</p>
+      </section>
+      <section class="route-card">
+        <h3>Joy Agent 形态</h3>
+        <p>在底导左侧挂载 Joy Agent 头像入口，支持默认与招手气泡状态，用于强化 AI 助手入口感。</p>
+      </section>
+      <section class="route-card">
+        <h3>Light / Dark 场景</h3>
+        <p>双列商品流走 light 容器，沉浸视频播放走 dark / Liquid Glass 容器；单坑视觉规则保持一致。</p>
+      </section>
+    </div>
+
+    <h2 id="ch-3"><span class="num">3</span>使用边界</h2>
+    <ul>
+      <li>业务入口放在组织架构 Zone 下，描述视频场域的页面/场景规范。</li>
+      <li>通用底导结构继承 <a href="../../../../../foundations/components-base/tabbar/spec-page.html">Tabbar 底部导航</a>，不在本页重复定义。</li>
+      <li>单坑视觉、招手 badge、Joy Agent 头像等实现细节进入子规范，不直接暴露在组织架构总览。</li>
+      <li>非视频频道不复用视频场域的红色 video 选中图标，避免频道身份误读。</li>
+    </ul>
+
+    <h2 id="ch-4"><span class="num">4</span>子规范入口</h2>
+    <div class="spec-grid">
+      <a class="spec-card" href="./atom/spec-page.html">
+        <div class="spec-card__title">
+          <span>单坑原子 / Joy Agent 对照</span>
+          <span class="spec-card__status">READY</span>
+        </div>
+        <p>收录 44×44 slot atom、badge 变体、Joy Agent 头像状态和 Relay 节点细节。</p>
+      </a>
+      <a class="spec-card" href="./README.md">
+        <div class="spec-card__title">
+          <span>落地清单</span>
+          <span class="spec-card__status">MD</span>
+        </div>
+        <p>查看当前已落地模块、Relay 来源和后续待补目录。</p>
+      </a>
+      <div class="spec-card spec-card--disabled" aria-disabled="true">
+        <div class="spec-card__title">
+          <span>普通 / Joy Agent 完整形态</span>
+          <span class="spec-card__status todo">TODO</span>
+        </div>
+        <p>后续补充 default 与 joy-agent 两类父级形态的完整规范页。</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>
