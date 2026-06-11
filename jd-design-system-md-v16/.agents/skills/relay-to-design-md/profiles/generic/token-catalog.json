@@ -1,0 +1,13 @@
+{
+  "$description": "工具中立 token 目录 stub。fork 后填你团队的 token 体系。空 stub 时 skill 跳过 Step 5 token 反查,直接保留 hex / fontSize 原值。",
+  "$updated": "2026-05-27",
+
+  "colors": {},
+  "typography": {},
+  "radius": {},
+  "spacing": {},
+  "materials": {},
+
+  "$how_to_fill": "1. 从你团队的 design token 文件(tokens.json / variables.json / etc.)导出 hex / fontSize / radius / spacing 全表;2. 按本文件结构填入(参考 profiles/jd-v16/token-catalog.json);3. skill 会自动用本表反查",
+  "$skip_lookup_when_empty": true
+}

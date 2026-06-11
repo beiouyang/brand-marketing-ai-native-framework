@@ -1,0 +1,102 @@
+name: design-md validate
+
+# issue #46:PR 改动到 design.md 时自动跑 bin/validate.sh,exit ≠ 0 block merge。
+# 校验规则:
+#   - frontmatter 必填字段
+#   - level/bg/status 受控词表
+#   - slug kebab-case
+#   - relay_source.url 三段可解析
+#   - status=review/published 时禁残 TODO / ⚠️ flag(Status 联动 issue #46)
+# 真源:.agents/skills/relay-to-design-md/bin/validate.sh
+# 联动规则:.agents/skills/design-review/SKILL.md Step 3c + frontmatter-spec.md Status 约束表
+
+"on":
+  pull_request:
+    paths:
+      - 'jd-design-system-md*/**/design.md'
+      - 'jd-design-system-md*/**/spec.md'
+      - 'jd-design-system-md*/**/variants.md'
+      - 'jd-design-system-md*/**/behaviors.md'
+      - 'jd-design-system-md*/**/ai-schema.yaml'
+      - '.agents/skills/relay-to-design-md/bin/validate.sh'
+      - '.github/workflows/design-md-validate.yml'
+
+  # 也允许手动触发(在 Actions 标签下点 Run workflow,本地验时方便)
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    name: validate design.md frontmatter + status 联动
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # 需要 PR base + head 做 diff,fetch 全历史
+          fetch-depth: 0
+
+      - name: 列出 PR 改动的 design.md / bundle 文件
+        id: changed
+        run: |
+          set -euo pipefail
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          # 改动到的 design.md(含 bundle 同 dir 的 design.md)
+          CHANGED=$(git diff --name-only "$BASE" "$HEAD" \
+            | grep -E '(jd-design-system-md(-v16)?/.*/(design|spec|variants|behaviors)\.md|ai-schema\.yaml)$' \
+            || true)
+
+          if [[ -z "$CHANGED" ]]; then
+            echo "no_changes=true" >> "$GITHUB_OUTPUT"
+            echo "PR 未改动 design.md / bundle 文件,跳过校验。"
+            exit 0
+          fi
+
+          # bundle 同 dir 联动:任何文件改动 → 校验该 dir 的 design.md
+          TARGETS=$(echo "$CHANGED" | xargs -I{} dirname {} | sort -u | while read -r dir; do
+            [[ -f "$dir/design.md" ]] && echo "$dir/design.md"
+          done | sort -u)
+
+          if [[ -z "$TARGETS" ]]; then
+            echo "no_changes=true" >> "$GITHUB_OUTPUT"
+            echo "改动文件未关联 design.md,跳过。"
+            exit 0
+          fi
+
+          echo "no_changes=false" >> "$GITHUB_OUTPUT"
+          # 多行 output 用 heredoc
+          {
+            echo 'targets<<EOF'
+            echo "$TARGETS"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+          echo "将校验:"
+          echo "$TARGETS"
+
+      - name: 跑 bin/validate.sh
+        if: steps.changed.outputs.no_changes != 'true'
+        run: |
+          set -euo pipefail
+          chmod +x .agents/skills/relay-to-design-md/bin/validate.sh
+
+          FAIL=0
+          while IFS= read -r f; do
+            [[ -z "$f" ]] && continue
+            echo "::group::validate $f"
+            if ! bash .agents/skills/relay-to-design-md/bin/validate.sh "$f"; then
+              FAIL=1
+              echo "::error file=$f::validate.sh exit 非 0 — status 联动可能触发(见 design-review SKILL.md Step 3c)"
+            fi
+            echo "::endgroup::"
+          done <<< "${{ steps.changed.outputs.targets }}"
+
+          if [[ $FAIL -ne 0 ]]; then
+            echo ""
+            echo "⛔ 一个或多个 design.md 校验未过。"
+            echo "   - status=draft 且仅 warn → 安全;status=review/published + TODO/⚠️ 残留 → block。"
+            echo "   - 修法 1:补全 TODO / 清掉 ⚠️ flag,重跑 \`bash .agents/skills/relay-to-design-md/bin/validate.sh\`"
+            echo "   - 修法 2:把 status 降回 draft(配套提一份明确收口 issue)"
+            exit 1
+          fi

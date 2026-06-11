@@ -1,0 +1,29 @@
+{
+  "$description": "工具中立受控词表 stub。fork 后填你团队的实际值。",
+  "$updated": "2026-05-27",
+
+  "level": {
+    "values": ["component", "page", "flow"],
+    "default": "component",
+    "$note": "最小三档。JD V16 拆成 component-base / component-business 两档,你可以参考"
+  },
+
+  "bg": {
+    "values": [],
+    "default": null,
+    "$note": "填你团队的 BG / domain 列表;空 list 表示 不限制(skill validate 不报错)"
+  },
+
+  "status": {
+    "values": ["draft", "review", "published", "deprecated"],
+    "default": "draft"
+  },
+
+  "frontmatter_required_fields_design": [
+    "file", "level", "bg", "slug", "name_zh", "owner", "status", "last_synced",
+    "relay_source", "auto_detected"
+  ],
+
+  "preview_png_required_for_status": ["review", "published"],
+  "todo_residue_allowed_for_status": ["draft"]
+}

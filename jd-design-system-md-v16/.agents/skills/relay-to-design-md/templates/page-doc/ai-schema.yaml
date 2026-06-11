@@ -1,0 +1,9 @@
+# ⚠️ DEPRECATED（v1.2，2026-06-01）：ai-schema.yaml 已移出默认 bundle（4 md + CHANGELOG）。
+# 保留模板供需要机器可读 schema 的组件可选生成；默认不产、bundle_files 不含它。
+# {{name_zh}} · AI Schema
+# bundle_part_of: design.md
+# 来源：Relay 节点 {{node_id}} 章节抽取（v0.5.1 从 behaviors.md 拆出）
+# 状态：草稿，状态机 / 事件签名待设计师 + 工程师 review
+# 关联：spec.md (视觉规范) / variants.md (变体维度) / behaviors.md (交互文字)
+
+{{section_ai_schema_yaml}}
