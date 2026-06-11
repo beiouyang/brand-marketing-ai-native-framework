@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>空间 · Space 规范 — JD APP V16.0</title>
+<meta name="component-slug" content="space">
+<meta name="component-version" content="0.1">
+<meta name="component-level" content="page">
+<style>
+  :root {
+    --c-text: #171a26;
+    --c-text-2: #3d414d;
+    --c-text-3: #828794;
+    --c-line: #00000014;
+    --c-bg: #ffffff;
+    --c-bg-sunken: #f5f6fa;
+    --c-bg-soft: #f2f3f7;
+    --c-brand: #ff0f23;
+    --c-brand-light: #fff0f4;
+    --c-info: #0073ff;
+    --c-info-bg: #e5f5ff;
+    --c-warning: #b26b00;
+    --c-warning-bg: #fff9e0;
+    --c-danger: #ff0f23;
+    --c-danger-bg: #fff0f4;
+    --r-base: 6px;
+    --r-detail: 8px;
+    --r-xl: 12px;
+    --r-xxl: 16px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: var(--c-bg-sunken);
+    color: var(--c-text);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  body.basic .pro-only,
+  body.pro .basic-only { display: none !important; }
+
+  a { color: var(--c-info); text-decoration: none; }
+  code {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #f2f3f5;
+    color: #245bdb;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 28px;
+    background: rgba(255, 255, 255, .92);
+    border-bottom: 1px solid var(--c-line);
+    backdrop-filter: blur(10px);
+  }
+  .brand { font-weight: 650; color: var(--c-text); }
+  .zones { display: flex; gap: 6px; flex-wrap: wrap; }
+  .zones a {
+    color: var(--c-text-2);
+    padding: 5px 10px;
+    border-radius: var(--r-base);
+  }
+  .zones a.is-current { color: var(--c-brand); background: var(--c-brand-light); }
+
+  .doc {
+    max-width: 1120px;
+    margin: 32px auto 56px;
+    padding: 56px 72px;
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-xl);
+    box-shadow: 0 8px 24px rgba(29, 33, 41, .04);
+  }
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 8px;
+  }
+  h1 { margin: 0; font-size: 34px; line-height: 1.3; font-weight: 650; }
+  .meta { color: var(--c-text-3); font-size: 13px; margin-bottom: 34px; }
+
+  .view-tabs {
+    display: inline-flex;
+    padding: 3px;
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-detail);
+    background: var(--c-bg-sunken);
+    white-space: nowrap;
+  }
+  .view-tabs button {
+    border: 0;
+    background: transparent;
+    color: var(--c-text-2);
+    padding: 6px 12px;
+    border-radius: var(--r-base);
+    cursor: pointer;
+    font: inherit;
+    line-height: 1.2;
+  }
+  body.pro .view-tabs [data-view="pro"],
+  body.basic .view-tabs [data-view="basic"] {
+    background: var(--c-bg);
+    color: var(--c-brand);
+    box-shadow: 0 1px 4px rgba(17, 20, 26, .08);
+  }
+
+  .toc {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin: 28px 0 42px;
+    padding: 0;
+    list-style-position: inside;
+    color: var(--c-text-3);
+  }
+  .toc li {
+    padding: 9px 10px;
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-base);
+    background: var(--c-bg-sunken);
+  }
+  .toc a { color: var(--c-text-2); }
+
+  h2 {
+    margin: 56px 0 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--c-line);
+    font-size: 22px;
+    line-height: 1.35;
+  }
+  h2 small { margin-left: 8px; color: var(--c-text-3); font-size: 13px; font-weight: 500; }
+  h3 { margin: 30px 0 12px; font-size: 18px; }
+  p { margin: 12px 0; color: var(--c-text-2); }
+  ul, ol { color: var(--c-text-2); padding-left: 22px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--c-line);
+    padding: 10px 14px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: var(--c-bg-sunken); color: var(--c-text); font-weight: 650; }
+
+  blockquote {
+    margin: 16px 0;
+    padding: 12px 18px;
+    background: var(--c-info-bg);
+    border-left: 3px solid var(--c-info);
+    border-radius: var(--r-base);
+    color: var(--c-text-2);
+  }
+  blockquote.warn { background: var(--c-warning-bg); border-left-color: var(--c-warning); }
+  blockquote.danger { background: var(--c-danger-bg); border-left-color: var(--c-danger); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .card {
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-detail);
+    padding: 16px;
+    background: #fff;
+  }
+  .card strong { display: block; margin-bottom: 6px; }
+  .card span { color: var(--c-text-2); font-size: 14px; }
+
+  .stage {
+    margin: 16px 0;
+    padding: 28px;
+    background: var(--c-bg-sunken);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-detail);
+  }
+  .scroll-demo {
+    overflow: hidden;
+    padding: 18px 0 18px 24px;
+    border-radius: var(--r-detail);
+    background: #fff;
+    border: 1px solid var(--c-line);
+  }
+  .scroll-track {
+    display: grid;
+    grid-template-columns: 1fr 15%;
+    gap: 24px;
+    width: 100%;
+  }
+  .scroll-card {
+    min-height: 128px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-detail);
+    background: #f8f9fc;
+    border: 1px solid #edeff5;
+    color: var(--c-text-2);
+  }
+  .scroll-card.exposed {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    color: var(--c-brand);
+    background: #fff5f5;
+  }
+  .spacing-scale {
+    display: grid;
+    gap: 16px;
+  }
+  .spacing-row {
+    display: grid;
+    grid-template-columns: 72px 1fr 120px;
+    align-items: center;
+    gap: 14px;
+    color: var(--c-text-2);
+  }
+  .bar {
+    height: 18px;
+    border-radius: 999px;
+    background: var(--c-brand);
+  }
+  .bar.s12 { width: 72px; }
+  .bar.s18 { width: 108px; }
+  .bar.s24 { width: 144px; }
+  .formula {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .formula .card { background: #fff; }
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .swatch {
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-detail);
+    overflow: hidden;
+    background: #fff;
+  }
+  .swatch-color { height: 58px; }
+  .swatch-color.title { background: #171a26; }
+  .swatch-color.text { background: #3d414d; }
+  .swatch-color.help { background: #828794; }
+  .swatch-color.brand { background: #ff0f23; }
+  .swatch-body { padding: 10px 12px; font-size: 13px; color: var(--c-text-2); }
+  .swatch-body strong { display: block; color: var(--c-text); }
+
+  .footer {
+    margin-top: 56px;
+    padding-top: 18px;
+    border-top: 1px solid var(--c-line);
+    color: var(--c-text-3);
+    font-size: 13px;
+  }
+
+  @media (max-width: 860px) {
+    .doc { margin: 0; border-radius: 0; padding: 32px 20px; }
+    .topbar, .title-row { flex-direction: column; align-items: stretch; }
+    .toc, .grid, .swatches, .formula { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body class="pro">
+  <header class="topbar">
+    <div class="brand">JD APP 16.0 GUIDELINE</div>
+    <nav class="zones" aria-label="Design zones">
+      <a href="../Marketing%20Design%20System/README.md">Knowledge</a>
+      <a href="../Marketing%20Design%20System/foundation.md">Foundations</a>
+      <a href="../Marketing%20Design%20System/ai-rules.md">AI Mechanism</a>
+      <a href="../Marketing%20Design%20System/marketing-modules.md">Product Architecture</a>
+      <a class="is-current" href="./design.md">Horizontal</a>
+    </nav>
+  </header>
+
+  <main class="doc">
+    <div class="title-row">
+      <div>
+        <h1>空间 · Space 规范</h1>
+        <div class="meta">
+          Relay node <code>13513:602</code> · Version <code>0.1</code> · Generated 2026-06-10
+        </div>
+      </div>
+      <div class="view-tabs" aria-label="View mode">
+        <button type="button" data-view="pro">Pro</button>
+        <button type="button" data-view="basic">Basic</button>
+      </div>
+    </div>
+
+    <ol class="toc">
+      <li><a href="#sec-1-what">组件定义 What</a></li>
+      <li><a href="#sec-2-why">设计目标 Why</a></li>
+      <li><a href="#sec-3-principle">行为准则 Principle</a></li>
+      <li><a href="#sec-4-properties">设计属性 Properties</a></li>
+      <li><a href="#sec-5-hierarchy">信息层级 Hierarchy</a></li>
+      <li><a href="#sec-6-scenario">应用场景 Scenario</a></li>
+      <li><a href="#sec-7-composition">组合关系 Composition</a></li>
+      <li><a href="#sec-10-ai-rule">AI 生成规则 AI Rule</a></li>
+    </ol>
+
+    <h2 id="sec-1-what">组件定义 What <small>Definition</small></h2>
+    <p>空间规范基于 JD APP 16.0 基础空间布局系统，为营销页面定义布局继承、横滑露出、组件间距和内容节奏的使用规则。</p>
+    <blockquote class="basic-only">
+      <p><strong>一句话理解:</strong> 这套规范告诉设计和 AI，在营销页面里什么时候继承基础布局，什么时候用横滑露出，组件内部该用多大的间距。</p>
+    </blockquote>
+    <table class="pro-only">
+      <tr><th>适用</th><td>页面布局、模块组织、容器型内容模块、营销组件组合关系。</td></tr>
+      <tr><th>不适用</th><td>横滑导航、Tab 等导航组件不受本横滑容器规则约束。</td></tr>
+      <tr><th>来源</th><td>Relay <code>空间 Space</code>，基于 JD APP 16.0 基础空间规范继承与扩展。</td></tr>
+    </table>
+
+    <h2 id="sec-2-why">设计目标 Why <small>Intent</small></h2>
+    <div class="grid">
+      <div class="card"><strong>继承基础秩序</strong><span>页面布局、模块组织和组件排布优先沿用基础空间规范，减少营销页面的结构漂移。</span></div>
+      <div class="card"><strong>建立浏览节奏</strong><span>通过留白、紧凑关系和横向露出，让用户能感知重点与下一步内容。</span></div>
+      <div class="card"><strong>维持信息效率</strong><span>在高密内容中保留呼吸感，在低密内容中避免结构松散。</span></div>
+    </div>
+    <p class="pro-only">业务目标是让营销页面在高转化信息密度下仍保持可扫读、可探索和可决策，而不是每个模块都重新定义一套间距。</p>
+
+    <h2 id="sec-3-principle">行为准则 Principle <small>Rules</small></h2>
+    <ol>
+      <li>未特殊说明的营销场景，均遵循基础空间规范。</li>
+      <li>横滑布局只作为分栏结构的展示行为补充，不替换原有分栏结构。</li>
+      <li>同一页面内营销滑动模块应统一使用 <code>15%</code> 露出比例。</li>
+      <li>露出宽度必须保持在 <code>48px</code> 到 <code>168px</code> 的有效范围内。</li>
+      <li>当卡片过多或需要用留白强化设计感知时，露出比例可降至 <code>8%</code>。</li>
+    </ol>
+    <blockquote class="danger">
+      <p>不要用横滑布局做状态切换，不要压缩单项内容，不要把复杂信息或精确点击任务放进密集横滑结构。</p>
+    </blockquote>
+
+    <h2 id="sec-4-properties">设计属性 Properties <small>Specs</small></h2>
+    <h3>横滑露出示意</h3>
+    <div class="stage">
+      <div class="scroll-demo">
+        <div class="scroll-track">
+          <div class="scroll-card">完整卡片宽度</div>
+          <div class="scroll-card exposed">15%</div>
+        </div>
+      </div>
+    </div>
+    <h3>露出比例计算</h3>
+    <div class="formula">
+      <div class="card"><strong>容器</strong><span><code>1125px</code></span></div>
+      <div class="card"><strong>边距</strong><span>左 <code>24px</code> / 右 <code>0px</code></span></div>
+      <div class="card"><strong>露出</strong><span><code>1125 * 15% ≈ 169px</code></span></div>
+      <div class="card"><strong>卡片</strong><span><code>(1125 - 24 - 0 - 24 - 169) / 1 = 908px</code></span></div>
+    </div>
+    <h3>空间梯度</h3>
+    <div class="stage">
+      <div class="spacing-scale">
+        <div class="spacing-row"><strong>12px</strong><div class="bar s12"></div><span>按钮 / 标签文本</span></div>
+        <div class="spacing-row"><strong>18px</strong><div class="bar s18"></div><span>大按钮 / Tab</span></div>
+        <div class="spacing-row"><strong>24px</strong><div class="bar s24"></div><span>横滑示例间距</span></div>
+      </div>
+    </div>
+    <table class="pro-only">
+      <tr><th>分栏结构</th><th>露出比例</th><th>滑动形式</th><th>关键约束</th></tr>
+      <tr><td>单列</td><td><code>15%</code></td><td><code>1 + 15%</code></td><td>不用于状态切换</td></tr>
+      <tr><td>双列</td><td><code>15%</code></td><td><code>2 + 15%</code></td><td>不压缩单项内容</td></tr>
+      <tr><td>三列</td><td><code>15%</code></td><td><code>3 + 15%</code></td><td>不用于精确点击</td></tr>
+      <tr><td>四列</td><td><code>15%</code></td><td><code>3 + 15%</code></td><td>不用于复杂信息或精确操作</td></tr>
+    </table>
+    <h3>颜色 token</h3>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch-color title"></div><div class="swatch-body"><strong>color_title</strong>#171a26</div></div>
+      <div class="swatch"><div class="swatch-color text"></div><div class="swatch-body"><strong>color_text</strong>#3d414d</div></div>
+      <div class="swatch"><div class="swatch-color help"></div><div class="swatch-body"><strong>color_text_help</strong>#828794</div></div>
+      <div class="swatch"><div class="swatch-color brand"></div><div class="swatch-body"><strong>color_primary</strong>#ff0f23</div></div>
+    </div>
+
+    <h2 id="sec-5-hierarchy">信息层级 Hierarchy <small>Priority</small></h2>
+    <table>
+      <tr><th>层级</th><th>空间策略</th><th>目的</th></tr>
+      <tr><td>页面 / 大模块</td><td>继承基础布局、栅格和安全区</td><td>保证跨页面结构稳定</td></tr>
+      <tr><td>重点营销内容</td><td>前后增加留白</td><td>形成聚焦与停顿</td></tr>
+      <tr><td>关联内容</td><td>保持连续与紧凑</td><td>支持浏览和决策路径</td></tr>
+      <tr><td>组件内部</td><td>使用 <code>12px</code> / <code>18px</code> 梯度</td><td>保持内部节奏一致</td></tr>
+    </table>
+
+    <h2 id="sec-6-scenario">应用场景 Scenario <small>Use Cases</small></h2>
+    <div class="grid">
+      <div class="card"><strong>内容超出单屏</strong><span>使用 <code>15%</code> 露出卡片提示横向探索。</span></div>
+      <div class="card"><strong>轻量扫读模块</strong><span>双列或三列可引入横滑，但不要压缩单项信息。</span></div>
+      <div class="card"><strong>抽象短内容</strong><span>四列结构仅用于高度受限且信息高度抽象的模块。</span></div>
+    </div>
+    <blockquote class="warn pro-only">
+      <p>源 Relay 根节点很长，当前 HTML 基于已确认章节生成。若要补齐完整中段细节，建议按章节节点分块再录入。</p>
+    </blockquote>
+
+    <h2 id="sec-7-composition">组合关系 Composition <small>Relations</small></h2>
+    <table>
+      <tr><th>关系</th><th>说明</th></tr>
+      <tr><td>基础空间系统</td><td>布局、层级、安全区完全或扩展继承。</td></tr>
+      <tr><td>营销容器模块</td><td>横滑布局只作用于容器型内容模块。</td></tr>
+      <tr><td>按钮 / Tab</td><td>内部图文组合可使用 <code>12px</code> 或 <code>18px</code>。</td></tr>
+      <tr><td>标签 / 标题 / 利益点</td><td>复合信息组默认使用 <code>12px</code> 保持紧凑关系。</td></tr>
+    </table>
+    <p class="pro-only">Bundle 文件: <a href="./design.md">design.md</a>, <a href="./spec.md">spec.md</a>, <a href="./variants.md">variants.md</a>, <a href="./behaviors.md">behaviors.md</a>, <a href="./CHANGELOG.md">CHANGELOG.md</a>.</p>
+
+    <h2 id="sec-10-ai-rule">AI 生成规则 AI Rule <small>Generation</small></h2>
+    <ol>
+      <li>优先继承 JD APP 16.0 基础空间系统，不要为营销页面随意创造新间距。</li>
+      <li>生成横滑容器时，按当前容器宽度计算露出宽度，而不是写死卡片尺寸。</li>
+      <li>同一页面内不要混用不同露出比例；默认使用 <code>15%</code>。</li>
+      <li>空间标注、页面表格和文档页头图属于规范页噪声，不应当生成进业务 UI。</li>
+      <li>遇到复杂信息或精确操作场景，不要使用密集横滑结构。</li>
+    </ol>
+    <blockquote>
+      <p>校验口径: 横滑露出范围、组件内部间距、应用场景边界和 Donts 必须同时满足，才可判定为空间规范合规。</p>
+    </blockquote>
+
+    <div class="footer">
+      JD APP V16.0 Design System · 空间规范 · Source Relay node 13513:602 · Generated from design.md bundle
+    </div>
+  </main>
+
+<script>
+  document.querySelectorAll("[data-view]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      document.body.classList.toggle("basic", button.dataset.view === "basic");
+      document.body.classList.toggle("pro", button.dataset.view === "pro");
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文字 · Typography 组件规范 — JD APP V16.0</title>
+<!-- v2.0 frontmatter / ai-schema meta(SEO + AI 探测) -->
+<meta name="component-slug" content="typography">
+<meta name="component-version" content="0.1">
+<meta name="component-level" content="component-base">
+<meta name="ai-schema-url" content="./ai-schema.yaml">
+<style>
+  :root {
+    --c-text: #1d2129;
+    --c-text-2: #4e5969;
+    --c-text-3: #86909c;
+    --c-line: #e5e6eb;
+    --c-bg: #ffffff;
+    --c-bg-sunken: #f7f8fa;
+    --c-bg-elevated: #ffffff;
+    --c-brand: #165dff;
+    --c-brand-light: #e8f3ff;
+    --c-brand-hover: #4080ff;
+    --c-success: #2aa32a;
+    --c-success-bg: #f0fbf3;
+    --c-danger: #f53f3f;
+    --c-danger-bg: #fff2f0;
+    --c-warning: #b26b00;
+    --c-warning-bg: #fff7e8;
+    --c-info: #165dff;
+    --c-info-bg: #e8f3ff;
+    --c-mask: rgba(0, 0, 0, 0.7);
+    --c-code-bg: #f2f3f5;
+    --r-base: 8px;
+    --r-detail: 8px;
+    --r-xl: 10px;
+    --r-xxl: 12px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--c-bg-sunken);
+    color: var(--c-text);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .doc {
+    max-width: 1040px;
+    margin: 32px auto 56px;
+    background: var(--c-bg-elevated);
+    padding: 56px 72px;
+    border-radius: var(--r-xl);
+    border: 1px solid var(--c-line);
+    box-shadow: 0 8px 24px rgba(29, 33, 41, 0.04);
+  }
+
+  h1 {
+    font-size: 34px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    line-height: 1.3;
+  }
+  h1 + .meta {
+    color: var(--c-text-3);
+    font-size: 13px;
+    margin-bottom: 40px;
+    line-height: 1.8;
+  }
+  h1 + .meta code { font-size: 12px; }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 56px 0 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--c-line);
+  }
+  h2 small {
+    color: var(--c-text-3);
+    font-size: 13px;
+    font-weight: 500;
+    margin-left: 8px;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 32px 0 12px;
+    color: var(--c-text);
+  }
+
+  h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 20px 0 8px;
+    color: var(--c-text-2);
+  }
+
+  p { margin: 12px 0; color: var(--c-text-2); }
+
+  strong { color: var(--c-text); font-weight: 600; }
+
+  code {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    background: var(--c-code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #245bdb;
+  }
+
+  pre {
+    background: #1a1a1a;
+    color: #e8e8e8;
+    padding: 20px 24px;
+    border-radius: var(--r-base);
+    overflow-x: auto;
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 16px 0;
+  }
+  pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+
+  blockquote {
+    margin: 16px 0;
+    padding: 12px 20px;
+    background: var(--c-info-bg);
+    border-left: 3px solid var(--c-info);
+    border-radius: var(--r-base);
+    color: var(--c-text-2);
+  }
+  blockquote p { margin: 4px 0; }
+  blockquote.warn {
+    background: var(--c-warning-bg);
+    border-left-color: var(--c-warning);
+  }
+  blockquote.danger {
+    background: var(--c-danger-bg);
+    border-left-color: var(--c-danger);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--c-line);
+    padding: 10px 14px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: var(--c-bg-sunken);
+    font-weight: 600;
+    color: var(--c-text);
+  }
+  td code { font-size: 12px; }
+
+  ul, ol { padding-left: 24px; color: var(--c-text-2); }
+  li { margin: 6px 0; }
+
+  /* Stage = visual sandbox（HTML/CSS/SVG 还原优先；切图仅 backup） */
+  .stage {
+    background: var(--c-bg-sunken);
+    border-radius: var(--r-base);
+    border: 1px solid var(--c-line);
+    margin: 12px 0;
+    padding: 32px 24px;
+    text-align: left;
+    min-height: 120px;
+  }
+  .stage.dark { background: #1a1a1a; color: #fff; }
+  .stage + .stage-label {
+    color: var(--c-text-3);
+    font-size: 12px;
+    text-align: center;
+    margin-top: -4px;
+    margin-bottom: 12px;
+  }
+  /* 切图 stage — backup 形态，跟页面底色融合 */
+  .stage img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    cursor: zoom-in;
+  }
+  .stage--image {
+    background: transparent;
+    border: none;
+    padding: 0;
+    min-height: auto;
+    margin-left: -48px;
+    margin-right: -48px;
+    margin-top: 16px;
+    margin-bottom: 4px;
+  }
+  @media (max-width: 720px) {
+    .stage--image { margin-left: -8px; margin-right: -8px; }
+  }
+  .stage--image a.zoom-link {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--c-text-3);
+    font-size: 12px;
+    border-bottom: 1px dashed var(--c-line);
+  }
+  .stage--image a.zoom-link:hover { color: var(--c-brand); border-bottom-color: var(--c-brand); }
+
+  /* Case blocks（正反案例 ✅ / ❌）*/
+  .case {
+    margin: 20px 0;
+    padding: 20px 24px;
+    border-radius: var(--r-base);
+    border: 1px solid var(--c-line);
+  }
+  .case.good { background: var(--c-success-bg); border-color: var(--c-success); }
+  .case.bad { background: var(--c-danger-bg); border-color: var(--c-danger); }
+  .case h4 { margin-top: 0; display: flex; align-items: center; gap: 8px; }
+  .case .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .case.good .badge { background: var(--c-success); }
+  .case.bad .badge { background: var(--c-danger); }
+
+  /* 色彩 token swatch grid */
+  .color-swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .color-swatch {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-base);
+  }
+  .color-swatch__chip {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    border: 1px solid var(--c-line);
+  }
+  .color-swatch__meta { flex: 1; min-width: 0; }
+  .color-swatch__name { font-size: 13px; font-weight: 600; color: var(--c-text); }
+  .color-swatch__hex { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--c-text-3); }
+
+  /* 字阶 ladder(typography 等类组件用) */
+  .size-ladder {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 16px 0;
+  }
+  .size-ladder__row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 8px 12px;
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-base);
+  }
+  .size-ladder__sample {
+    font-family: "PingFang SC", "Hiragino Sans GB", system-ui, sans-serif;
+    color: var(--c-text);
+    line-height: 1;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .size-ladder__meta {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    color: var(--c-text-3);
+    flex-shrink: 0;
+    text-align: right;
+    min-width: 220px;
+  }
+
+  /* 价格 demo(typography / 商品卡类组件用) */
+  .price-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .price-demo__row {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 12px 16px;
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-base);
+  }
+  .price-demo__sample {
+    font-family: "DIN Alternate", "Helvetica Neue", "Arial Narrow", monospace;
+    font-weight: 700;
+    color: var(--c-text);
+    line-height: 1;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+    min-width: 240px;
+  }
+  .price-demo__sample .symbol,
+  .price-demo__sample .frac {
+    font-size: 75%;
+    font-weight: inherit;
+    vertical-align: baseline;
+  }
+  .price-demo__meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--c-text-3);
+  }
+  .price-demo__row.aux .price-demo__sample {
+    color: var(--c-text-3);
+    text-decoration: line-through;
+    font-weight: 400;
+  }
+
+  /* 倒计时 chip(typography / 营销组件用) */
+  .countdown-demo {
+    display: flex;
+    gap: 24px;
+    margin: 16px 0;
+    flex-wrap: wrap;
+  }
+  .countdown-demo__chip {
+    flex: 1 1 auto;
+    min-width: 200px;
+    padding: 20px 24px;
+    background: #1a1a1a;
+    border-radius: var(--r-base);
+    text-align: center;
+  }
+  .countdown-demo__digits {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    font-weight: 700;
+    font-size: 36px;
+    color: #ffd84d;
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+  .countdown-demo__label {
+    color: rgba(255,255,255,0.6);
+    font-size: 12px;
+    margin-top: 8px;
+    font-family: "JetBrains Mono", monospace;
+  }
+
+  /* 行高对照 */
+  .line-height-demo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  @media (max-width: 720px) {
+    .line-height-demo { grid-template-columns: 1fr; }
+  }
+  .line-height-demo__cell {
+    padding: 16px;
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-base);
+  }
+  .line-height-demo__cell h4 { margin: 0 0 12px; }
+  .line-height-demo__sample {
+    background: var(--c-bg-sunken);
+    border: 1px dashed var(--c-line);
+    padding: 6px 10px;
+    font-family: "PingFang SC", system-ui, sans-serif;
+    color: var(--c-text);
+    border-radius: 4px;
+  }
+  .line-height-demo__sample--single { font-size: 28px; line-height: 28px; }
+  .line-height-demo__sample--multi { font-size: 28px; line-height: 42px; }
+  .line-height-demo__meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--c-text-3);
+    margin-top: 8px;
+  }
+
+  /* Family card grid(字族 / 类型枚举类组件用) */
+  .family-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .family-card {
+    padding: 18px 20px;
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-base);
+    transition: border-color 160ms, box-shadow 160ms, transform 160ms;
+  }
+  .family-card:hover {
+    border-color: #bedaff;
+    box-shadow: 0 8px 20px rgba(22, 93, 255, 0.08);
+    transform: translateY(-1px);
+  }
+  .family-card__name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--c-text);
+    margin-bottom: 6px;
+  }
+  .family-card__role {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    background: var(--c-info-bg);
+    color: var(--c-info);
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  .family-card__desc {
+    font-size: 13px;
+    color: var(--c-text-2);
+    line-height: 1.6;
+  }
+
+  a { color: var(--c-info); text-decoration: none; border-bottom: 1px solid transparent; }
+  a:hover { border-bottom-color: var(--c-info); }
+
+  hr { border: none; border-top: 1px solid var(--c-line); margin: 40px 0; }
+
+  .toc {
+    background: #f7f8fa;
+    padding: 18px 22px;
+    border-radius: var(--r-base);
+    margin-bottom: 40px;
+    border: 1px solid var(--c-line);
+  }
+  .toc h3 { margin: 0 0 8px; font-size: 14px; color: var(--c-text-3); font-weight: 500; }
+  .toc ol { margin: 0; padding-left: 20px; }
+  .toc li { margin: 4px 0; }
+  .toc a { color: var(--c-text-2); border: none; }
+  .toc a:hover { color: var(--c-brand); }
+  @media print {
+    body { background: #fff; }
+    .doc { box-shadow: none; margin: 0; padding: 24px 32px; max-width: none; border-radius: 0; }
+    h2 { page-break-after: avoid; }
+    .case, table, pre, blockquote, .stage { page-break-inside: avoid; }
+    pre { background: #f5f6fa; color: #171a26; border: 1px solid var(--c-line); }
+  }
+
+  @media (max-width: 720px) {
+    .doc { margin: 0; padding: 32px 20px; border-radius: 0; }
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; }
+    table { font-size: 12px; }
+    th, td { padding: 8px 10px; }
+    .size-ladder__meta { min-width: 0; font-size: 11px; }
+  }
+
+  /* ========== 视图切换(Pro / Basic) — 标题旁紧凑 segmented ========== */
+  .title-row {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--c-line);
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+  }
+  .title-row h1 {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin: 0;
+    flex: 1 1 auto;
+  }
+  .view-tabs {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px;
+    background: #f2f3f5;
+    border-radius: var(--r-base);
+    flex-shrink: 0;
+  }
+  .view-tab {
+    background: transparent; border: none;
+    padding: 6px 14px;
+    font-family: inherit; font-size: 12px; font-weight: 500;
+    color: var(--c-text-2);
+    cursor: pointer; border-radius: 4px;
+    transition: all 150ms;
+    line-height: 1.4;
+  }
+  .view-tab:hover { color: var(--c-text); }
+  .view-tab.is-active {
+    background: var(--c-bg);
+    color: var(--c-brand);
+    box-shadow: 0 2px 8px rgba(29, 33, 41, 0.08);
+    font-weight: 600;
+  }
+
+  /* ========== Pro / Basic 内容显隐 ========== */
+  body.mode-basic .pro-only { display: none !important; }
+  body.mode-pro .basic-only { display: none !important; }
+  /* JS 没跑前默认隐藏两类,避免闪烁 */
+  body:not(.mode-basic):not(.mode-pro) .pro-only,
+  body:not(.mode-basic):not(.mode-pro) .basic-only {
+    display: none;
+  }
+  /* --no-view-toggle 模式:body 加 mode-all class,两版都展开 */
+  body.mode-all .pro-only,
+  body.mode-all .basic-only { display: block !important; }
+  /* basic-only 段落用 info 蓝引用块包,容易认出 */
+  .basic-only.summary {
+    margin: 16px 0;
+    padding: 12px 20px;
+    background: var(--c-info-bg);
+    border-left: 3px solid var(--c-info);
+    border-radius: var(--r-base);
+    color: var(--c-text-2);
+    font-size: 14px;
+  }
+  .basic-only.summary strong { color: var(--c-text); }
+  /* inline pro-only 用 .pro-inline 视觉淡化 */
+  body.mode-pro .pro-inline { display: inline; }
+  body.mode-all .pro-inline { display: inline !important; }
+  .pro-inline { color: var(--c-text-3); font-size: 12px; margin-left: 6px; }
+
+  /* ========== 顶部 5-zone nav(hardcode,根据 frontmatter.bg 自动加 is-current) ========== */
+  .top-bar {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 20px;
+    padding: 0 32px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--c-line);
+    box-shadow: none;
+    flex-wrap: wrap;
+  }
+  .top-bar__brand {
+    padding: 15px 0; margin-right: 16px;
+    font-size: 14px; font-weight: 600;
+    color: var(--c-text); text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .top-bar__brand small { color: var(--c-text-3); font-weight: 500; margin-left: 6px; }
+  .top-bar__nav { display: flex; align-items: stretch; gap: 4px; flex-wrap: wrap; }
+  .top-bar__nav-link {
+    padding: 16px 12px 14px; font-size: 13px;
+    color: var(--c-text-2); text-decoration: none;
+    font-weight: 500; line-height: 1.4;
+    white-space: nowrap; transition: color 150ms;
+  }
+  .top-bar__nav-link:hover { color: var(--c-brand); }
+  .top-bar__nav-link.is-current {
+    color: var(--c-brand);
+    font-weight: 600;
+    box-shadow: inset 0 -2px 0 var(--c-brand);
+  }
+  .top-bar__spacer { flex: 1; }
+
+  /* ========== Zone-aware sidebar(仅 bg=product-architecture 渲染;13 设计部门导览) ========== */
+  /* CSS 始终注入,无 sidebar HTML 时不生效;有 .layout.has-sidebar 时切换为 grid 布局 */
+  .layout.has-sidebar {
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 0 24px 40px;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .layout.has-sidebar .doc {
+    margin: 0;
+    max-width: none;
+    padding: 48px 56px;
+  }
+  .sidebar {
+    position: sticky; top: 64px;
+    align-self: start;
+    max-height: calc(100vh - 88px);
+    overflow-y: auto;
+    background: var(--c-bg);
+    padding: 20px 12px;
+    border-radius: var(--r-xl);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  }
+  .sidebar__zone-tag {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-text-3);
+    padding: 6px 12px 12px;
+    border-bottom: 1px solid var(--c-line);
+    margin-bottom: 12px;
+  }
+  .sidebar__group { margin-bottom: 14px; }
+  .sidebar__link {
+    display: block; padding: 7px 12px;
+    font-size: 13px; color: var(--c-text-2);
+    text-decoration: none; border-radius: var(--r-base);
+    font-weight: 500; line-height: 1.5;
+    transition: background 150ms, color 150ms;
+    border-bottom: none;
+  }
+  .sidebar__link:hover { background: rgba(0, 0, 0, 0.04); color: var(--c-text); }
+  .sidebar__link.is-current { background: var(--c-text); color: var(--c-bg); }
+  .sidebar__link.is-current:hover { background: var(--c-text); }
+  .sidebar__link.is-placeholder { color: var(--c-text-3); cursor: default; font-style: italic; }
+  .sidebar__link.is-placeholder:hover { background: transparent; color: var(--c-text-3); }
+  @media (max-width: 960px) {
+    .layout.has-sidebar {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 0 12px 32px;
+    }
+    .sidebar { position: static; max-height: none; }
+    .layout.has-sidebar .doc { padding: 32px 24px; }
+  }
+
+  /* ========== 交互式组件展示台 showcase(v2.2,Step 4e) ========== */
+  /* 通用外壳:浅/暗主题切换 + 变体 tabs + 手机外框 + token 复制。组件自身视觉 CSS 由各 spec-page 在 04 Properties 内联,以 .showcase[data-theme] 作主题锚 */
+  .showcase { border: 1px solid var(--c-line); border-radius: var(--r-xl); overflow: hidden; margin: 20px 0; background: var(--c-bg); }
+  .showcase__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px 16px; flex-wrap: wrap; padding: 12px 16px; border-bottom: 1px solid var(--c-line); background: var(--c-bg-sunken); }
+  .showcase__title { font-size: 14px; font-weight: 600; color: var(--c-text); }
+  .showcase__controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .seg { display: inline-flex; padding: 3px; background: var(--c-bg); border: 1px solid var(--c-line); border-radius: var(--r-base); gap: 2px; }
+  .seg__btn { border: none; background: transparent; padding: 5px 12px; font-family: inherit; font-size: 12px; font-weight: 500; color: var(--c-text-2); border-radius: 4px; cursor: pointer; line-height: 1.4; white-space: nowrap; transition: all 120ms; }
+  .seg__btn:hover { color: var(--c-text); }
+  .seg__btn.is-active { background: var(--c-text); color: var(--c-bg); font-weight: 600; }
+  .showcase__stage { padding: 28px 20px; display: flex; justify-content: center; transition: background 200ms; }
+  .showcase[data-theme="light"] .showcase__stage { background: #eef0f4; }
+  .showcase[data-theme="dark"] .showcase__stage { background: #0e1013; }
+  .variant-panel { display: none; width: 100%; }
+  .variant-panel.is-active { display: block; }
+  .variant-panel__cap { text-align: center; font-size: 12px; color: var(--c-text-3); margin-bottom: 12px; }
+  .showcase[data-theme="dark"] .variant-panel__cap { color: #6b7280; }
+  /* 内容底衬 .sc-screen（2026-06-02 起默认；无手机框，见 showcase.md） */
+  .sc-screen { width: 360px; max-width: 100%; margin: 0 auto; border-radius: 14px; overflow: hidden; min-height: 120px; display: flex; flex-direction: column; justify-content: flex-end; transition: background 200ms; box-shadow: 0 2px 14px rgba(0,0,0,.08); }
+  .showcase[data-theme="light"] .sc-screen { background: #fff; }
+  .showcase[data-theme="dark"] .sc-screen { background: #14171A; }
+  /* device-frame 已弃用（默认不套手机框）；旧页面用到时降级为无框底衬，不再画黑机身 / 刘海 */
+  .device-frame { width: 360px; max-width: 100%; margin: 0 auto; }
+  .device-frame__notch { display: none; }
+  .device-frame__screen { border-radius: 14px; overflow: hidden; min-height: 120px; display: flex; flex-direction: column; justify-content: flex-end; transition: background 200ms; box-shadow: 0 2px 14px rgba(0,0,0,.08); }
+  .showcase[data-theme="light"] .device-frame__screen { background: #fff; }
+  .showcase[data-theme="dark"] .device-frame__screen { background: #14171A; }
+  /* token chip:点击复制 + 悬停高亮联动(data-hl ↔ 舞台内 data-hl-target) */
+  .tok { font-family: "JetBrains Mono", monospace; font-size: 12px; background: var(--c-code-bg); color: var(--c-brand); padding: 2px 7px; border-radius: 4px; cursor: copy; border: 1px solid transparent; transition: border-color 120ms, background 120ms; }
+  .tok:hover { border-color: var(--c-brand); }
+  .tok.copied { color: var(--c-success); border-color: var(--c-success); }
+  .hl-flash { outline: 2px solid var(--c-brand) !important; outline-offset: 2px; border-radius: 4px; }
+  .copy-toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: var(--c-text); color: #fff; padding: 9px 18px; border-radius: var(--r-base); font-size: 13px; opacity: 0; pointer-events: none; transition: opacity 180ms; z-index: 300; }
+  .copy-toast.show { opacity: 1; }
+  @media (max-width: 720px) { .showcase__bar { flex-direction: column; align-items: flex-start; } }
+</style>
+</head>
+<body>
+<div class="copy-toast" id="copy-toast" role="status" aria-live="polite"></div>
+
+<!-- 顶部 5 大 Zone nav(SKILL.md Step 4c hardcode + bg 字段决定 is-current) -->
+<div class="top-bar">
+  <a href="../../../docs/jd-design-wiki-knowledge-tree.html" class="top-bar__brand">JD Design Wiki <small>V16</small></a>
+  <nav class="top-bar__nav" aria-label="5 大分区导航">
+    <a href="../../../knowledge/spec-page.html" class="top-bar__nav-link ">Design 知识</a>
+    <a href="../../../foundations/spec-page.html" class="top-bar__nav-link is-current">Design 基础</a>
+    <a href="../../../ai-mechanism/spec-page.html" class="top-bar__nav-link ">AI 机制</a>
+    <a href="../../../product-architecture/spec-page.html" class="top-bar__nav-link ">产品架构</a>
+    <a href="../../../horizontal/spec-page.html" class="top-bar__nav-link ">横向专项</a>
+  </nav>
+  <span class="top-bar__spacer"></span>
+</div>
+
+<!-- Zone-aware sidebar(SKILL.md Step 4f):仅 bg=product-architecture 时渲染 13 部门导览;其它 zone 整段为空串 -->
+
+
+<div class="doc">
+
+<div class="title-row">
+  <h1>文字 · Typography 组件规范</h1>
+  <!-- Pro / Basic 视图切换(JS 在 body 末尾;--no-view-toggle 模式整个 view-tabs 被跳过) -->
+  <div class="view-tabs" role="tablist" aria-label="视图切换">
+    <button class="view-tab is-active" role="tab" data-view="basic" aria-selected="true">常规版</button>
+    <button class="view-tab" role="tab" data-view="pro" aria-selected="false">专业版</button>
+  </div>
+</div>
+<div class="meta">
+  适用范围:<code>Marketing Design System / Foundations / Typography</code><br>
+  <!-- Version label guard: V16 路径下不得出现旧版标签 -->
+  样式来源:Relay V16.0 GUIDELINE 节点 <code>13495:87</code> · Token 版本:<code>tokens.json V16.0</code><br>
+  关联 Foundation:<code>color_title</code> · <code>color_text</code> · <code>color_primary</code> · <code>pingfang_regular/font_size_14_400</code>
+</div>
+
+<div class="toc">
+  <h3>目录</h3>
+  <ol>
+    <li><a href="#sec-1-what">组件定义 What</a></li>
+    <li><a href="#sec-2-why">设计目标 Why</a></li>
+    <li><a href="#sec-3-principle">行为准则 Principle</a></li>
+    <li><a href="#sec-4-properties">设计属性 Properties</a></li>
+    <li><a href="#sec-5-hierarchy">信息层级 Hierarchy</a></li>
+    <li><a href="#sec-6-scenario">应用场景 Scenario</a></li>
+    <li><a href="#sec-7-composition">组合关系 Composition</a></li>
+    <li><a href="#sec-10-ai-rule">AI 生成规则 AI Rule</a></li>
+  </ol>
+</div>
+
+<!-- ==========================================
+     章节内容:skill 按「组件类型」注入对应 schema(v3.0)
+       通用组件(components-base) → 8 要素:What / Why / Principle / Properties / Hierarchy / Scenario / Composition / AI Rule
+       业务组件(product-architecture) → 7 要素:组件定义(必) / 行为准则(选) / 组件类型(选) /
+                                          组件结构(必) / 组件设计属性(必) / 典型场景示意(必) / 错误示例(选)
+     每个 <h2> 用 id="sec-N-{label}",必写缺→TBD blockquote,选写缺→整段省略
+     ========================================== -->
+
+
+<style>
+  .type-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin:16px 0; }
+  .type-panel { border:1px solid var(--c-line); border-radius:var(--r-base); padding:18px; background:#fff; }
+  .type-panel strong { display:block; font-size:16px; margin-bottom:8px; color:var(--c-text); }
+  .type-panel span { color:var(--c-text-2); font-size:13px; }
+  .hierarchy-list { display:grid; gap:10px; margin:16px 0; }
+  .hierarchy-row { display:grid; grid-template-columns:120px 1fr; gap:16px; padding:12px 14px; border:1px solid var(--c-line); border-radius:var(--r-base); background:#fff; }
+  .hierarchy-row code { white-space:nowrap; }
+  .font-style-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:14px; margin:16px 0; }
+  .font-style-card { border:1px solid var(--c-line); border-radius:var(--r-base); padding:16px; background:#fff; display:grid; gap:10px; }
+  .font-style-card strong { font-size:16px; color:var(--c-text); }
+  .font-style-card span { color:var(--c-text-2); font-size:13px; line-height:1.65; }
+  .font-style-card em { color:var(--c-text-3); font-size:12px; font-style:normal; line-height:1.6; }
+  .font-style-card__fonts { display:flex; flex-wrap:wrap; gap:6px; padding:0; margin:0; list-style:none; }
+  .font-style-card__fonts li { margin:0; padding:3px 8px; border-radius:4px; background:var(--c-bg-sunken); color:var(--c-text-2); font-size:12px; }
+  .font-style-card__shot { margin:0; border-radius:var(--r-base); overflow:hidden; border:1px solid var(--c-line); background:var(--c-bg-sunken); }
+  .font-style-card__shot img { display:block; width:100%; height:auto; }
+  .font-style-card__shot figcaption { padding:6px 10px; color:var(--c-text-3); font-size:12px; line-height:1.5; }
+</style>
+<h2 id="sec-1-what">组件定义 <small>What</small></h2>
+<p>文字 Typography 是 Marketing Design System 在 JD APP 16.0 基础文字规范之上的营销扩展，用于统一营销场景中的阅读型文字、数字权益表达与图形化字体使用边界。</p>
+<div class="basic-only summary"><p><strong>一句话理解</strong>：普通信息用系统字体，营销重点再用数字强化或图形化字体；装饰必须服务信息，而不是抢走阅读焦点。</p></div>
+<div class="pro-only"><table><thead><tr><th>边界</th><th>说明</th></tr></thead><tbody><tr><td>基础文字规范</td><td>继承字体家族、基准字号梯度、文本间距规则和字重体系。</td></tr><tr><td>营销视觉资产</td><td>图形化字体、主视觉标题和广告装饰文字可通过视觉切图或图形资源配置实现。</td></tr><tr><td>业务组件规格</td><td>本页定义文字策略，不替代商卡、feeds、广告位、头图等组件结构规格。</td></tr></tbody></table></div>
+<h2 id="sec-2-why">设计目标 <small>Why</small></h2>
+<p>这套规范的目标是在营销氛围、阅读效率和转化信息之间建立稳定秩序，让用户先看到最重要的权益与价格，再理解商品和规则。</p>
+<div class="type-grid"><div class="type-panel"><strong>提升识别效率</strong><span>统一标题、正文、辅助、数字利益点的表达方式。</span></div><div class="type-panel"><strong>强化营销重点</strong><span>把优惠力度、价格、倒计时等核心转化信息放到正确层级。</span></div><div class="type-panel"><strong>降低维护成本</strong><span>动态内容用系统字体，固定视觉表达才使用图形化资产。</span></div></div>
+<h2 id="sec-3-principle">行为准则 <small>Principle</small></h2>
+<div class="basic-only summary"><p><strong>核心原则</strong>：动态文字用系统字体；主视觉和广告可以更有表现力；数字强化只服务权益和价格。</p></div>
+<ol><li><strong>系统字体优先用于动态渲染与阅读型内容。</strong><span class="pro-only pro-inline">商品信息、规则说明、可变权益、倒计时等应保持可更新、可搜索、可适配。</span></li><li><strong>图形化字体优先用于视觉强化与品牌表达场景。</strong><span class="pro-only pro-inline">不用于动态文本及阅读型内容。</span></li><li><strong>避免多个高强度信息同时强化。</strong><span class="pro-only pro-inline">否则会削弱页面焦点与转化信息。</span></li></ol>
+<h2 id="sec-4-properties">设计属性 <small>Properties</small></h2>
+<p>Typography 的设计属性由实现方式、内容类型、字体风格、数字表达和颜色 token 共同组成。</p>
+<div class="type-grid"><div class="type-panel"><strong>前端动态渲染</strong><span>系统字体，适用于商品信息、规则说明、可变权益。</span></div><div class="type-panel"><strong>视觉切图配置</strong><span>图形化字体，适用于主视觉标题、广告和装饰文本。</span></div><div class="type-panel"><strong>数字表达扩展</strong><span>用于优惠、补贴、价格、倒计时，仍属于阅读型体系。</span></div></div>
+<h3>文字演示</h3>
+<div class="stage">
+  <div class="size-ladder">
+    <div class="size-ladder__row"><div class="size-ladder__sample" style="font-size:24px;font-weight:600;">营销主标题 / 频道活动主题</div><div class="size-ladder__meta"><code>zhenghei_bold/font_size_24_600</code><span>主视觉标题、活动会场标题。</span></div></div>
+    <div class="size-ladder__row"><div class="size-ladder__sample" style="font-size:16px;font-weight:600;">模块标题 / 重点利益点</div><div class="size-ladder__meta"><code>pingfang_semibold/font_size_16_600</code><span>商卡标题、利益点标题。</span></div></div>
+    <div class="size-ladder__row"><div class="size-ladder__sample" style="font-size:14px;font-weight:400;">正文说明 / 商品信息 / 规则提示</div><div class="size-ladder__meta"><code>pingfang_regular/font_size_14_400</code><span>动态文本与阅读型内容。</span></div></div>
+  </div>
+</div>
+<h3>数字强化</h3>
+<div class="stage"><div class="price-demo"><div class="price-demo__row"><div class="price-demo__sample"><span class="symbol">¥</span>299<span class="frac">.00</span></div><div class="price-demo__meta">价格 / 商品价值强化</div></div><div class="price-demo__row"><div class="price-demo__sample">8<span class="frac">折</span></div><div class="price-demo__meta">折扣 / 权益优惠</div></div><div class="price-demo__row aux"><div class="price-demo__sample">满300减50</div><div class="price-demo__meta">促销门槛 / 规则摘要</div></div></div></div>
+<h3>倒计时与等宽数字</h3>
+<div class="stage">
+  <div class="countdown-demo">
+    <div class="countdown-demo__chip"><span class="countdown-demo__digits">01</span><span class="countdown-demo__label">天</span></div>
+    <div class="countdown-demo__chip"><span class="countdown-demo__digits">12</span><span class="countdown-demo__label">时</span></div>
+    <div class="countdown-demo__chip"><span class="countdown-demo__digits">36</span><span class="countdown-demo__label">分</span></div>
+    <div class="countdown-demo__chip"><span class="countdown-demo__digits">09</span><span class="countdown-demo__label">秒</span></div>
+  </div>
+</div>
+<h3>行高对照</h3>
+<div class="line-height-demo">
+  <div class="line-height-demo__cell"><h4>单行重点信息</h4><div class="line-height-demo__sample line-height-demo__sample--single">限时补贴 ¥299</div><div class="line-height-demo__meta">行高贴合数字高度，适合价格与利益点。</div></div>
+  <div class="line-height-demo__cell"><h4>多行阅读信息</h4><div class="line-height-demo__sample line-height-demo__sample--multi">会员专享补贴已生效<br>下单前请确认活动规则</div><div class="line-height-demo__meta">多行文本需要更宽松行高，避免营销信息挤压。</div></div>
+</div>
+<h3>风格字体</h3>
+<p>用于不同营销场景下的字体风格表达。在继承基础字体体系的基础上，根据活动主题与场景特征，扩展风格化字体能力，以满足不同视觉表达需求。风格化字体主要用于标题、主题文案及视觉强化内容，不用于阅读型文本内容。</p>
+<div class="font-style-grid">
+  <div class="font-style-card" data-relay-node="13533:20"><strong>品牌字体</strong><span>视觉特征：官方、可信、统一，体现平台品牌识别与品牌气质。</span><em>适用场景：京东官方品牌露出、品牌活动、平台级营销场景及需要强化官方认知的内容。</em><figure class="font-style-card__shot"><img src="./assets/font-style-cases/brand-font.png" alt="品牌字体营销案例切图：真低价，低至5折"><figcaption>静态切图：京东朗正 2.0</figcaption></figure><ul class="font-style-card__fonts"><li>品牌字体</li><li>京东朗正 2.0</li><li>jingdonglangzhengti2:Bold</li></ul></div>
+  <div class="font-style-card" data-relay-node="13533:27"><strong>通用风格</strong><span>视觉特征：严谨、直接、高识别。</span><em>适用场景：全品类通用的 S 级大促（双11、618）的核心利益点、日常通栏、百亿补贴等强转化且需要极速阅读的场景。</em><figure class="font-style-card__shot"><img src="./assets/font-style-cases/general-style.png" alt="通用风格营销案例切图：真低价，低至5折"><figcaption>静态切图：方正兰亭黑 / 造字工房方黑</figcaption></figure><ul class="font-style-card__fonts"><li>方正兰亭黑 简体</li><li>造字工坊方黑</li><li>FZLanTingHeiS:SemiBold / Bold</li><li>造字工房方黑体:Regular</li></ul></div>
+  <div class="font-style-card" data-relay-node="13533:36"><strong>时尚风格</strong><span>视觉特征：精致、轻盈、高级。</span><em>适用场景：美妆护肤、服饰箱包、奢侈品、会员日及女性向营销场景。</em><figure class="font-style-card__shot"><img src="./assets/font-style-cases/fashion-style.png" alt="时尚风格营销案例切图：真低价，低至5折"><figcaption>静态切图：造字工房逸锋体 / 造字工房书见体</figcaption></figure><ul class="font-style-card__fonts"><li>造字工房逸锋体</li><li>造字工房书见体</li><li>造字工房逸锋体:Regular</li><li>造字工房书见体:Regular</li></ul></div>
+  <div class="font-style-card" data-relay-node="13533:47"><strong>活力风格</strong><span>视觉特征：年轻、亲和、趣味。</span><em>适用场景：零食生鲜、母婴亲子、开学季、出游季、宠物节等年轻化营销场景。</em><figure class="font-style-card__shot"><img src="./assets/font-style-cases/vitality-style.png" alt="活力风格营销案例切图：真低价，低至5折"><figcaption>静态切图：薄荷海盐体 / 造字工房简圆 / 得意黑</figcaption></figure><ul class="font-style-card__fonts"><li>造字工房薄荷海盐体</li><li>造字工房简圆</li><li>得意黑</li><li>Smiley-Sans:Oblique</li></ul></div>
+  <div class="font-style-card" data-relay-node="13533:56"><strong>传统风格</strong><span>视觉特征：文化感、节庆感、仪式感。</span><em>适用场景：春节、中秋节、端午节、国潮主题及传统文化营销场景。</em><figure class="font-style-card__shot"><img src="./assets/font-style-cases/traditional-style.png" alt="传统风格营销案例切图：真低价，低至5折"><figcaption>静态切图：方正黑隶简体 / 汉仪永字蓬莱 / 汉仪杰龙桃花源</figcaption></figure><ul class="font-style-card__fonts"><li>方正黑隶简体</li><li>汉仪永字蓬莱</li><li>汉仪杰龙桃花源</li><li>FZHeiLiS:Bold</li><li>HYYongZiPengLai:W</li><li>HYJieLongTaoHuaYuan:W</li></ul></div>
+  <div class="font-style-card" data-relay-node="13533:67"><strong>科技风格</strong><span>视觉特征：理性、未来感、秩序感。</span><em>适用场景：3C 数码、家电、智能设备及科技主题营销场景。</em><figure class="font-style-card__shot"><img src="./assets/font-style-cases/tech-style.png" alt="科技风格营销案例切图：真低价，低至5折"><figcaption>静态切图：方正摩登体 / 造字工房启黑体</figcaption></figure><ul class="font-style-card__fonts"><li>方正摩登体</li><li>造字工房启黑体</li><li>FZMoDengTiS:Bold</li><li>造字工房启黑体:Regular</li></ul></div>
+</div>
+<div class="pro-only"><table><thead><tr><th>使用边界</th><th>规则</th></tr></thead><tbody><tr><td>实现方式</td><td>风格字体优先通过视觉切图、SVG 或图形资源配置承载。</td></tr><tr><td>动态内容</td><td>商品标题、价格、规则、倒计时等可变文本必须保留系统字体渲染能力。</td></tr><tr><td>资产登记</td><td>字体授权、字体包、CDN、可商用边界需要进入字体资产库或 <code>_assets-cdn.md</code>。</td></tr></tbody></table></div>
+<div class="pro-only"><h3>Token swatch</h3><div class="color-swatch-grid"><div class="color-swatch"><div class="color-swatch__chip" style="background:#171a26"></div><div class="color-swatch__meta"><div class="color-swatch__name">一级文本</div><div class="color-swatch__hex"><code>color_title</code> · #171a26 · 待校准</div></div></div><div class="color-swatch"><div class="color-swatch__chip" style="background:#3d414d"></div><div class="color-swatch__meta"><div class="color-swatch__name">正文文本</div><div class="color-swatch__hex"><code>color_text</code> · #3d414d · 待校准</div></div></div><div class="color-swatch"><div class="color-swatch__chip" style="background:#828794"></div><div class="color-swatch__meta"><div class="color-swatch__name">辅助文本</div><div class="color-swatch__hex"><code>color_text_help</code> · #828794 · 待校准</div></div></div><div class="color-swatch"><div class="color-swatch__chip" style="background:#ff0f23"></div><div class="color-swatch__meta"><div class="color-swatch__name">品牌强调</div><div class="color-swatch__hex"><code>color_primary</code> · #ff0f23</div></div></div></div></div>
+<h2 id="sec-5-hierarchy">信息层级 <small>Hierarchy</small></h2>
+<p>营销文字必须先确定信息优先级，再选择字体、字号、字重、颜色和留白。</p>
+<div class="hierarchy-list"><div class="hierarchy-row"><code>Level 1</code><span>优惠力度、价格、倒计时、主标题等直接影响转化的信息。</span></div><div class="hierarchy-row"><code>Level 2</code><span>商品标题、利益点说明、模块标题等支持理解的信息。</span></div><div class="hierarchy-row"><code>Level 3</code><span>规则说明、辅助描述、免责声明等弱化信息。</span></div></div>
+<h2 id="sec-6-scenario">应用场景 <small>Scenario</small></h2>
+<div class="case good"><h4><span class="badge">用</span> 推荐场景</h4><table><tbody><tr><td>商卡、feeds、商品信息</td><td>使用系统字体和基础阅读型字号。</td></tr><tr><td>权益优惠、补贴折扣、价格利益点</td><td>使用数字表达扩展。</td></tr><tr><td>主视觉标题、广告位</td><td>可使用图形化字体或视觉切图。</td></tr><tr><td>品类 / 情绪 / 活动主题</td><td>按趣味、国风节庆、科技、潮流、轻奢等风格字体匹配营销氛围。</td></tr></tbody></table></div>
+<div class="case bad"><h4><span class="badge">不用</span> 避免场景</h4><table><tbody><tr><td>动态文本使用图形化字体切图</td><td>不可变更、不可搜索、不可适配。</td></tr><tr><td>阅读型正文使用复杂装饰字体</td><td>降低阅读效率。</td></tr></tbody></table></div>
+<h2 id="sec-7-composition">组合关系 <small>Composition</small></h2>
+<p>Typography 与基础文字 token、营销资产、业务模块共同组成营销表达体系。</p>
+<table><thead><tr><th>关系</th><th>说明</th></tr></thead><tbody><tr><td>Foundation token</td><td><code>color_title</code>、<code>color_text</code>、<code>color_primary</code>、<code>pingfang_regular/font_size_14_400</code>。</td></tr><tr><td>视觉资产</td><td>图形化字体、Logo、示例图进入 <code>_assets-cdn.md</code> 管理。</td></tr><tr><td>业务模块</td><td>商卡、feeds、广告位、头图等按各自组件结构规范落地。</td></tr></tbody></table>
+<h2 id="sec-10-ai-rule">AI 生成规则 <small>AI Rule</small></h2>
+<p>AI 生成营销文字规范或页面时，必须先判断文字是否动态变化，再选择系统字体、数字表达或图形化资产。</p>
+<div class="basic-only summary"><p><strong>给 AI 的一句话</strong>：动态内容不要切图，核心利益点可以强化，但每屏只允许少量高强度信息。</p></div>
+<div class="pro-only"><pre><code>rules:
+  dynamic_text: use_system_font
+  graphic_font: fixed_visual_only
+  number_emphasis: price_discount_countdown
+  donts:
+    - no_graphic_font_for_dynamic_text
+    - no_multi_focus_over_emphasis
+    - no_image_only_core_copy</code></pre></div>
+
+
+<hr>
+
+<h3>API 速查</h3>
+<div class="pro-only"><p>AI 生成规则已进入正文，此处不重复展开。</p></div><div class="basic-only summary"><p><strong>完整参数见专业版。</strong></p></div>
+
+<h3>引用</h3>
+<ul><li>Relay: <a href="https://relay.jd.com/file/design?id=2057763035308625921&amp;page_id=0%3A1595&amp;node_id=13495%3A87">13495:87 文字 Typography</a></li><li><a href="./design.md">design.md</a></li><li><a href="./spec.md">spec.md</a></li><li><a href="./variants.md">variants.md</a></li><li><a href="./behaviors.md">behaviors.md</a></li></ul>
+
+<div style="margin-top:60px; padding-top:20px; border-top:1px solid var(--c-line); color:var(--c-text-3); font-size:12px; text-align:center;">
+  JD APP V16.0 Design System · 文字 规范 · 生成于 2026-06-10 · 样式 = Relay 节点 13495:87
+</div>
+
+</div><!-- /.doc -->
+
+
+<!-- 视图切换 JS(轻量,无依赖,localStorage 持久化偏好;--no-view-toggle 模式整段被跳过) -->
+<script>
+(function () {
+  var STORAGE_KEY = 'spec-page-view-mode';
+  var body = document.body;
+  var tabs = document.querySelectorAll('.view-tab');
+  function setMode(mode) {
+    body.classList.remove('mode-basic', 'mode-pro');
+    body.classList.add('mode-' + mode);
+    tabs.forEach(function (t) {
+      var on = t.dataset.view === mode;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    try { localStorage.setItem(STORAGE_KEY, mode); } catch (e) {}
+  }
+  var initial = 'basic';
+  try {
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === 'pro' || saved === 'basic') initial = saved;
+  } catch (e) {}
+  setMode(initial);
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () { setMode(t.dataset.view); });
+  });
+
+  // 切图点击在新 tab 看原图(backup 视觉用)
+  document.querySelectorAll('.stage--image img').forEach(function (img) {
+    img.addEventListener('click', function () {
+      window.open(img.src, '_blank', 'noopener');
+    });
+  });
+
+  // ===== 交互式 showcase 控制器(v2.2):主题切换 / 变体 tabs =====
+  document.querySelectorAll('.showcase').forEach(function (sc) {
+    // 浅/暗主题
+    sc.querySelectorAll('[data-theme-set]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        sc.setAttribute('data-theme', b.dataset.themeSet);
+        sc.querySelectorAll('[data-theme-set]').forEach(function (x) { x.classList.toggle('is-active', x === b); });
+      });
+    });
+    // 变体切换
+    sc.querySelectorAll('.seg [data-variant]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var v = b.dataset.variant;
+        sc.querySelectorAll('.seg [data-variant]').forEach(function (x) { x.classList.toggle('is-active', x === b); });
+        sc.querySelectorAll('.variant-panel').forEach(function (p) { p.classList.toggle('is-active', p.dataset.variant === v); });
+      });
+    });
+  });
+
+  // ===== token 点击复制 + 悬停高亮联动 =====
+  var toast = document.getElementById('copy-toast');
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('.tok') : null;
+    if (!t) return;
+    var val = t.dataset.copy || t.textContent.trim();
+    try { navigator.clipboard.writeText(val); } catch (err) {}
+    t.classList.add('copied'); setTimeout(function () { t.classList.remove('copied'); }, 900);
+    if (toast) { toast.textContent = '已复制 ' + val; toast.classList.add('show'); clearTimeout(window.__ct); window.__ct = setTimeout(function () { toast.classList.remove('show'); }, 1200); }
+  });
+  // 悬停 token(带 data-hl)→ 高亮同 showcase 内 data-hl-target 匹配的元素
+  document.querySelectorAll('.tok[data-hl]').forEach(function (t) {
+    var root = t.closest('.showcase') || document;
+    var targets = function () { return root.querySelectorAll('[data-hl-target="' + t.dataset.hl + '"]'); };
+    t.addEventListener('mouseenter', function () { targets().forEach(function (el) { el.classList.add('hl-flash'); }); });
+    t.addEventListener('mouseleave', function () { targets().forEach(function (el) { el.classList.remove('hl-flash'); }); });
+  });
+})();
+</script>
+
+</body>
+</html>
