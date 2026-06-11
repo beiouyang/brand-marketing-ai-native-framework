@@ -1,0 +1,55 @@
+{
+  "$description": "JD V16 受控词表。validate.sh / Step 3 推断 / Step 8 写 frontmatter 都查本表。任何字段值不在列就算 ⚠️ fallback。",
+  "$updated": "2026-05-29",
+
+  "level": {
+    "values": ["component-base", "component-business", "page", "flow"],
+    "default": "component-base",
+    "$note": "auto-detect 启发:Relay 节点根 frame name 含 '页面'/'流程' → page/flow;否则 component-*"
+  },
+
+  "bg": {
+    "values": ["horizontal", "retail", "health", "finance", "logistics", "global", "jx", "industrial"],
+    "default": "horizontal",
+    "$note": "horizontal = 通用横向(component-base / component-business);其余 7 个是 8 大 BG(零售/健康/金融/物流/海外/京喜/工业)"
+  },
+
+  "status": {
+    "values": ["draft", "review", "published", "deprecated"],
+    "default": "draft",
+    "$note": "新建默认 draft;5 处 TODO 全填后才能改 review;design 评审过才能改 published"
+  },
+
+  "design_dept": {
+    "$description": "V16 13 个业务设计部门,L3 page 录入时必填。真相源:V15 jd-design-system-md/product-architecture/README.md(2026-05-25 落定 13 部门英文 slug,issue #79)",
+    "values": [
+      "search-recommend-foundation",
+      "mainstream-shopping",
+      "platform-transaction",
+      "ai-core",
+      "comprehensive-business",
+      "plus-and-new-channels",
+      "value-channel",
+      "local-life",
+      "brand-and-marketing",
+      "platform-product",
+      "merchant-product",
+      "marketing-and-data",
+      "user-research"
+    ],
+    "default": null,
+    "$migration_note": "2026-05-28 follow-up PR 把 V16 design_dept slug 从技术 BG 维度切到 V15 业务设计部门维度,跟 V15 README authoritative 对齐,解决 PR #128 review 中 brand-and-marketing slug 不在 controlled-vocab 的漂移。旧 13 个技术 BG 维度 slug(comprehensive-business / platform-trade / huangliu-shopping-guide / smart-supply / intelligent-marketing / international / infrastructure / retail-tech / logistics-tech / health-tech / finance-tech / jx-special / industrial-tech)中,仅 comprehensive-business 与新表重叠,其余 12 个废弃。",
+    "$note": "13 个业务设计部门 slug,以 sub-domain 形式呈现(product-architecture/<slug>/);中文名 ↔ slug 对照见 .claude/skills/design-md-to-spec-page/references/section-mapping.md"
+  },
+
+  "frontmatter_required_fields_design": [
+    "file", "level", "bg", "slug", "name_zh", "owner", "status", "last_synced",
+    "relay_source", "auto_detected"
+  ],
+  "frontmatter_required_fields_outline": [
+    "file", "level", "bg", "slug", "name_zh", "last_synced", "auto_detected"
+  ],
+
+  "preview_png_required_for_status": ["review", "published"],
+  "todo_residue_allowed_for_status": ["draft"]
+}
