@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>营销场景图形 · Campaign System Graphic 规范 - JD APP 16.0</title>
+<meta name="component-slug" content="campaign-system-graphic">
+<meta name="component-version" content="0.1">
+<meta name="component-level" content="page">
+<style>
+  :root {
+    --c-text: #171a26;
+    --c-text-2: #3d414d;
+    --c-text-3: #828794;
+    --c-line: rgba(17, 20, 26, 0.08);
+    --c-bg: #ffffff;
+    --c-bg-sunken: #f6f7fb;
+    --c-bg-soft: rgba(17, 20, 26, 0.03);
+    --c-brand: #ff0f23;
+    --c-brand-soft: #fff0f4;
+    --c-info: #1668dc;
+    --c-info-soft: #edf4ff;
+    --c-warning: #a35a00;
+    --c-warning-soft: #fff7e8;
+    --c-good: #00a870;
+    --c-good-soft: #e9f8f3;
+    --r-base: 6px;
+    --r-l: 8px;
+    --r-xl: 12px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--c-bg-sunken);
+    color: var(--c-text);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body.basic .pro-only,
+  body.pro .basic-only { display: none !important; }
+
+  a { color: inherit; text-decoration: none; }
+
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #f0f2f7;
+    color: #245bdb;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.92);
+    border-bottom: 1px solid var(--c-line);
+    backdrop-filter: blur(16px);
+  }
+
+  .topbar-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .brand {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--c-text);
+    white-space: nowrap;
+  }
+
+  .zone-nav {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .zone-nav a {
+    padding: 6px 10px;
+    border-radius: var(--r-l);
+    color: var(--c-text-2);
+    font-size: 13px;
+  }
+
+  .zone-nav a.is-current {
+    background: var(--c-brand-soft);
+    color: var(--c-brand);
+    font-weight: 600;
+  }
+
+  .shell {
+    max-width: 1180px;
+    margin: 28px auto 56px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 76px;
+    align-self: start;
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-xl);
+    padding: 18px;
+  }
+
+  .sidebar h2 {
+    margin: 0 0 12px;
+    border: 0;
+    padding: 0;
+    font-size: 13px;
+    color: var(--c-text-3);
+    font-weight: 600;
+  }
+
+  .toc {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 4px;
+  }
+
+  .toc a {
+    display: block;
+    padding: 7px 10px;
+    border-radius: var(--r-l);
+    color: var(--c-text-2);
+    font-size: 13px;
+  }
+
+  .toc a:hover {
+    background: var(--c-bg-soft);
+    color: var(--c-text);
+  }
+
+  .doc {
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-xl);
+    padding: 56px 64px;
+    box-shadow: 0 10px 30px rgba(17, 20, 26, 0.04);
+  }
+
+  .eyebrow {
+    margin: 0 0 10px;
+    color: var(--c-brand);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .title-row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 36px;
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  .subtitle {
+    margin: 12px 0 0;
+    color: var(--c-text-2);
+    max-width: 690px;
+  }
+
+  .view-tabs {
+    display: inline-flex;
+    padding: 3px;
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-l);
+    background: var(--c-bg-sunken);
+    flex-shrink: 0;
+  }
+
+  .view-tabs button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--c-text-2);
+    font: inherit;
+    font-size: 13px;
+    padding: 6px 11px;
+    border-radius: var(--r-base);
+    cursor: pointer;
+  }
+
+  .view-tabs button.is-active {
+    color: var(--c-text);
+    background: var(--c-bg);
+    box-shadow: 0 1px 4px rgba(17, 20, 26, 0.08);
+  }
+
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 28px 0 36px;
+  }
+
+  .meta div {
+    background: var(--c-bg-sunken);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-l);
+    padding: 10px 12px;
+    color: var(--c-text-2);
+    font-size: 13px;
+  }
+
+  h2 {
+    margin: 58px 0 18px;
+    padding-top: 4px;
+    font-size: 24px;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+
+  h2 + p { margin-top: 0; }
+  h3 { margin: 28px 0 12px; font-size: 18px; letter-spacing: 0; }
+  p { margin: 12px 0; color: var(--c-text-2); }
+  ul, ol { color: var(--c-text-2); padding-left: 22px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  th, td {
+    border: 1px solid var(--c-line);
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background: var(--c-bg-sunken);
+    color: var(--c-text);
+    font-weight: 650;
+  }
+
+  .note {
+    margin: 16px 0;
+    padding: 14px 18px;
+    border-radius: var(--r-l);
+    background: var(--c-info-soft);
+    border-left: 3px solid var(--c-info);
+    color: var(--c-text-2);
+  }
+
+  .note.warn {
+    background: var(--c-warning-soft);
+    border-left-color: var(--c-warning);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .card {
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-l);
+    padding: 16px;
+    background: #fff;
+  }
+
+  .card strong { display: block; margin-bottom: 6px; color: var(--c-text); }
+  .card span { color: var(--c-text-2); font-size: 14px; }
+
+  .stage {
+    margin: 18px 0;
+    padding: 24px;
+    background: var(--c-bg-sunken);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-l);
+  }
+
+  .icon-board {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .icon-chip {
+    min-height: 92px;
+    display: grid;
+    place-items: center;
+    gap: 8px;
+    padding: 12px 8px;
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-l);
+    background: #fff;
+    text-align: center;
+    color: var(--c-text-2);
+    font-size: 13px;
+  }
+
+  .glyph {
+    width: 34px;
+    height: 34px;
+    border-radius: 45% 55% 52% 48%;
+    background: var(--c-brand);
+    box-shadow: 0 8px 18px rgba(255, 15, 35, 0.18);
+  }
+
+  .glyph.orange { background: #ff6d3a; }
+  .glyph.green { background: #00b578; }
+  .glyph.gold { background: #f6bd4c; }
+  .glyph.purple { background: #7459ff; }
+  .glyph.blue { background: #4b83ff; }
+
+  .style-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .style-demo {
+    min-height: 128px;
+    border-radius: var(--r-l);
+    border: 1px solid var(--c-line);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    color: var(--c-text);
+  }
+
+  .style-demo strong {
+    font-size: 40px;
+    line-height: 1;
+    color: var(--c-brand);
+  }
+
+  .style-demo.flat { background: linear-gradient(135deg, #fff2f5, #ffd9e2); }
+  .style-demo.metal { background: linear-gradient(135deg, #f6fbff, #d9ecff); }
+  .style-demo.glass { background: linear-gradient(135deg, #fff6ff, #eee4ff); }
+
+  .blob {
+    width: 72px;
+    height: 54px;
+    border-radius: 50% 45% 55% 48%;
+    background: rgba(255, 15, 80, 0.75);
+  }
+
+  .metal .blob { background: linear-gradient(135deg, #40dbc5, #7fa2ff); }
+  .glass .blob {
+    background: rgba(96, 64, 220, 0.5);
+    filter: blur(5px);
+  }
+
+  .scene-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .scene {
+    min-height: 126px;
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-l);
+    padding: 18px;
+    color: #fff;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  .scene.spring { background: linear-gradient(135deg, #ff8a3d, #ff3b30); }
+  .scene.window { background: linear-gradient(135deg, #ff7db8, #ef3d7a); }
+  .scene.lantern { background: linear-gradient(135deg, #d9001b, #ff5b32); }
+
+  .scene mark {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 999px;
+    padding: 3px 9px;
+  }
+
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .swatch {
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-l);
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .swatch-color { height: 54px; }
+  .swatch-color.t1 { background: #171a26; }
+  .swatch-color.t2 { background: #3d414d; }
+  .swatch-color.t3 { background: #828794; }
+  .swatch-color.red { background: #ff0f23; }
+  .swatch-body { padding: 10px 12px; font-size: 13px; color: var(--c-text-2); }
+  .swatch-body strong { display: block; color: var(--c-text); }
+
+  .footer {
+    margin-top: 56px;
+    padding-top: 18px;
+    border-top: 1px solid var(--c-line);
+    color: var(--c-text-3);
+    font-size: 13px;
+  }
+
+  @media (max-width: 920px) {
+    .shell { grid-template-columns: 1fr; padding: 0; margin: 0; }
+    .sidebar { position: static; border-radius: 0; border-left: 0; border-right: 0; }
+    .doc { border-radius: 0; border-left: 0; border-right: 0; padding: 32px 20px; }
+    .title-row, .topbar-inner { flex-direction: column; align-items: stretch; }
+    .meta, .grid, .style-strip, .scene-row, .swatches { grid-template-columns: 1fr; }
+    .icon-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
+</head>
+<body class="pro">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">JD APP 16.0 GUIDELINE</div>
+      <nav class="zone-nav" aria-label="Design zones">
+        <a href="../../README.md">Knowledge</a>
+        <a href="../../foundation.md">Foundations</a>
+        <a href="../../ai-rules.md">AI Mechanism</a>
+        <a class="is-current" href="./design.md">Campaign System</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <h2>页面目录</h2>
+      <ol class="toc">
+        <li><a href="#sec-1-what">组件定义 What</a></li>
+        <li><a href="#sec-2-why">设计目标 Why</a></li>
+        <li><a href="#sec-3-principle">行为准则 Principle</a></li>
+        <li><a href="#sec-4-properties">设计属性 Properties</a></li>
+        <li><a href="#sec-5-hierarchy">信息层级 Hierarchy</a></li>
+        <li><a href="#sec-6-scenario">应用场景 Scenario</a></li>
+        <li><a href="#sec-7-composition">组合关系 Composition</a></li>
+        <li><a href="#sec-10-ai-rule">AI 生成规则 AI Rule</a></li>
+      </ol>
+    </aside>
+
+    <main class="doc">
+      <p class="eyebrow">Marketing Design System</p>
+      <div class="title-row">
+        <div>
+          <h1>营销场景图形 · Campaign System Graphic</h1>
+          <p class="subtitle">定义营销图形在识别、信息传递与氛围表达中的使用边界，让图形在不同活动风格中保持稳定语义和清晰层级。</p>
+        </div>
+        <div class="view-tabs" aria-label="View mode">
+          <button type="button" class="is-active" data-view="pro">Pro</button>
+          <button type="button" data-view="basic">Basic</button>
+        </div>
+      </div>
+
+      <div class="meta">
+        <div>Relay node <code>13522:1075</code></div>
+        <div>Version <code>0.1</code> · Generated 2026-06-12</div>
+        <div>Source <code>2057763035308625921 / 0:1595</code></div>
+        <div>Status <code>draft</code> · Phase 2 confirmed</div>
+      </div>
+
+      <section id="sec-1-what">
+        <h2>组件定义 What</h2>
+        <p>图形规范定义营销场景中图形资产的识别、信息传递与氛围表达职责。它确保同一业务语义在不同活动风格中保持稳定认知，同时允许材质、光影、形态和主题氛围随活动延展。</p>
+        <div class="note basic-only">一句话理解：图形可以换风格，但不能换掉用户对业务、活动或场景的认知。</div>
+        <table class="pro-only">
+          <tr><th>适用</th><td>营销图标、语义图形、场景图形、主题氛围图形、品类图形示例。</td></tr>
+          <tr><th>不适用</th><td>不重定义基础图标绘制规范，不替代品牌色、字体、空间、圆角等基础规范。</td></tr>
+          <tr><th>来源</th><td>Relay <code>图形 Graphic</code>，JD APP 16.0 Marketing Design System。</td></tr>
+        </table>
+      </section>
+
+      <section id="sec-2-why">
+        <h2>设计目标 Why</h2>
+        <div class="grid">
+          <div class="card"><strong>稳定识别</strong><span>让同一业务、身份或活动语义在不同视觉皮肤中保持可认知。</span></div>
+          <div class="card"><strong>信息服务</strong><span>图形帮助用户理解主题、利益、品类和入口，不替代必要文字。</span></div>
+          <div class="card"><strong>氛围延展</strong><span>根据活动周期和视觉调性改变材质、场景和组合方式。</span></div>
+        </div>
+      </section>
+
+      <section id="sec-3-principle">
+        <h2>行为准则 Principle</h2>
+        <ol>
+          <li>图形应服务于信息表达，通过视觉元素建立认知、强化主题，并提升信息传达效率。</li>
+          <li>图形在不同活动周期及视觉风格下，应保持核心识别与场景认知稳定。</li>
+          <li>图形应用应保持视觉层级清晰，避免过度强化导致信息干扰。</li>
+          <li>语义图形可以变化表现方式，但品牌、业务和身份语义必须一致。</li>
+          <li>场景图形可以随主题变化，但必须支撑活动氛围而不是遮挡核心信息。</li>
+        </ol>
+        <div class="note warn pro-only">源节点高度为 <code>58106.5px</code>，正式发布前建议按章节分块复核资产与文本。本页基于已确认 outline 生成。</div>
+      </section>
+
+      <section id="sec-4-properties">
+        <h2>设计属性 Properties</h2>
+        <h3>图形类型</h3>
+        <table>
+          <tr><th>类型</th><th>定义</th><th>使用</th></tr>
+          <tr><td>平台造型图形</td><td>长期平台视觉锚点。</td><td>强化 JD 平台识别或长期资产。</td></tr>
+          <tr><td>语义图形</td><td>业务、身份、利益或活动节点语义图形。</td><td>跨活动皮肤保持同一意义。</td></tr>
+          <tr><td>场景图形</td><td>活动、节日或氛围图形。</td><td>建立主题情绪和场景语境。</td></tr>
+          <tr><td>主题图形</td><td>某个活动主题的视觉系统图形。</td><td>形成统一主题视觉动机。</td></tr>
+          <tr><td>品类图形</td><td>商品或品类隐喻图形。</td><td>用于品类入口、利益组和扫读模块。</td></tr>
+        </table>
+
+        <h3>营销图标状态</h3>
+        <div class="stage">
+          <div class="icon-board">
+            <div class="icon-chip"><i class="glyph"></i><span>超级秒杀</span></div>
+            <div class="icon-chip"><i class="glyph orange"></i><span>热卖榜单</span></div>
+            <div class="icon-chip"><i class="glyph green"></i><span>主会场</span></div>
+            <div class="icon-chip"><i class="glyph gold"></i><span>品类好券</span></div>
+            <div class="icon-chip"><i class="glyph purple"></i><span>品牌狂欢</span></div>
+            <div class="icon-chip"><i class="glyph blue"></i><span>新品好物</span></div>
+          </div>
+        </div>
+        <p class="pro-only">Relay 中识别到营销图标资产存在未选中 / 选中两组状态。状态变化应强化当前入口，不改变业务含义。</p>
+
+        <h3>语义图形材质延展</h3>
+        <div class="style-strip">
+          <div class="style-demo flat"><div>低价<br>热卖 <strong>65</strong></div><i class="blob"></i></div>
+          <div class="style-demo metal"><div>低价<br>热卖 <strong>65</strong></div><i class="blob"></i></div>
+          <div class="style-demo glass"><div>低价<br>热卖 <strong>55</strong></div><i class="blob"></i></div>
+        </div>
+
+        <h3>场景图形示例</h3>
+        <div class="scene-row">
+          <div class="scene spring"><strong>聚宝盆</strong><mark>新春好礼</mark></div>
+          <div class="scene window"><strong>中式窗棂</strong><mark>迎新纳福</mark></div>
+          <div class="scene lantern"><strong>灯笼</strong><mark>好礼送到家</mark></div>
+        </div>
+
+        <h3 class="pro-only">颜色 token</h3>
+        <div class="swatches pro-only">
+          <div class="swatch"><div class="swatch-color t1"></div><div class="swatch-body"><strong>一级文本</strong>#171a26</div></div>
+          <div class="swatch"><div class="swatch-color t2"></div><div class="swatch-body"><strong>二级文本</strong>#3d414d</div></div>
+          <div class="swatch"><div class="swatch-color t3"></div><div class="swatch-body"><strong>三级文本</strong>#828794</div></div>
+          <div class="swatch"><div class="swatch-color red"></div><div class="swatch-body"><strong>品牌红</strong>#ff0f23</div></div>
+        </div>
+      </section>
+
+      <section id="sec-5-hierarchy">
+        <h2>信息层级 Hierarchy</h2>
+        <table>
+          <tr><th>层级</th><th>图形职责</th><th>约束</th></tr>
+          <tr><td>平台 / 长期识别</td><td>稳定平台心智。</td><td>保持长期资产一致，不随单次活动大幅漂移。</td></tr>
+          <tr><td>业务 / 身份语义</td><td>快速传达入口或权益含义。</td><td>核心隐喻、形状或识别点保持稳定。</td></tr>
+          <tr><td>活动 / 场景氛围</td><td>强化活动主题和情绪。</td><td>不得遮挡标题、价格、利益点或 CTA。</td></tr>
+          <tr><td>品类辅助</td><td>帮助用户扫读分类。</td><td>优先保证对象轮廓直接可识别。</td></tr>
+        </table>
+      </section>
+
+      <section id="sec-6-scenario">
+        <h2>应用场景 Scenario</h2>
+        <div class="grid">
+          <div class="card"><strong>会场导航图标</strong><span>使用选中 / 未选中状态，保持业务入口图形稳定。</span></div>
+          <div class="card"><strong>业务利益表达</strong><span>固定语义锚点，只变化材质、色彩和局部装饰。</span></div>
+          <div class="card"><strong>节日活动横幅</strong><span>用场景图形建立氛围，同时保护文字可读性。</span></div>
+          <div class="card"><strong>品类入口</strong><span>使用直接对象隐喻和简洁轮廓。</span></div>
+          <div class="card"><strong>AI 生成页面</strong><span>先判断图形职责，再选择类型与稳定等级。</span></div>
+          <div class="card"><strong>资产导出</strong><span>保留来源节点或资产名，便于后续 CDN 追踪。</span></div>
+        </div>
+      </section>
+
+      <section id="sec-7-composition">
+        <h2>组合关系 Composition</h2>
+        <table>
+          <tr><th>组合</th><th>说明</th></tr>
+          <tr><td>图形 + 标题</td><td>标题承载明确语义，图形强化识别和氛围。</td></tr>
+          <tr><td>图形 + 利益点</td><td>图形辅助理解利益，不替代价格、折扣或活动机制。</td></tr>
+          <tr><td>图形 + 导航状态</td><td>选中态可增加强调效果，但不改变入口含义。</td></tr>
+          <tr><td>场景图形 + 背景</td><td>背景可增强活动感，但需避免与前景信息冲突。</td></tr>
+        </table>
+        <p class="pro-only">Bundle 文件: <a href="./design.md">design.md</a>, <a href="./spec.md">spec.md</a>, <a href="./variants.md">variants.md</a>, <a href="./behaviors.md">behaviors.md</a>, <a href="./CHANGELOG.md">CHANGELOG.md</a>.</p>
+      </section>
+
+      <section id="sec-10-ai-rule">
+        <h2>AI 生成规则 AI Rule</h2>
+        <ol>
+          <li>先判断图形职责：识别、信息支持或氛围表达。</li>
+          <li>语义图形必须保留核心隐喻，只变化材质、光影、色彩或装饰。</li>
+          <li>场景图形必须支撑活动主题，不遮挡关键文案。</li>
+          <li>导航图标必须同时考虑选中与未选中状态。</li>
+          <li>Relay 文档页头、章节序号、标注和辅助背景属于文档噪声，不应生成进业务 UI。</li>
+        </ol>
+        <div class="note">校验口径：语义稳定、场景清晰、状态可辨、文本安全、资产可追溯同时满足，才可判定为图形规范合规。</div>
+      </section>
+
+      <div class="footer">
+        JD APP V16.0 Design System · Campaign System Graphic · Source Relay node 13522:1075 · Generated from design.md bundle
+      </div>
+    </main>
+  </div>
+
+<script>
+  document.querySelectorAll("[data-view]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var next = button.dataset.view;
+      document.body.classList.toggle("basic", next === "basic");
+      document.body.classList.toggle("pro", next === "pro");
+      document.querySelectorAll("[data-view]").forEach(function (item) {
+        item.classList.toggle("is-active", item === button);
+      });
+    });
+  });
+</script>
+</body>
+</html>
