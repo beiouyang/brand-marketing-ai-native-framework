@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>品牌与营销 AI-Native 四层架构</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: rgba(12, 12, 15, .94);
+      --line: rgba(255, 255, 255, .14);
+      --text: #f7f3f5;
+      --muted: #a8a0a6;
+      --magenta: #da205a;
+      --font-title: Inter, "SF Pro Display", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 80% 12%, rgba(218, 32, 90, .14), transparent 28rem),
+        var(--bg);
+      font-family: var(--font-title);
+    }
+
+    .page {
+      width: min(100%, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 16px 0 24px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .back-link {
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      color: var(--text);
+    }
+
+    figure {
+      display: grid;
+      place-items: center;
+      margin: 0;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      box-shadow: 0 34px 120px rgba(0, 0, 0, .6), 0 0 54px rgba(218, 32, 90, .14);
+      overflow: auto;
+    }
+
+    img {
+      display: block;
+      width: auto;
+      height: 100svh;
+      max-width: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(100%, calc(100vw - 20px));
+        padding: 12px 0 18px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      img {
+        height: 100svh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <h1>品牌与营销 AI-Native 四层架构</h1>
+      <a class="back-link" href="./index.html#user-layer">返回 Atlas</a>
+    </header>
+    <figure>
+      <img src="./assets/brand-marketing-ai-native-framework-v6.png" alt="品牌与营销 AI-Native 四层架构说明图">
+    </figure>
+  </main>
+</body>
+</html>
