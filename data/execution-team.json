@@ -1,0 +1,1006 @@
+{
+  "teamPageSize": 20,
+  "members": [
+    {
+      "id": "h-001",
+      "type": "human",
+      "name": "胥浩",
+      "alias": "xuhao7",
+      "level": "P11",
+      "role": "体验设计岗",
+      "title": "团队负责人",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦁"
+    },
+    {
+      "id": "h-002",
+      "type": "human",
+      "name": "徐健",
+      "alias": "Paul · xujian26",
+      "level": "P9",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐼"
+    },
+    {
+      "id": "h-003",
+      "type": "human",
+      "name": "翁婷",
+      "alias": "wengting",
+      "level": "P9",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦊"
+    },
+    {
+      "id": "h-004",
+      "type": "human",
+      "name": "王蕾",
+      "alias": "wanglei37",
+      "level": "P9",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐰"
+    },
+    {
+      "id": "h-005",
+      "type": "human",
+      "name": "欧阳蓓",
+      "alias": "ouyangbei3",
+      "level": "P9",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐨"
+    },
+    {
+      "id": "h-006",
+      "type": "human",
+      "name": "王龙",
+      "alias": "wlwl",
+      "level": "P9",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐯"
+    },
+    {
+      "id": "h-007",
+      "type": "human",
+      "name": "谭灿",
+      "alias": "tancan3",
+      "level": "P9",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐻"
+    },
+    {
+      "id": "h-008",
+      "type": "human",
+      "name": "蔡璐",
+      "alias": "cailu",
+      "level": "P8",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐸"
+    },
+    {
+      "id": "h-009",
+      "type": "human",
+      "name": "龙莹",
+      "alias": "longying3",
+      "level": "P8",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦉"
+    },
+    {
+      "id": "h-010",
+      "type": "human",
+      "name": "周怡昕",
+      "alias": "zhouyixin",
+      "level": "P8",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐧"
+    },
+    {
+      "id": "h-011",
+      "type": "human",
+      "name": "张董丽",
+      "alias": "zhangdongli8",
+      "level": "P8",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦊"
+    },
+    {
+      "id": "h-012",
+      "type": "human",
+      "name": "冉豪强",
+      "alias": "ranhaoqiang",
+      "level": "P8",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐔"
+    },
+    {
+      "id": "h-013",
+      "type": "human",
+      "name": "朱丽莎",
+      "alias": "zhulisha3",
+      "level": "P8",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐶"
+    },
+    {
+      "id": "h-014",
+      "type": "human",
+      "name": "潘安琪",
+      "alias": "pananqi",
+      "level": "P8",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐱"
+    },
+    {
+      "id": "h-015",
+      "type": "human",
+      "name": "郑微",
+      "alias": "zhengwei16",
+      "level": "P7",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐹"
+    },
+    {
+      "id": "h-016",
+      "type": "human",
+      "name": "贾西贝",
+      "alias": "jiaxibei",
+      "level": "P7",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐮"
+    },
+    {
+      "id": "h-017",
+      "type": "human",
+      "name": "卓小婷",
+      "alias": "Sharon · zhuoxiaoting",
+      "level": "P7",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦋"
+    },
+    {
+      "id": "h-018",
+      "type": "human",
+      "name": "付久久",
+      "alias": "fujiujiu",
+      "level": "P7",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐿️"
+    },
+    {
+      "id": "h-019",
+      "type": "human",
+      "name": "黄梓康",
+      "alias": "huangzikang6",
+      "level": "P7",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦔"
+    },
+    {
+      "id": "h-020",
+      "type": "human",
+      "name": "蔡函君",
+      "alias": "caihanjun3",
+      "level": "P7",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦝"
+    },
+    {
+      "id": "h-021",
+      "type": "human",
+      "name": "洪浩翔",
+      "alias": "honghaoxiang",
+      "level": "P7",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐺"
+    },
+    {
+      "id": "h-022",
+      "type": "human",
+      "name": "于广泽",
+      "alias": "Lucius · yuguangze3",
+      "level": "P7",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦩"
+    },
+    {
+      "id": "h-023",
+      "type": "human",
+      "name": "余晓华",
+      "alias": "yuxiaohua3",
+      "level": "P7",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐬"
+    },
+    {
+      "id": "h-024",
+      "type": "human",
+      "name": "梁敬业",
+      "alias": "liangjingye",
+      "level": "P7",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐢"
+    },
+    {
+      "id": "h-025",
+      "type": "human",
+      "name": "邵梓妍",
+      "alias": "shaoziyan1",
+      "level": "P7",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦒"
+    },
+    {
+      "id": "h-026",
+      "type": "human",
+      "name": "乔建霞",
+      "alias": "qiaojianxia",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦓"
+    },
+    {
+      "id": "h-027",
+      "type": "human",
+      "name": "巫秋敏",
+      "alias": "wuqiumin",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐙"
+    },
+    {
+      "id": "h-028",
+      "type": "human",
+      "name": "林泽慧",
+      "alias": "linzehui1",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦭"
+    },
+    {
+      "id": "h-029",
+      "type": "human",
+      "name": "曾璐",
+      "alias": "Lulu · zenglu",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐊"
+    },
+    {
+      "id": "h-030",
+      "type": "human",
+      "name": "吴觉承",
+      "alias": "Miruku · wujuecheng",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦘"
+    },
+    {
+      "id": "h-031",
+      "type": "human",
+      "name": "徐静",
+      "alias": "Ginny · xujing173",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐵"
+    },
+    {
+      "id": "h-032",
+      "type": "human",
+      "name": "饶志丽",
+      "alias": "Sophia · raozhili",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦆"
+    },
+    {
+      "id": "h-033",
+      "type": "human",
+      "name": "陈雨桐",
+      "alias": "chenyutong",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦚"
+    },
+    {
+      "id": "h-034",
+      "type": "human",
+      "name": "刘思远",
+      "alias": "liusiyuan",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦜"
+    },
+    {
+      "id": "h-035",
+      "type": "human",
+      "name": "赵敏",
+      "alias": "zhaomin",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐩"
+    },
+    {
+      "id": "h-036",
+      "type": "human",
+      "name": "孙悦",
+      "alias": "sunyue",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦙"
+    },
+    {
+      "id": "h-037",
+      "type": "human",
+      "name": "周航",
+      "alias": "zhouhang",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐪"
+    },
+    {
+      "id": "h-038",
+      "type": "human",
+      "name": "马丽",
+      "alias": "mali",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦫"
+    },
+    {
+      "id": "h-039",
+      "type": "human",
+      "name": "胡静",
+      "alias": "hujing",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐇"
+    },
+    {
+      "id": "h-040",
+      "type": "human",
+      "name": "杨帆",
+      "alias": "yangfan",
+      "level": "P6",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦌"
+    },
+    {
+      "id": "h-041",
+      "type": "human",
+      "name": "林原伊",
+      "alias": "linyuanyi1",
+      "level": "P5",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐯"
+    },
+    {
+      "id": "h-042",
+      "type": "human",
+      "name": "王韵菡",
+      "alias": "wangyunhan6",
+      "level": "P5",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐼"
+    },
+    {
+      "id": "h-043",
+      "type": "human",
+      "name": "叶福晓",
+      "alias": "Whited · yefuxiao1",
+      "level": "P5",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦊"
+    },
+    {
+      "id": "h-044",
+      "type": "human",
+      "name": "彭泽泉",
+      "alias": "pengzequan.1",
+      "level": "P5",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐰"
+    },
+    {
+      "id": "h-045",
+      "type": "human",
+      "name": "徐腾烽",
+      "alias": "xutengfeng.3",
+      "level": "P5",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐨"
+    },
+    {
+      "id": "h-046",
+      "type": "human",
+      "name": "尹文龙",
+      "alias": "Arvin · yinwenlong",
+      "level": "P5",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐻"
+    },
+    {
+      "id": "h-047",
+      "type": "human",
+      "name": "朱若焉",
+      "alias": "Effie · zhuruoyan1",
+      "level": "P4",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐸"
+    },
+    {
+      "id": "h-048",
+      "type": "human",
+      "name": "于昕田",
+      "alias": "Tina · yuxintian.1",
+      "level": "P4",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦉"
+    },
+    {
+      "id": "h-049",
+      "type": "human",
+      "name": "王忆雪",
+      "alias": "wangyixue.10",
+      "level": "P4",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐧"
+    },
+    {
+      "id": "h-050",
+      "type": "human",
+      "name": "何靖雯",
+      "alias": "Sunny · hejingwen",
+      "level": "P4",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦌"
+    },
+    {
+      "id": "h-051",
+      "type": "human",
+      "name": "李怡晴",
+      "alias": "Joyce · liyiqing.joyce",
+      "level": "P4",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐔"
+    },
+    {
+      "id": "h-052",
+      "type": "human",
+      "name": "吴心怡",
+      "alias": "Elaine · wuxinyi.elaine",
+      "level": "P4",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐶"
+    },
+    {
+      "id": "h-053",
+      "type": "human",
+      "name": "李宇轩",
+      "alias": "Sadie · liyuxuan.sadie",
+      "level": "P3",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐱"
+    },
+    {
+      "id": "h-054",
+      "type": "human",
+      "name": "何雨轩",
+      "alias": "heyuxuan.23",
+      "level": "P3",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐹"
+    },
+    {
+      "id": "h-055",
+      "type": "human",
+      "name": "陈思琪",
+      "alias": "chensiqi",
+      "level": "P3",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦥"
+    },
+    {
+      "id": "h-056",
+      "type": "human",
+      "name": "方子涵",
+      "alias": "fangzihan",
+      "level": "P3",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦡"
+    },
+    {
+      "id": "h-057",
+      "type": "human",
+      "name": "罗佳莹",
+      "alias": "luojiaying",
+      "level": "P3",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐿️"
+    },
+    {
+      "id": "h-058",
+      "type": "human",
+      "name": "丁一诺",
+      "alias": "dingyinuo",
+      "level": "P3",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦫"
+    },
+    {
+      "id": "h-059",
+      "type": "human",
+      "name": "蒋雨欣",
+      "alias": "jiangyuxin",
+      "level": "P3",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🦜"
+    },
+    {
+      "id": "h-060",
+      "type": "human",
+      "name": "韩沐辰",
+      "alias": "hanmuchen",
+      "level": "P3",
+      "role": "体验设计岗",
+      "dept": "品牌与营销设计部",
+      "avatar": "🐨"
+    },
+    {
+      "id": "c-001",
+      "type": "copilot",
+      "nameEn": "Demi",
+      "name": "需求解析 Copilot",
+      "layer": "需求层",
+      "domain": "通用",
+      "role": "Brief 结构化 · 需求缺口识别 · 模板生成",
+      "avatar": "🤖"
+    },
+    {
+      "id": "c-002",
+      "type": "copilot",
+      "nameEn": "Rex",
+      "name": "编排路由 Copilot",
+      "layer": "编排层",
+      "domain": "通用",
+      "role": "T1–T6 任务拆解 · Skill 路由 · 人审卡点编排",
+      "avatar": "🦾"
+    },
+    {
+      "id": "c-003",
+      "type": "copilot",
+      "nameEn": "Vera",
+      "name": "规则治理 Copilot",
+      "layer": "规则层",
+      "domain": "通用",
+      "role": "Design Wiki 检索 · 规范合规预检 · 命名校验",
+      "avatar": "👾"
+    },
+    {
+      "id": "c-004",
+      "type": "copilot",
+      "nameEn": "Max",
+      "name": "推广 Copilot",
+      "layer": "能力层",
+      "domain": "营销",
+      "role": "大促素材批量化 · 多尺寸延展 · 渠道适配",
+      "avatar": "🦿"
+    },
+    {
+      "id": "c-005",
+      "type": "copilot",
+      "nameEn": "Iris",
+      "name": "规范 Copilot",
+      "layer": "能力层",
+      "domain": "品牌",
+      "role": "IP/品牌视觉一致性 · Joy 资产变体 · 规范延展",
+      "avatar": "🛸"
+    },
+    {
+      "id": "c-006",
+      "type": "copilot",
+      "nameEn": "Zig",
+      "name": "互动 Copilot",
+      "layer": "能力层",
+      "domain": "互动",
+      "role": "玩法动效 · 小游戏生成 · 引导流程体验",
+      "avatar": "⚙️"
+    },
+    {
+      "id": "c-007",
+      "type": "copilot",
+      "nameEn": "Leo",
+      "name": "多媒体 Copilot",
+      "layer": "能力层",
+      "domain": "多媒体",
+      "role": "3D 场景 · 分镜脚本 · 短视频工作流",
+      "avatar": "🔩"
+    },
+    {
+      "id": "c-008",
+      "type": "copilot",
+      "nameEn": "Dev",
+      "name": "工程化 Copilot",
+      "layer": "能力层",
+      "domain": "通用",
+      "role": "工具链集成 · Wiki 资产同步 · Vibe Coding",
+      "avatar": "🛠️"
+    },
+    {
+      "id": "c-009",
+      "type": "copilot",
+      "nameEn": "Quinn",
+      "name": "质检度量 Copilot",
+      "layer": "质检闭环",
+      "domain": "通用",
+      "role": "validation_contract 预检 · G1–G4 报告 · 通过率度量",
+      "avatar": "🔧"
+    },
+    {
+      "id": "c-010",
+      "type": "copilot",
+      "nameEn": "Skye",
+      "name": "Skill 优化 Copilot",
+      "layer": "能力层",
+      "domain": "通用",
+      "role": "adhoc 升格 · Prompt 迭代 · Skill Atlas 维护",
+      "avatar": "📡"
+    },
+    {
+      "id": "c-011",
+      "type": "copilot",
+      "nameEn": "Ora",
+      "name": "编排输出 Copilot",
+      "layer": "编排层",
+      "domain": "通用",
+      "role": "任务队列生成 · skill_policy 字段 · 看板写入",
+      "avatar": "🔋"
+    },
+    {
+      "id": "c-012",
+      "type": "copilot",
+      "nameEn": "Bri",
+      "name": "品牌 Brief Copilot",
+      "layer": "需求层",
+      "domain": "品牌",
+      "role": "品牌需求引导 · Brief 完整性校验 · 策略对齐",
+      "avatar": "🧲"
+    },
+    {
+      "id": "c-013",
+      "type": "copilot",
+      "nameEn": "Cam",
+      "name": "大促策略 Copilot",
+      "layer": "能力层",
+      "domain": "营销",
+      "role": "活动节奏拆解 · 资源位策略 · 传播触点规划",
+      "avatar": "💾"
+    },
+    {
+      "id": "c-014",
+      "type": "copilot",
+      "nameEn": "Hero",
+      "name": "头图生成 Copilot",
+      "layer": "能力层",
+      "domain": "营销",
+      "role": "拼贴风格生图 · 品类模板 · 多模式输出",
+      "avatar": "🖥️"
+    },
+    {
+      "id": "c-015",
+      "type": "copilot",
+      "nameEn": "Sage",
+      "name": "分享图 Copilot",
+      "layer": "能力层",
+      "domain": "营销",
+      "role": "一句话生成分享图 · 运营自助 · 渠道适配",
+      "avatar": "⌨️"
+    },
+    {
+      "id": "c-016",
+      "type": "copilot",
+      "nameEn": "Lumi",
+      "name": "Lottie 交付 Copilot",
+      "layer": "能力层",
+      "domain": "互动",
+      "role": "视频转 Lottie · 动效参数 · JSON 导出",
+      "avatar": "🔌"
+    },
+    {
+      "id": "c-017",
+      "type": "copilot",
+      "nameEn": "Gigi",
+      "name": "小游戏生成 Copilot",
+      "layer": "能力层",
+      "domain": "互动",
+      "role": "竞品趋势采集 · 玩法方案 · 工程验证链路",
+      "avatar": "🎛️"
+    },
+    {
+      "id": "c-018",
+      "type": "copilot",
+      "nameEn": "Cora",
+      "name": "分镜脚本 Copilot",
+      "layer": "能力层",
+      "domain": "多媒体",
+      "role": "剧本到分镜 · 镜头拆解 · 全自动流转",
+      "avatar": "📟"
+    },
+    {
+      "id": "c-019",
+      "type": "copilot",
+      "nameEn": "Neo",
+      "name": "3D 预演 Copilot",
+      "layer": "能力层",
+      "domain": "多媒体",
+      "role": "立影页面预演 · Vibe Coding · 动效对齐",
+      "avatar": "🧠"
+    },
+    {
+      "id": "c-020",
+      "type": "copilot",
+      "nameEn": "Dash",
+      "name": "执行看板 Copilot",
+      "layer": "执行层",
+      "domain": "通用",
+      "role": "项目进展同步 · 执行单元追踪 · 卡点预警",
+      "avatar": "⚡"
+    },
+    {
+      "id": "c-021",
+      "type": "copilot",
+      "nameEn": "Finn",
+      "name": "IP 资产生成 Copilot",
+      "layer": "能力层",
+      "domain": "品牌",
+      "role": "Joy 情绪资产 · Prompt 母库 · 多场景变体",
+      "avatar": "🔮"
+    },
+    {
+      "id": "c-022",
+      "type": "copilot",
+      "nameEn": "Rio",
+      "name": "多尺寸延展 Copilot",
+      "layer": "能力层",
+      "domain": "营销",
+      "role": "主视觉解析 · 智能重排 · 安全区审查",
+      "avatar": "🌀"
+    },
+    {
+      "id": "c-023",
+      "type": "copilot",
+      "nameEn": "Wren",
+      "name": "Wiki 同步 Copilot",
+      "layer": "规则层",
+      "domain": "通用",
+      "role": "规范版本同步 · 资产归档 · 目录校验",
+      "avatar": "💻"
+    },
+    {
+      "id": "c-024",
+      "type": "copilot",
+      "nameEn": "Gabe",
+      "name": "人审卡点 Copilot",
+      "layer": "编排层",
+      "domain": "通用",
+      "role": "G1–G4 卡点编排 · 审批流提醒 · 阻塞预警",
+      "avatar": "📱"
+    },
+    {
+      "id": "c-025",
+      "type": "copilot",
+      "nameEn": "Mira",
+      "name": "度量报告 Copilot",
+      "layer": "质检闭环",
+      "domain": "通用",
+      "role": "首稿通过率 · 人机工时比 · 阶段性复盘",
+      "avatar": "🕹️"
+    },
+    {
+      "id": "c-026",
+      "type": "copilot",
+      "nameEn": "Pip",
+      "name": "Prompt 迭代 Copilot",
+      "layer": "能力层",
+      "domain": "通用",
+      "role": "Prompt A/B · 模板优化 · 效果对比",
+      "avatar": "🎮"
+    },
+    {
+      "id": "c-027",
+      "type": "copilot",
+      "nameEn": "Scout",
+      "name": "竞品调研 Copilot",
+      "layer": "需求层",
+      "domain": "品牌",
+      "role": "调性拆解 · 视觉标签 · 策略参考",
+      "avatar": "📷"
+    },
+    {
+      "id": "c-028",
+      "type": "copilot",
+      "nameEn": "Flux",
+      "name": "工作流编排 Copilot",
+      "layer": "编排层",
+      "domain": "通用",
+      "role": "L1–L3 自治等级 · 人机分工 · 依赖编排",
+      "avatar": "📹"
+    },
+    {
+      "id": "c-029",
+      "type": "copilot",
+      "nameEn": "Pixel",
+      "name": "资源打包 Copilot",
+      "layer": "能力层",
+      "domain": "营销",
+      "role": "批量导出 · Alpha 检查 · 压缩打包",
+      "avatar": "🎥"
+    },
+    {
+      "id": "c-030",
+      "type": "copilot",
+      "nameEn": "Nova",
+      "name": "品牌策略 Copilot",
+      "layer": "需求层",
+      "domain": "品牌",
+      "role": "命名策略 · 世界观 · 视觉方向",
+      "avatar": "🔬"
+    },
+    {
+      "id": "c-031",
+      "type": "copilot",
+      "nameEn": "Aria",
+      "name": "动效预检 Copilot",
+      "layer": "质检闭环",
+      "domain": "互动",
+      "role": "帧率检查 · 动效规范 · Lottie 预检",
+      "avatar": "🔭"
+    },
+    {
+      "id": "c-032",
+      "type": "copilot",
+      "nameEn": "Bolt",
+      "name": "批量导出 Copilot",
+      "layer": "执行层",
+      "domain": "营销",
+      "role": "切图批出 · 命名规范 · Zero 回填",
+      "avatar": "🛰️"
+    },
+    {
+      "id": "c-033",
+      "type": "copilot",
+      "nameEn": "Cleo",
+      "name": "文案生成 Copilot",
+      "layer": "能力层",
+      "domain": "营销",
+      "role": "运营话术 · 权益文案 · 多渠道改写",
+      "avatar": "🚀"
+    },
+    {
+      "id": "c-034",
+      "type": "copilot",
+      "nameEn": "Dex",
+      "name": "Design Token Copilot",
+      "layer": "规则层",
+      "domain": "通用",
+      "role": "色彩/字体 token · 组件规范 · DS 同步",
+      "avatar": "🗜️"
+    },
+    {
+      "id": "c-035",
+      "type": "copilot",
+      "nameEn": "Echo",
+      "name": "反馈回流 Copilot",
+      "layer": "质检闭环",
+      "domain": "通用",
+      "role": "评审意见结构化 · Skill 回流 · 规则更新",
+      "avatar": "⏱️"
+    },
+    {
+      "id": "c-036",
+      "type": "copilot",
+      "nameEn": "Faye",
+      "name": "会场搭建 Copilot",
+      "layer": "执行层",
+      "domain": "营销",
+      "role": "模块组合 · 搭建指南 · 节奏对齐",
+      "avatar": "⏲️"
+    },
+    {
+      "id": "c-037",
+      "type": "copilot",
+      "nameEn": "Gus",
+      "name": "渠道适配 Copilot",
+      "layer": "能力层",
+      "domain": "营销",
+      "role": "搜索/推荐/外投 · 品专换肤 · 双端适配",
+      "avatar": "🧪"
+    },
+    {
+      "id": "c-038",
+      "type": "copilot",
+      "nameEn": "Hope",
+      "name": "验收契约 Copilot",
+      "layer": "规则层",
+      "domain": "通用",
+      "role": "L/M/H/exploratory 模板 · checks 生成",
+      "avatar": "⚗️"
+    },
+    {
+      "id": "c-039",
+      "type": "copilot",
+      "nameEn": "Jade",
+      "name": "Joy 资产 Copilot",
+      "layer": "能力层",
+      "domain": "品牌",
+      "role": "IP 变体 · 情绪词典 · 场景母库",
+      "avatar": "🔊"
+    },
+    {
+      "id": "c-040",
+      "type": "copilot",
+      "nameEn": "Kite",
+      "name": "编排度量 Copilot",
+      "layer": "质检闭环",
+      "domain": "通用",
+      "role": "编排效率 · adhoc 升格追踪 · Phase 复盘",
+      "avatar": "📊"
+    }
+  ]
+}

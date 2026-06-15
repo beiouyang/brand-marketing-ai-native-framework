@@ -56,13 +56,44 @@ function validateGroup(group, groupPath) {
   });
 }
 
+function validateExecution(execution) {
+  if (!execution || typeof execution !== "object") throw new Error("execution is required");
+  if (!Number.isFinite(execution.pageSize)) throw new Error("execution.pageSize must be a number");
+  if (!Array.isArray(execution.projects)) throw new Error("execution.projects must be an array");
+  execution.projects.forEach((p, i) => {
+    const path = `execution.projects[${i}]`;
+    ["id", "name", "domain", "priority", "owner", "execUnit", "period", "kanbanStatus", "progress"].forEach((f) => {
+      assertString(p[f], `${path}.${f}`);
+    });
+  });
+  if (!Number.isFinite(execution.teamPageSize)) throw new Error("execution.teamPageSize must be a number");
+  if (!Array.isArray(execution.team)) throw new Error("execution.team must be an array");
+  execution.team.forEach((m, i) => {
+    const path = `execution.team[${i}]`;
+    assertString(m.id, `${path}.id`);
+    assertString(m.type, `${path}.type`);
+    assertString(m.name, `${path}.name`);
+    assertString(m.role, `${path}.role`);
+    assertString(m.avatar, `${path}.avatar`);
+    if (m.type === "human") {
+      assertString(m.level, `${path}.level`);
+      assertString(m.dept, `${path}.dept`);
+    }
+    if (m.type === "copilot") {
+      assertString(m.layer, `${path}.layer`);
+      assertString(m.domain, `${path}.domain`);
+      assertString(m.nameEn, `${path}.nameEn`);
+    }
+  });
+}
+
 function validateData(data) {
-  ["application", "rules", "wiki"].forEach((key) => {
+  ["capability", "wiki"].forEach((key) => {
     if (!Array.isArray(data[key])) throw new Error(`${key} must be an array`);
   });
 
-  data.application.forEach((group, index) => validateGroup(group, `application[${index}]`));
-  data.rules.forEach((group, index) => validateGroup(group, `rules[${index}]`));
+  data.capability.forEach((group, index) => validateGroup(group, `capability[${index}]`));
+  validateExecution(data.execution);
 
   data.wiki.forEach((item, index) => {
     assertString(item.title, `wiki[${index}].title`);

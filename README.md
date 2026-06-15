@@ -6,7 +6,7 @@
 
 ```text
 brand-marketing-ai-native-framework/
-  index.html
+  native-demo.html
   styles.css
   data.js
   app.js
@@ -51,7 +51,7 @@ brand-marketing-ai-native-framework/
 
 ## 运行
 
-可直接打开 `index.html`，也可以在当前目录起一个静态服务：
+可直接打开 `native-demo.html`，也可以在当前目录起一个静态服务：
 
 ```bash
 python3 -m http.server 4173

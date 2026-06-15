@@ -1,9 +1,112 @@
 {
-  "application": [
+  "capability": [
     {
-      "id": "brand-domain",
-      "title": "品牌域",
-      "summary": "调研策略 / IP 资产 / 视觉一致性",
+      "id": "general-lane",
+      "title": "通用",
+      "summary": "需求入口 / 编排调度 / 规范检索 / 质检度量",
+      "items": [
+        {
+          "id": "req-template-generator",
+          "tag": "需求入口",
+          "name": "结构化需求模板生成",
+          "desc": "按需求类型（大促延展、规范模块、资产归档等）输出 Brief 字段、必填项与验收标准。",
+          "status": "预研/Demo",
+          "statusType": "research",
+          "impact": "结构化需求接入效率提升200%",
+          "downloads": 0,
+          "capability": "识别需求类型，匹配模板包，生成可入看板的字段契约与验收清单。",
+          "hints": "帮我把这个大促延展需求整理成结构化 Brief 模板"
+        },
+        {
+          "id": "requirement-parser",
+          "tag": "需求理解",
+          "name": "需求解析",
+          "desc": "解析业务需求、目标指标、用户场景与约束条件，提炼设计目标、关键问题与输入缺口。",
+          "status": "预研/Demo",
+          "statusType": "research",
+          "impact": "需求理解效率提升300%",
+          "downloads": 214,
+          "capability": "自动拆解需求背景、目标、受众、限制条件、缺失信息和下一步问题。",
+          "hints": "帮我把这段业务需求整理成设计 Brief"
+        },
+        {
+          "id": "orch-route-advisor",
+          "tag": "编排调度",
+          "name": "编排路由建议",
+          "desc": "根据需求类型、紧急度、规范成熟度，判定人 / Copilot / 协作模式与 L1–L3 自治等级。",
+          "status": "预研/Demo",
+          "statusType": "research",
+          "impact": "人机分工决策效率提升250%",
+          "downloads": 0,
+          "capability": "输出执行单元路由、协作模式建议和 Mandatory Gate 触发条件。",
+          "hints": "这个 App16.0 品牌推广需求应该派给人还是 Copilot？"
+        },
+        {
+          "id": "orch-output-generator",
+          "tag": "编排调度",
+          "name": "编排输出单生成",
+          "desc": "生成任务队列、依赖关系、卡点人审、skill_policy 字段，可直接写入看板。",
+          "status": "预研/Demo",
+          "statusType": "research",
+          "impact": "编排配置效率提升400%",
+          "downloads": 0,
+          "capability": "拆解子任务、标注 T 编号与 G 卡点，输出 YAML/看板可消费的编排契约。",
+          "hints": "为这个品牌推广需求生成完整编排输出单"
+        },
+        {
+          "id": "wiki-retrieval",
+          "tag": "规范检索",
+          "name": "Design Wiki 规范检索",
+          "desc": "按场景、关键词召回 Design Wiki 规范版本、色彩/字体 token 与适用条款。",
+          "status": "预研/Demo",
+          "statusType": "research",
+          "impact": "规范查找效率提升500%",
+          "downloads": 0,
+          "capability": "关联 query 与规范条目，返回 criteria_source 引用和版本号，供 Skill 与 Copilot 只读调用。",
+          "hints": "App16.0 主站推广场景应该引用哪版色彩规范？"
+        },
+        {
+          "id": "validation-contract-generator",
+          "tag": "验证契约",
+          "name": "验证契约生成器",
+          "desc": "按 L-轻 / M-中 / H-重 / exploratory 输出 checks、auto_pass 与 human_gate 条件。",
+          "status": "预研/Demo",
+          "statusType": "research",
+          "impact": "Skill 准入配置效率提升300%",
+          "downloads": 0,
+          "capability": "基于任务风险与规范成熟度，生成 validation_contract 五级字段，Copilot 不可修改 pass 阈值。",
+          "hints": "为渠道物料批量化 Skill 生成 M-中 级验证契约"
+        },
+        {
+          "id": "skill-auto-optimizer",
+          "tag": "能力进化",
+          "name": "Skill 自动优化 Agent",
+          "desc": "基于上线效果和人工反馈，自动提炼可复用设计规则，更新营销头图、分享图、互动玩法等 Skill。",
+          "status": "预研/Demo",
+          "statusType": "research",
+          "impact": "Skill迭代效率提升300%",
+          "downloads": 197,
+          "capability": "读取复盘反馈、效果数据和人工评价，生成 Skill 更新建议。",
+          "hints": "根据这次复盘更新营销头图 Skill"
+        },
+        {
+          "id": "qa-metrics-report",
+          "tag": "质检度量",
+          "name": "度量报告生成",
+          "desc": "汇总首稿通过率、人机工时比、规范偏离率、adhoc 升格 Skill 数，输出阶段性复盘报告。",
+          "status": "预研/Demo",
+          "statusType": "research",
+          "impact": "团队复盘准备效率提升400%",
+          "downloads": 0,
+          "capability": "从返工记录、看板字段和 Skill 调用日志，生成可回流编排层与能力层的度量报告。",
+          "hints": "生成本月 AI-native 试点阶段的度量复盘报告"
+        }
+      ]
+    },
+    {
+      "id": "brand-lane",
+      "title": "品牌",
+      "summary": "调研策略 / IP 资产 / 品牌方案与交付",
       "items": [
         {
           "id": "brand-strategist-expert",
@@ -70,36 +173,53 @@
           "hints": "帮我生成一个适合新品发布的品牌调研框架"
         },
         {
-          "id": "store-intro-multi-size",
-          "tag": "品牌",
-          "name": "商店功能介绍图多尺寸",
-          "desc": "面向 8 种尺寸、100+ 张资源的管理场景，自动化导出、压缩、Alpha 通道检查及打包流程。",
-          "status": "已应用/V0.8",
-          "statusType": "applied",
-          "impact": "批量交付时间缩短60%",
-          "downloads": 896,
-          "capability": "读取设计资源尺寸规则，批量生成多规格图片并完成交付前检查。",
-          "hints": "把这组商店功能图扩展成 8 个投放尺寸"
+          "id": "brand-strategy-generation",
+          "tag": "品牌策略",
+          "name": "品牌方案调研及策略生成",
+          "desc": "快速完成品牌调性调研、竞品拆解、视觉标签提炼，帮助设计前明确风格方向。",
+          "status": "预研/Demo",
+          "statusType": "research",
+          "impact": "执行效率提升700%",
+          "downloads": 512,
+          "capability": "输出品牌关键词、视觉方向、竞品拆解和可进入设计阶段的策略建议。",
+          "hints": "给这个零售品牌生成设计前策略分析"
         },
         {
-          "id": "layer-naming-keyframe",
-          "tag": "品牌",
-          "name": "高端立影互动关键帧图层规范命名",
-          "desc": "建立统一图层命名规范，降低多人协作下图层整理与人工校对成本。",
-          "status": "已应用/V0.8",
-          "statusType": "applied",
-          "impact": "资产复用率提升80%",
-          "downloads": 768,
-          "capability": "识别关键帧、动效状态和图层职责，生成规范化图层命名与分组建议。",
-          "hints": "检查这个互动稿的关键帧图层命名是否规范"
-        }
-      ]
-    },
-    {
-      "id": "marketing-domain",
-      "title": "营销域",
-      "summary": "大促会场 / 资源模块 / 批量延展",
-      "items": [
+          "id": "joy-asset-workflow",
+          "tag": "品牌生成",
+          "name": "JOY资产生成工作流",
+          "desc": "基于品牌 JOY 形象规范，生成适配营销、大促、互动场景的主题资产。",
+          "status": "预研/Demo",
+          "statusType": "research",
+          "impact": "重复设计操作减少70%",
+          "downloads": 428,
+          "capability": "根据情绪、动作、服饰和场景化表达生成 JOY 资产方向。",
+          "hints": "为会员日生成一组 Joy 角色资产"
+        },
+        {
+          "id": "brand-scheme-generation",
+          "tag": "品牌生成",
+          "name": "品牌方案生成",
+          "desc": "生成品牌命名、注册策略、世界观、标准字、Slogan、品牌色延展、IP 方向与核心视觉表达。",
+          "status": "进行中",
+          "statusType": "progress",
+          "impact": "品牌方案产出效率提升400%",
+          "downloads": 384,
+          "capability": "将品牌定位和业务场景转为完整方案框架与视觉方向清单。",
+          "hints": "为一个新业务生成品牌方案结构"
+        },
+        {
+          "id": "brand-delivery-assets",
+          "tag": "品牌交付",
+          "name": "品牌方案交付及运营资产",
+          "desc": "自动延展多尺寸 KV、VIS 应用样机、刀版输出、运营话术与交付说明。",
+          "status": "进行中",
+          "statusType": "progress",
+          "impact": "品牌交付完整度提升80%",
+          "downloads": 362,
+          "capability": "根据已确认品牌方案生成交付资产清单、运营说明和多尺寸应用建议。",
+          "hints": "把这个品牌方案整理成交付资产包"
+        },
         {
           "id": "ip-asset-generative-workflow",
           "tag": "基础资产AI化应用",
@@ -111,6 +231,25 @@
           "downloads": 1764,
           "capability": "把 IP 结构规范、情绪分类、姿态约束和生成 Prompt 固化为可复用工作流。",
           "hints": "生成一组适合 618 会场的 Joy 情绪资产"
+        }
+      ]
+    },
+    {
+      "id": "marketing-lane",
+      "title": "营销",
+      "summary": "大促会场 / 资源模块 / 批量延展",
+      "items": [
+        {
+          "id": "store-intro-multi-size",
+          "tag": "品牌",
+          "name": "商店功能介绍图多尺寸",
+          "desc": "面向 8 种尺寸、100+ 张资源的管理场景，自动化导出、压缩、Alpha 通道检查及打包流程。",
+          "status": "已应用/V0.8",
+          "statusType": "applied",
+          "impact": "批量交付时间缩短60%",
+          "downloads": 896,
+          "capability": "读取设计资源尺寸规则，批量生成多规格图片并完成交付前检查。",
+          "hints": "把这组商店功能图扩展成 8 个投放尺寸"
         },
         {
           "id": "marketing-hero-image-tool",
@@ -159,12 +298,52 @@
           "downloads": 735,
           "capability": "将模块参数、文案、氛围图和切图导出串成半自动流程，降低返工。",
           "hints": "把这个资源模块替换成双 11 氛围并导出切图"
+        },
+        {
+          "id": "campaign-strategy-generation",
+          "tag": "营销策略",
+          "name": "大促营销策略生成",
+          "desc": "结合活动节奏、用户阶段、权益类型与传播触点，生成营销主张、资源位策略与内容方向。",
+          "status": "预研/Demo",
+          "statusType": "research",
+          "impact": "策略对齐成本降低50%",
+          "downloads": 336,
+          "capability": "基于大促节点和业务目标，生成营销主张、页面结构和内容优先级。",
+          "hints": "为年货节生成活动主张和资源位策略"
+        },
+        {
+          "id": "resource-resize-delivery",
+          "tag": "营销交付",
+          "name": "资源位图片批量调整尺寸",
+          "desc": "从历史设计稿抽取尺寸变化规则，新设计稿可按规则自动扩展多尺寸版本并回填 Zero。",
+          "status": "进行中",
+          "statusType": "progress",
+          "impact": "创意探索速度提升4倍",
+          "downloads": 516,
+          "capability": "把设计稿尺寸规则结构化，自动生成扩展稿和回填说明。",
+          "hints": "把这个资源位扩展成主站需要的全部尺寸"
+        },
+        {
+          "id": "share-image-generator",
+          "tag": "互动分享",
+          "name": "分享图生成",
+          "desc": "让运营可以一句话生成分享图设计方案，满足高频营销需求。",
+          "status": "进行中",
+          "statusType": "progress",
+          "impact": "运营效率提升 50%",
+          "downloads": 0,
+          "capability": "基于图层化 Skill 构建 AI 分享图生产能力，支持输入“运营文案”和“按钮文案”生成分享卡片图。",
+          "hints": "用这段运营文案和按钮文案生成一张分享图",
+          "externalLink": {
+            "label": "分享图生成",
+            "url": "https://joyspace.jd.com/pages/llXTiYiHnC3uuPqF6AR3"
+          }
         }
       ]
     },
     {
-      "id": "interaction-domain",
-      "title": "互动域",
+      "id": "interaction-lane",
+      "title": "互动",
       "summary": "玩法策略 / 小游戏 / Lottie 交付",
       "items": [
         {
@@ -224,22 +403,6 @@
           }
         },
         {
-          "id": "share-image-generator",
-          "tag": "互动分享",
-          "name": "分享图生成",
-          "desc": "让运营可以一句话生成分享图设计方案，满足高频营销需求。",
-          "status": "进行中",
-          "statusType": "progress",
-          "impact": "运营效率提升 50%",
-          "downloads": 0,
-          "capability": "基于图层化 Skill 构建 AI 分享图生产能力，支持输入“运营文案”和“按钮文案”生成分享卡片图。",
-          "hints": "用这段运营文案和按钮文案生成一张分享图",
-          "externalLink": {
-            "label": "分享图生成",
-            "url": "https://joyspace.jd.com/pages/llXTiYiHnC3uuPqF6AR3"
-          }
-        },
-        {
           "id": "lottie-delivery-editor",
           "tag": "互动",
           "name": "主站互动交付管道-Lotties编辑器",
@@ -258,12 +421,36 @@
             "src": "./assets/skill-media/lottie-delivery-editor.png",
             "alt": "主站互动交付管道-Lotties编辑器预览图"
           }
+        },
+        {
+          "id": "interaction-strategy-generation",
+          "tag": "互动策略",
+          "name": "互动玩法策略生成",
+          "desc": "根据目标人群、奖励类型与传播场景，预判适合的任务、抽奖、裂变、签到、小游戏机制。",
+          "status": "预研/Demo",
+          "statusType": "research",
+          "impact": "玩法决策效率提升300%",
+          "downloads": 279,
+          "capability": "将增长目标和用户行为映射为玩法机制、页面路径和风险提示。",
+          "hints": "给这个拉新活动推荐互动玩法机制"
+        },
+        {
+          "id": "ai-interaction-game-rule",
+          "tag": "互动方案落地",
+          "name": "AI互动小游戏生成",
+          "desc": "收集竞品小游戏爆品趋势，生成创意小游戏方案并交付后端工程师验证链路。",
+          "status": "进行中",
+          "statusType": "progress",
+          "impact": "设计协作成本降低50%",
+          "downloads": 338,
+          "capability": "输出玩法、页面结构、素材清单、数据埋点和研发对接描述。",
+          "hints": "生成一个适合主站频道的互动小游戏方案"
         }
       ]
     },
     {
-      "id": "multimedia-domain",
-      "title": "多媒体内容域",
+      "id": "multimedia-lane",
+      "title": "多媒体",
       "summary": "动态预演 / 短剧短视频 / 内容生成",
       "items": [
         {
@@ -325,106 +512,6 @@
           "downloads": 386,
           "capability": "将文案描述转为可配置的视频生成流程，支持风格、镜头和输出参数控制。",
           "hints": "生成一个极简风格的 15 秒商品视频"
-        }
-      ]
-    }
-  ],
-  "rules": [
-    {
-      "id": "before-design",
-      "title": "01. 设计前",
-      "summary": "需求理解 / 策略生成 / 风险预判",
-      "items": [
-        {
-          "id": "requirement-parser",
-          "tag": "需求理解",
-          "name": "需求解析",
-          "desc": "解析业务需求、目标指标、用户场景与约束条件，提炼设计目标、关键问题与输入缺口。",
-          "status": "预研/Demo",
-          "statusType": "research",
-          "impact": "需求理解效率提升300%",
-          "downloads": 214,
-          "capability": "自动拆解需求背景、目标、受众、限制条件、缺失信息和下一步问题。",
-          "hints": "帮我把这段业务需求整理成设计 Brief"
-        },
-        {
-          "id": "brand-strategy-generation",
-          "tag": "品牌策略",
-          "name": "品牌方案调研及策略生成",
-          "desc": "快速完成品牌调性调研、竞品拆解、视觉标签提炼，帮助设计前明确风格方向。",
-          "status": "预研/Demo",
-          "statusType": "research",
-          "impact": "执行效率提升700%",
-          "downloads": 512,
-          "capability": "输出品牌关键词、视觉方向、竞品拆解和可进入设计阶段的策略建议。",
-          "hints": "给这个零售品牌生成设计前策略分析"
-        },
-        {
-          "id": "campaign-strategy-generation",
-          "tag": "营销策略",
-          "name": "大促营销策略生成",
-          "desc": "结合活动节奏、用户阶段、权益类型与传播触点，生成营销主张、资源位策略与内容方向。",
-          "status": "预研/Demo",
-          "statusType": "research",
-          "impact": "策略对齐成本降低50%",
-          "downloads": 336,
-          "capability": "基于大促节点和业务目标，生成营销主张、页面结构和内容优先级。",
-          "hints": "为年货节生成活动主张和资源位策略"
-        },
-        {
-          "id": "interaction-strategy-generation",
-          "tag": "互动策略",
-          "name": "互动玩法策略生成",
-          "desc": "根据目标人群、奖励类型与传播场景，预判适合的任务、抽奖、裂变、签到、小游戏机制。",
-          "status": "预研/Demo",
-          "statusType": "research",
-          "impact": "玩法决策效率提升300%",
-          "downloads": 279,
-          "capability": "将增长目标和用户行为映射为玩法机制、页面路径和风险提示。",
-          "hints": "给这个拉新活动推荐互动玩法机制"
-        }
-      ]
-    },
-    {
-      "id": "during-design",
-      "title": "02. 设计中",
-      "summary": "资产生成 / 方案生成 / 页面生产",
-      "items": [
-        {
-          "id": "joy-asset-workflow",
-          "tag": "品牌生成",
-          "name": "JOY资产生成工作流",
-          "desc": "基于品牌 JOY 形象规范，生成适配营销、大促、互动场景的主题资产。",
-          "status": "预研/Demo",
-          "statusType": "research",
-          "impact": "重复设计操作减少70%",
-          "downloads": 428,
-          "capability": "根据情绪、动作、服饰和场景化表达生成 JOY 资产方向。",
-          "hints": "为会员日生成一组 Joy 角色资产"
-        },
-        {
-          "id": "brand-scheme-generation",
-          "tag": "品牌生成",
-          "name": "品牌方案生成",
-          "desc": "生成品牌命名、注册策略、世界观、标准字、Slogan、品牌色延展、IP 方向与核心视觉表达。",
-          "status": "进行中",
-          "statusType": "progress",
-          "impact": "品牌方案产出效率提升400%",
-          "downloads": 384,
-          "capability": "将品牌定位和业务场景转为完整方案框架与视觉方向清单。",
-          "hints": "为一个新业务生成品牌方案结构"
-        },
-        {
-          "id": "premium-motion-preview-rule",
-          "tag": "多媒体内容创作",
-          "name": "高端立影动态预演生成",
-          "desc": "基于静态设计稿生成动态预演效果，用于提案展示、方案沟通和动效方向验证。",
-          "status": "进行中",
-          "statusType": "progress",
-          "impact": "批量交付时间缩短60%",
-          "downloads": 447,
-          "capability": "把静态页面、关键帧和叙事节奏转为可观看的动态预演。",
-          "hints": "为这个高端页面生成首屏动态预演"
         },
         {
           "id": "short-video-rule",
@@ -439,107 +526,16 @@
           "hints": "把这段营销卖点转成短视频脚本"
         },
         {
-          "id": "marketing-hero-rule",
-          "tag": "营销生成",
-          "name": "营销头图生成",
-          "desc": "基于活动主题、利益点、视觉风格与投放位置，快速生成营销头图方案。",
-          "status": "进行中",
-          "statusType": "progress",
-          "impact": "多尺寸适配效率提升600%",
-          "downloads": 702,
-          "capability": "输出多风格头图方向、画面结构、Prompt 和尺寸适配建议。",
-          "hints": "生成一个低价心智活动头图"
-        },
-        {
-          "id": "marketing-module-rule",
-          "tag": "营销生成",
-          "name": "营销资源模块提效工具",
-          "desc": "支持一键替换资源氛围与文案内容，完成页面预览与批量导出切图。",
-          "status": "进行中",
-          "statusType": "progress",
-          "impact": "交付校验覆盖率提升90%",
-          "downloads": 593,
-          "capability": "基于模块 MD 参数规范生成页面资源，并对导出结果进行检查。",
-          "hints": "批量替换这组资源模块的文案和氛围"
-        },
-        {
-          "id": "ai-interaction-game-rule",
-          "tag": "互动方案落地",
-          "name": "AI互动小游戏生成",
-          "desc": "收集竞品小游戏爆品趋势，生成创意小游戏方案并交付后端工程师验证链路。",
-          "status": "进行中",
-          "statusType": "progress",
-          "impact": "设计协作成本降低50%",
-          "downloads": 338,
-          "capability": "输出玩法、页面结构、素材清单、数据埋点和研发对接描述。",
-          "hints": "生成一个适合主站频道的互动小游戏方案"
-        }
-      ]
-    },
-    {
-      "id": "after-design",
-      "title": "03. 设计后",
-      "summary": "交付规范 / 运营资产 / 能力进化",
-      "items": [
-        {
-          "id": "skill-auto-optimizer",
-          "tag": "能力进化",
-          "name": "Skill 自动优化 Agent",
-          "desc": "基于上线效果和人工反馈，自动提炼可复用设计规则，更新营销头图、分享图、互动玩法等 Skill。",
-          "status": "预研/Demo",
-          "statusType": "research",
-          "impact": "Skill迭代效率提升300%",
-          "downloads": 197,
-          "capability": "读取复盘反馈、效果数据和人工评价，生成 Skill 更新建议。",
-          "hints": "根据这次复盘更新营销头图 Skill"
-        },
-        {
-          "id": "brand-delivery-assets",
-          "tag": "品牌交付",
-          "name": "品牌方案交付及运营资产",
-          "desc": "自动延展多尺寸 KV、VIS 应用样机、刀版输出、运营话术与交付说明。",
-          "status": "进行中",
-          "statusType": "progress",
-          "impact": "品牌交付完整度提升80%",
-          "downloads": 362,
-          "capability": "根据已确认品牌方案生成交付资产清单、运营说明和多尺寸应用建议。",
-          "hints": "把这个品牌方案整理成交付资产包"
-        },
-        {
-          "id": "keyframe-layer-delivery",
-          "tag": "多媒体内容交付",
+          "id": "layer-naming-keyframe",
+          "tag": "品牌",
           "name": "高端立影互动关键帧图层规范命名",
-          "desc": "规范关键帧、动效状态与图层命名方式，提升设计稿可读性、研发理解效率与 AI 复用能力。",
-          "status": "进行中",
-          "statusType": "progress",
+          "desc": "建立统一图层命名规范，降低多人协作下图层整理与人工校对成本。",
+          "status": "已应用/V0.8",
+          "statusType": "applied",
           "impact": "资产复用率提升80%",
-          "downloads": 488,
-          "capability": "扫描图层结构，给出命名、分组和关键帧状态规范建议。",
-          "hints": "检查这个高端立影文件是否满足交付命名规范"
-        },
-        {
-          "id": "resource-resize-delivery",
-          "tag": "营销交付",
-          "name": "资源位图片批量调整尺寸",
-          "desc": "从历史设计稿抽取尺寸变化规则，新设计稿可按规则自动扩展多尺寸版本并回填 Zero。",
-          "status": "进行中",
-          "statusType": "progress",
-          "impact": "创意探索速度提升4倍",
-          "downloads": 516,
-          "capability": "把设计稿尺寸规则结构化，自动生成扩展稿和回填说明。",
-          "hints": "把这个资源位扩展成主站需要的全部尺寸"
-        },
-        {
-          "id": "lottie-delivery-rule",
-          "tag": "互动交付",
-          "name": "Lottie动效交付",
-          "desc": "支持 Lottie 文件生成、预览、参数调整与研发交付，减少动效沟通和返工成本。",
-          "status": "进行中",
-          "statusType": "progress",
-          "impact": "覆盖80%营销需求",
-          "downloads": 633,
-          "capability": "把视频或动效文件转为可预览 Lottie，并输出研发可读的参数说明。",
-          "hints": "导出这个互动动效的 Lottie 与参数说明"
+          "downloads": 768,
+          "capability": "识别关键帧、动效状态和图层职责，生成规范化图层命名与分组建议。",
+          "hints": "检查这个互动稿的关键帧图层命名是否规范"
         }
       ]
     }
@@ -617,5 +613,1498 @@
         ]
       ]
     }
-  ]
+  ],
+  "execution": {
+    "pageSize": 10,
+    "projects": [
+      {
+        "id": "p-ip-001",
+        "name": "28Y618攻略&流程指南",
+        "domain": "营销",
+        "priority": "P0",
+        "owner": "徐健",
+        "execUnit": "👤 徐健 + 🤖 Max",
+        "period": "6/1–6/7",
+        "kanbanStatus": "进行中",
+        "progress": "流程指南主框架已定，Max 批量输出渠道延展稿中"
+      },
+      {
+        "id": "p-ip-002",
+        "name": "App16.0 品牌推广编排试点",
+        "domain": "品牌",
+        "priority": "P0",
+        "owner": "欧阳蓓",
+        "execUnit": "👤 欧阳蓓 + 🤖 Iris",
+        "period": "6/3–6/14",
+        "kanbanStatus": "进行中",
+        "progress": "T1 叙事框架 G1 已过，主 KV 探索稿 3 方向待 G2"
+      },
+      {
+        "id": "p-ip-003",
+        "name": "28Y618 T1-引导系统流程体验",
+        "domain": "互动",
+        "priority": "P0",
+        "owner": "翁婷",
+        "execUnit": "👤 翁婷 + 🤖 Zig",
+        "period": "6/2–6/10",
+        "kanbanStatus": "进行中",
+        "progress": "引导系统整合推进，弹窗/PUSH 视觉交互输出中"
+      },
+      {
+        "id": "p-ip-004",
+        "name": "28Y618主会场-万店秒杀日",
+        "domain": "营销",
+        "priority": "P0",
+        "owner": "蔡璐",
+        "execUnit": "🤖 Max → 👤 蔡璐",
+        "period": "6/4–6/8",
+        "kanbanStatus": "进行中",
+        "progress": "主视觉锁定，多尺寸批量化待 G3 规范预检"
+      },
+      {
+        "id": "p-ip-005",
+        "name": "官方会场改版方案",
+        "domain": "营销",
+        "priority": "P0",
+        "owner": "徐健",
+        "execUnit": "👤 徐健",
+        "period": "6/5–6/12",
+        "kanbanStatus": "进行中",
+        "progress": "改版方案探索中，信息层级与模块节奏待评审"
+      },
+      {
+        "id": "p-ip-006",
+        "name": "营销素材一键多尺寸 Copilot 试点",
+        "domain": "营销",
+        "priority": "P1",
+        "owner": "王蕾",
+        "execUnit": "🤖 Rio",
+        "period": "6/1–6/15",
+        "kanbanStatus": "进行中",
+        "progress": "L3 可委派试运行，首稿通过率基线采集中"
+      },
+      {
+        "id": "p-ip-007",
+        "name": "编排层看板字段落地",
+        "domain": "通用",
+        "priority": "P1",
+        "owner": "欧阳蓓",
+        "execUnit": "👤 欧阳蓓",
+        "period": "6/1–6/20",
+        "kanbanStatus": "进行中",
+        "progress": "执行单元 / skill_policy / human_gate 字段已入看板"
+      },
+      {
+        "id": "p-ip-008",
+        "name": "品牌/IP 资产生成式工作流",
+        "domain": "品牌",
+        "priority": "P1",
+        "owner": "谭灿",
+        "execUnit": "🤖 Finn → 👤 谭灿",
+        "period": "6/3–6/18",
+        "kanbanStatus": "进行中",
+        "progress": "Joy 情绪资产 Prompt 母库整理，多场景变体测试中"
+      },
+      {
+        "id": "p-ip-009",
+        "name": "招商系统改版",
+        "domain": "互动",
+        "priority": "P1",
+        "owner": "翁婷",
+        "execUnit": "👤 翁婷",
+        "period": "6/6–6/20",
+        "kanbanStatus": "进行中",
+        "progress": "前期沟通完成，需求文档与流程图梳理中"
+      },
+      {
+        "id": "p-ip-010",
+        "name": "主站互动-营销互动设计体验 AI 生成",
+        "domain": "互动",
+        "priority": "P0",
+        "owner": "翁婷",
+        "execUnit": "🤖 Zig → 👤 翁婷",
+        "period": "6/1–6/9",
+        "kanbanStatus": "进行中",
+        "progress": "动态反馈方案 2 版待体验评审"
+      },
+      {
+        "id": "p-ip-011",
+        "name": "28Y618-万店狂欢会场",
+        "domain": "营销",
+        "priority": "P0",
+        "owner": "蔡璐",
+        "execUnit": "👤 蔡璐 + 🤖 Max",
+        "period": "6/3–6/7",
+        "kanbanStatus": "进行中",
+        "progress": "等待业务反馈，局部模块微调中"
+      },
+      {
+        "id": "p-ip-012",
+        "name": "设计系统-618 主题规范",
+        "domain": "营销",
+        "priority": "P1",
+        "owner": "王蕾",
+        "execUnit": "👤 王蕾 + 🤖 Dex",
+        "period": "6/1–6/25",
+        "kanbanStatus": "进行中",
+        "progress": "618 色彩/组件 token 输出 70%，Design Wiki 同步中"
+      },
+      {
+        "id": "p-ip-013",
+        "name": "验证契约四级模板试点",
+        "domain": "通用",
+        "priority": "P1",
+        "owner": "欧阳蓓",
+        "execUnit": "👤 欧阳蓓 + 🤖 Hope",
+        "period": "6/4–6/16",
+        "kanbanStatus": "进行中",
+        "progress": "L/M/H/exploratory 模板已挂载 3 个 Skill"
+      },
+      {
+        "id": "p-ip-014",
+        "name": "28Y618-球迷惊喜日",
+        "domain": "营销",
+        "priority": "P0",
+        "owner": "徐健",
+        "execUnit": "🤖 Max → 👤 徐健",
+        "period": "6/5–6/9",
+        "kanbanStatus": "进行中",
+        "progress": "待轮走查，Quinn 规范预检报告已出"
+      },
+      {
+        "id": "p-ip-015",
+        "name": "搜推品专 618 换肤",
+        "domain": "营销",
+        "priority": "P0",
+        "owner": "蔡璐",
+        "execUnit": "👤 蔡璐 + 🤖 Gus",
+        "period": "6/2–6/6",
+        "kanbanStatus": "进行中",
+        "progress": "换肤稿输出中，搜索/推荐双端适配"
+      },
+      {
+        "id": "p-ip-016",
+        "name": "分享图生成运营试点",
+        "domain": "营销",
+        "priority": "P1",
+        "owner": "王蕾",
+        "execUnit": "🤖 Sage",
+        "period": "6/3–6/12",
+        "kanbanStatus": "进行中",
+        "progress": "运营一句话生成分享图，L2 协作模式验证"
+      },
+      {
+        "id": "p-ip-017",
+        "name": "高端立影页面互动预演",
+        "domain": "多媒体",
+        "priority": "P1",
+        "owner": "谭灿",
+        "execUnit": "👤 谭灿 + 🤖 Neo",
+        "period": "6/4–6/14",
+        "kanbanStatus": "进行中",
+        "progress": "Vibe Coding 预演页 1 版，动效对齐评审中"
+      },
+      {
+        "id": "p-ip-018",
+        "name": "618 T互-小程序视觉交互",
+        "domain": "互动",
+        "priority": "P0",
+        "owner": "翁婷",
+        "execUnit": "🤖 Zig → 👤 翁婷",
+        "period": "6/1–6/8",
+        "kanbanStatus": "进行中",
+        "progress": "小程序主链路视觉 80%，Lumi 兜底 Lottie 同步输出"
+      },
+      {
+        "id": "p-wt-001",
+        "name": "矩阵 app 品牌规范延展",
+        "domain": "品牌",
+        "priority": "P2",
+        "owner": "谭灿",
+        "execUnit": "🤖 Iris → 👤 谭灿",
+        "period": "6/16–6/28",
+        "kanbanStatus": "待启动",
+        "progress": "待 App16.0 主站规范 G4 发布后启动"
+      },
+      {
+        "id": "p-wt-002",
+        "name": "多专家 Copilot 编组部署",
+        "domain": "通用",
+        "priority": "P1",
+        "owner": "欧阳蓓",
+        "execUnit": "👤 胥浩 + 🤖 Flux",
+        "period": "7/1–7/31",
+        "kanbanStatus": "待启动",
+        "progress": "Phase 3 规划项，待 Kite 编排度量复盘完成"
+      },
+      {
+        "id": "p-wt-003",
+        "name": "Skill 升格机制上线",
+        "domain": "通用",
+        "priority": "P2",
+        "owner": "欧阳蓓",
+        "execUnit": "👤 欧阳蓓 + 🤖 Skye",
+        "period": "6/20–7/5",
+        "kanbanStatus": "待启动",
+        "progress": "adhoc ≥3 次升格流程待开发"
+      },
+      {
+        "id": "p-wt-004",
+        "name": "外投&搜索品专二期改版",
+        "domain": "营销",
+        "priority": "P1",
+        "owner": "蔡璐",
+        "execUnit": "👤 蔡璐 + 🤖 Gus",
+        "period": "6/15–6/25",
+        "kanbanStatus": "待启动",
+        "progress": "待一期数据复盘后立项"
+      },
+      {
+        "id": "p-wt-005",
+        "name": "28Y-官方会场搭建指南迭代",
+        "domain": "营销",
+        "priority": "P1",
+        "owner": "徐健",
+        "execUnit": "👤 徐健 + 🤖 Faye",
+        "period": "6/18–6/30",
+        "kanbanStatus": "待启动",
+        "progress": "等待启动，需同步大促节奏"
+      },
+      {
+        "id": "p-wt-006",
+        "name": "618 T互玩法二期",
+        "domain": "互动",
+        "priority": "P1",
+        "owner": "翁婷",
+        "execUnit": "🤖 Gigi",
+        "period": "6/20–7/10",
+        "kanbanStatus": "待启动",
+        "progress": "一期玩法数据待回收"
+      },
+      {
+        "id": "p-wt-007",
+        "name": "短剧/短视频 AI 工作流二期",
+        "domain": "多媒体",
+        "priority": "P2",
+        "owner": "谭灿",
+        "execUnit": "👤 谭灿 + 🤖 Cora",
+        "period": "7/1–7/20",
+        "kanbanStatus": "待启动",
+        "progress": "分镜助手试点复盘后启动"
+      },
+      {
+        "id": "p-wt-008",
+        "name": "度量报告自动化",
+        "domain": "通用",
+        "priority": "P2",
+        "owner": "欧阳蓓",
+        "execUnit": "🤖 Mira",
+        "period": "6/25–7/8",
+        "kanbanStatus": "待启动",
+        "progress": "首稿通过率 / 人机工时比字段待接入"
+      },
+      {
+        "id": "p-wt-009",
+        "name": "Joy 矩阵规范-ai购/到家",
+        "domain": "品牌",
+        "priority": "P2",
+        "owner": "谭灿",
+        "execUnit": "🤖 Jade",
+        "period": "6/22–7/5",
+        "kanbanStatus": "待启动",
+        "progress": "主站规范终稿后并行启动"
+      },
+      {
+        "id": "p-wt-010",
+        "name": "互动小游戏 AI 生成二期",
+        "domain": "互动",
+        "priority": "P2",
+        "owner": "翁婷",
+        "execUnit": "🤖 Gigi",
+        "period": "7/5–7/25",
+        "kanbanStatus": "待启动",
+        "progress": "研发验证链路待确认"
+      },
+      {
+        "id": "p-wt-011",
+        "name": "营销头图生成工具-品类扩展",
+        "domain": "营销",
+        "priority": "P2",
+        "owner": "王蕾",
+        "execUnit": "🤖 Hero",
+        "period": "6/18–7/2",
+        "kanbanStatus": "待启动",
+        "progress": "3C/健康/时尚品类模板待补充"
+      },
+      {
+        "id": "p-wt-012",
+        "name": "Wiki 资产同步自动化",
+        "domain": "通用",
+        "priority": "P2",
+        "owner": "欧阳蓓",
+        "execUnit": "🤖 Wren → 👤 欧阳蓓",
+        "period": "6/20–7/1",
+        "kanbanStatus": "待启动",
+        "progress": "workflow-wiki-asset-sync Skill 待发布"
+      },
+      {
+        "id": "p-dn-001",
+        "name": "28Y618主会场-超级品牌周",
+        "domain": "营销",
+        "priority": "P0",
+        "owner": "蔡璐",
+        "execUnit": "🤖 Max → 👤 蔡璐",
+        "period": "5/28–6/2",
+        "kanbanStatus": "已完成",
+        "progress": "完成交付，G4 终审通过，资产已归档"
+      },
+      {
+        "id": "p-dn-002",
+        "name": "28Y京东618-频道视觉买一送一",
+        "domain": "营销",
+        "priority": "P0",
+        "owner": "徐健",
+        "execUnit": "👤 徐健",
+        "period": "5/25–5/30",
+        "kanbanStatus": "已完成",
+        "progress": "完成交付，多尺寸套系已回填 Zero"
+      },
+      {
+        "id": "p-dn-003",
+        "name": "Design Wiki 可执行子集 v1",
+        "domain": "通用",
+        "priority": "P0",
+        "owner": "欧阳蓓",
+        "execUnit": "👤 欧阳蓓 + 🤖 Vera",
+        "period": "5/1–5/20",
+        "kanbanStatus": "已完成",
+        "progress": "色彩/字体/1/9/命名规范已发布 v1.0"
+      },
+      {
+        "id": "p-dn-004",
+        "name": "结构化需求模板包",
+        "domain": "通用",
+        "priority": "P1",
+        "owner": "欧阳蓓",
+        "execUnit": "👤 欧阳蓓 + 🤖 Demi",
+        "period": "5/10–5/25",
+        "kanbanStatus": "已完成",
+        "progress": "5 类模板上线：大促/规范/归档/wiki/互动"
+      },
+      {
+        "id": "p-dn-005",
+        "name": "AI 品牌 Brief 工具 v1",
+        "domain": "品牌",
+        "priority": "P1",
+        "owner": "谭灿",
+        "execUnit": "👤 谭灿 + 🤖 Bri",
+        "period": "4/15–5/10",
+        "kanbanStatus": "已完成",
+        "progress": "完成交付，业务方 Brief 填写效率提升 100%"
+      },
+      {
+        "id": "p-dn-006",
+        "name": "Lottie 动效交付管道",
+        "domain": "互动",
+        "priority": "P0",
+        "owner": "翁婷",
+        "execUnit": "🤖 Lumi",
+        "period": "4/20–5/15",
+        "kanbanStatus": "已完成",
+        "progress": "编辑器 v0.8 已应用，覆盖 80% 营销动效需求"
+      },
+      {
+        "id": "p-dn-007",
+        "name": "28Y618 3C数码日-t互收方图",
+        "domain": "营销",
+        "priority": "P0",
+        "owner": "蔡璐",
+        "execUnit": "🤖 Max → 👤 蔡璐",
+        "period": "5/20–5/24",
+        "kanbanStatus": "已完成",
+        "progress": "完成交付，规范 lint 全绿"
+      },
+      {
+        "id": "p-dn-008",
+        "name": "品牌方案调研工作流 V1.2",
+        "domain": "品牌",
+        "priority": "P1",
+        "owner": "谭灿",
+        "execUnit": "👤 谭灿 + 🤖 Scout",
+        "period": "3/1–4/30",
+        "kanbanStatus": "已完成",
+        "progress": "已应用，执行效率提升 700%"
+      },
+      {
+        "id": "p-dn-009",
+        "name": "商店功能介绍图多尺寸",
+        "domain": "营销",
+        "priority": "P0",
+        "owner": "王蕾",
+        "execUnit": "🤖 Pixel",
+        "period": "4/1–4/20",
+        "kanbanStatus": "已完成",
+        "progress": "8 种尺寸 100+ 资源批量交付完成"
+      },
+      {
+        "id": "p-dn-010",
+        "name": "营销头图生成工具 V1.0",
+        "domain": "营销",
+        "priority": "P0",
+        "owner": "王蕾",
+        "execUnit": "🤖 Hero",
+        "period": "3/15–4/10",
+        "kanbanStatus": "已完成",
+        "progress": "已应用，AI/模板双模式上线"
+      },
+      {
+        "id": "p-dn-011",
+        "name": "京东品牌样机工具",
+        "domain": "品牌",
+        "priority": "P1",
+        "owner": "谭灿",
+        "execUnit": "👤 谭灿 + 🤖 Nova",
+        "period": "4/5–5/1",
+        "kanbanStatus": "已完成",
+        "progress": "Logo 上传生成提案样机能力已上线"
+      },
+      {
+        "id": "p-dn-012",
+        "name": "脚本及分镜生成助手试点",
+        "domain": "多媒体",
+        "priority": "P1",
+        "owner": "谭灿",
+        "execUnit": "🤖 Cora",
+        "period": "5/1–5/20",
+        "kanbanStatus": "已完成",
+        "progress": "剧本→分镜画布全流程跑通 1 条案例"
+      },
+      {
+        "id": "p-dn-013",
+        "name": "质检回流机制文档",
+        "domain": "通用",
+        "priority": "P1",
+        "owner": "欧阳蓓",
+        "execUnit": "👤 欧阳蓓 + 🤖 Echo",
+        "period": "5/15–5/28",
+        "kanbanStatus": "已完成",
+        "progress": "返工原因标签体系与回流 SOP 已发布"
+      },
+      {
+        "id": "p-dn-014",
+        "name": "分享图生成 MVP",
+        "domain": "营销",
+        "priority": "P1",
+        "owner": "王蕾",
+        "execUnit": "🤖 Sage",
+        "period": "5/8–5/25",
+        "kanbanStatus": "已完成",
+        "progress": "运营一句话生成分享图，MVP 验收通过"
+      }
+    ],
+    "teamPageSize": 20,
+    "team": [
+      {
+        "id": "h-001",
+        "type": "human",
+        "name": "胥浩",
+        "alias": "xuhao7",
+        "level": "P11",
+        "role": "体验设计岗",
+        "title": "团队负责人",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦁"
+      },
+      {
+        "id": "h-002",
+        "type": "human",
+        "name": "徐健",
+        "alias": "Paul · xujian26",
+        "level": "P9",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐼"
+      },
+      {
+        "id": "h-003",
+        "type": "human",
+        "name": "翁婷",
+        "alias": "wengting",
+        "level": "P9",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦊"
+      },
+      {
+        "id": "h-004",
+        "type": "human",
+        "name": "王蕾",
+        "alias": "wanglei37",
+        "level": "P9",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐰"
+      },
+      {
+        "id": "h-005",
+        "type": "human",
+        "name": "欧阳蓓",
+        "alias": "ouyangbei3",
+        "level": "P9",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐨"
+      },
+      {
+        "id": "h-006",
+        "type": "human",
+        "name": "王龙",
+        "alias": "wlwl",
+        "level": "P9",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐯"
+      },
+      {
+        "id": "h-007",
+        "type": "human",
+        "name": "谭灿",
+        "alias": "tancan3",
+        "level": "P9",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐻"
+      },
+      {
+        "id": "h-008",
+        "type": "human",
+        "name": "蔡璐",
+        "alias": "cailu",
+        "level": "P8",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐸"
+      },
+      {
+        "id": "h-009",
+        "type": "human",
+        "name": "龙莹",
+        "alias": "longying3",
+        "level": "P8",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦉"
+      },
+      {
+        "id": "h-010",
+        "type": "human",
+        "name": "周怡昕",
+        "alias": "zhouyixin",
+        "level": "P8",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐧"
+      },
+      {
+        "id": "h-011",
+        "type": "human",
+        "name": "张董丽",
+        "alias": "zhangdongli8",
+        "level": "P8",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦊"
+      },
+      {
+        "id": "h-012",
+        "type": "human",
+        "name": "冉豪强",
+        "alias": "ranhaoqiang",
+        "level": "P8",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐔"
+      },
+      {
+        "id": "h-013",
+        "type": "human",
+        "name": "朱丽莎",
+        "alias": "zhulisha3",
+        "level": "P8",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐶"
+      },
+      {
+        "id": "h-014",
+        "type": "human",
+        "name": "潘安琪",
+        "alias": "pananqi",
+        "level": "P8",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐱"
+      },
+      {
+        "id": "h-015",
+        "type": "human",
+        "name": "郑微",
+        "alias": "zhengwei16",
+        "level": "P7",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐹"
+      },
+      {
+        "id": "h-016",
+        "type": "human",
+        "name": "贾西贝",
+        "alias": "jiaxibei",
+        "level": "P7",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐮"
+      },
+      {
+        "id": "h-017",
+        "type": "human",
+        "name": "卓小婷",
+        "alias": "Sharon · zhuoxiaoting",
+        "level": "P7",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦋"
+      },
+      {
+        "id": "h-018",
+        "type": "human",
+        "name": "付久久",
+        "alias": "fujiujiu",
+        "level": "P7",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐿️"
+      },
+      {
+        "id": "h-019",
+        "type": "human",
+        "name": "黄梓康",
+        "alias": "huangzikang6",
+        "level": "P7",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦔"
+      },
+      {
+        "id": "h-020",
+        "type": "human",
+        "name": "蔡函君",
+        "alias": "caihanjun3",
+        "level": "P7",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦝"
+      },
+      {
+        "id": "h-021",
+        "type": "human",
+        "name": "洪浩翔",
+        "alias": "honghaoxiang",
+        "level": "P7",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐺"
+      },
+      {
+        "id": "h-022",
+        "type": "human",
+        "name": "于广泽",
+        "alias": "Lucius · yuguangze3",
+        "level": "P7",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦩"
+      },
+      {
+        "id": "h-023",
+        "type": "human",
+        "name": "余晓华",
+        "alias": "yuxiaohua3",
+        "level": "P7",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐬"
+      },
+      {
+        "id": "h-024",
+        "type": "human",
+        "name": "梁敬业",
+        "alias": "liangjingye",
+        "level": "P7",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐢"
+      },
+      {
+        "id": "h-025",
+        "type": "human",
+        "name": "邵梓妍",
+        "alias": "shaoziyan1",
+        "level": "P7",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦒"
+      },
+      {
+        "id": "h-026",
+        "type": "human",
+        "name": "乔建霞",
+        "alias": "qiaojianxia",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦓"
+      },
+      {
+        "id": "h-027",
+        "type": "human",
+        "name": "巫秋敏",
+        "alias": "wuqiumin",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐙"
+      },
+      {
+        "id": "h-028",
+        "type": "human",
+        "name": "林泽慧",
+        "alias": "linzehui1",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦭"
+      },
+      {
+        "id": "h-029",
+        "type": "human",
+        "name": "曾璐",
+        "alias": "Lulu · zenglu",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐊"
+      },
+      {
+        "id": "h-030",
+        "type": "human",
+        "name": "吴觉承",
+        "alias": "Miruku · wujuecheng",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦘"
+      },
+      {
+        "id": "h-031",
+        "type": "human",
+        "name": "徐静",
+        "alias": "Ginny · xujing173",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐵"
+      },
+      {
+        "id": "h-032",
+        "type": "human",
+        "name": "饶志丽",
+        "alias": "Sophia · raozhili",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦆"
+      },
+      {
+        "id": "h-033",
+        "type": "human",
+        "name": "陈雨桐",
+        "alias": "chenyutong",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦚"
+      },
+      {
+        "id": "h-034",
+        "type": "human",
+        "name": "刘思远",
+        "alias": "liusiyuan",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦜"
+      },
+      {
+        "id": "h-035",
+        "type": "human",
+        "name": "赵敏",
+        "alias": "zhaomin",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐩"
+      },
+      {
+        "id": "h-036",
+        "type": "human",
+        "name": "孙悦",
+        "alias": "sunyue",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦙"
+      },
+      {
+        "id": "h-037",
+        "type": "human",
+        "name": "周航",
+        "alias": "zhouhang",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐪"
+      },
+      {
+        "id": "h-038",
+        "type": "human",
+        "name": "马丽",
+        "alias": "mali",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦫"
+      },
+      {
+        "id": "h-039",
+        "type": "human",
+        "name": "胡静",
+        "alias": "hujing",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐇"
+      },
+      {
+        "id": "h-040",
+        "type": "human",
+        "name": "杨帆",
+        "alias": "yangfan",
+        "level": "P6",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦌"
+      },
+      {
+        "id": "h-041",
+        "type": "human",
+        "name": "林原伊",
+        "alias": "linyuanyi1",
+        "level": "P5",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐯"
+      },
+      {
+        "id": "h-042",
+        "type": "human",
+        "name": "王韵菡",
+        "alias": "wangyunhan6",
+        "level": "P5",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐼"
+      },
+      {
+        "id": "h-043",
+        "type": "human",
+        "name": "叶福晓",
+        "alias": "Whited · yefuxiao1",
+        "level": "P5",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦊"
+      },
+      {
+        "id": "h-044",
+        "type": "human",
+        "name": "彭泽泉",
+        "alias": "pengzequan.1",
+        "level": "P5",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐰"
+      },
+      {
+        "id": "h-045",
+        "type": "human",
+        "name": "徐腾烽",
+        "alias": "xutengfeng.3",
+        "level": "P5",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐨"
+      },
+      {
+        "id": "h-046",
+        "type": "human",
+        "name": "尹文龙",
+        "alias": "Arvin · yinwenlong",
+        "level": "P5",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐻"
+      },
+      {
+        "id": "h-047",
+        "type": "human",
+        "name": "朱若焉",
+        "alias": "Effie · zhuruoyan1",
+        "level": "P4",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐸"
+      },
+      {
+        "id": "h-048",
+        "type": "human",
+        "name": "于昕田",
+        "alias": "Tina · yuxintian.1",
+        "level": "P4",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦉"
+      },
+      {
+        "id": "h-049",
+        "type": "human",
+        "name": "王忆雪",
+        "alias": "wangyixue.10",
+        "level": "P4",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐧"
+      },
+      {
+        "id": "h-050",
+        "type": "human",
+        "name": "何靖雯",
+        "alias": "Sunny · hejingwen",
+        "level": "P4",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦌"
+      },
+      {
+        "id": "h-051",
+        "type": "human",
+        "name": "李怡晴",
+        "alias": "Joyce · liyiqing.joyce",
+        "level": "P4",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐔"
+      },
+      {
+        "id": "h-052",
+        "type": "human",
+        "name": "吴心怡",
+        "alias": "Elaine · wuxinyi.elaine",
+        "level": "P4",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐶"
+      },
+      {
+        "id": "h-053",
+        "type": "human",
+        "name": "李宇轩",
+        "alias": "Sadie · liyuxuan.sadie",
+        "level": "P3",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐱"
+      },
+      {
+        "id": "h-054",
+        "type": "human",
+        "name": "何雨轩",
+        "alias": "heyuxuan.23",
+        "level": "P3",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐹"
+      },
+      {
+        "id": "h-055",
+        "type": "human",
+        "name": "陈思琪",
+        "alias": "chensiqi",
+        "level": "P3",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦥"
+      },
+      {
+        "id": "h-056",
+        "type": "human",
+        "name": "方子涵",
+        "alias": "fangzihan",
+        "level": "P3",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦡"
+      },
+      {
+        "id": "h-057",
+        "type": "human",
+        "name": "罗佳莹",
+        "alias": "luojiaying",
+        "level": "P3",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐿️"
+      },
+      {
+        "id": "h-058",
+        "type": "human",
+        "name": "丁一诺",
+        "alias": "dingyinuo",
+        "level": "P3",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦫"
+      },
+      {
+        "id": "h-059",
+        "type": "human",
+        "name": "蒋雨欣",
+        "alias": "jiangyuxin",
+        "level": "P3",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🦜"
+      },
+      {
+        "id": "h-060",
+        "type": "human",
+        "name": "韩沐辰",
+        "alias": "hanmuchen",
+        "level": "P3",
+        "role": "体验设计岗",
+        "dept": "品牌与营销设计部",
+        "avatar": "🐨"
+      },
+      {
+        "id": "c-001",
+        "type": "copilot",
+        "nameEn": "Demi",
+        "name": "需求解析 Copilot",
+        "layer": "需求层",
+        "domain": "通用",
+        "role": "Brief 结构化 · 需求缺口识别 · 模板生成",
+        "avatar": "🤖"
+      },
+      {
+        "id": "c-002",
+        "type": "copilot",
+        "nameEn": "Rex",
+        "name": "编排路由 Copilot",
+        "layer": "编排层",
+        "domain": "通用",
+        "role": "T1–T6 任务拆解 · Skill 路由 · 人审卡点编排",
+        "avatar": "🦾"
+      },
+      {
+        "id": "c-003",
+        "type": "copilot",
+        "nameEn": "Vera",
+        "name": "规则治理 Copilot",
+        "layer": "规则层",
+        "domain": "通用",
+        "role": "Design Wiki 检索 · 规范合规预检 · 命名校验",
+        "avatar": "👾"
+      },
+      {
+        "id": "c-004",
+        "type": "copilot",
+        "nameEn": "Max",
+        "name": "推广 Copilot",
+        "layer": "能力层",
+        "domain": "营销",
+        "role": "大促素材批量化 · 多尺寸延展 · 渠道适配",
+        "avatar": "🦿"
+      },
+      {
+        "id": "c-005",
+        "type": "copilot",
+        "nameEn": "Iris",
+        "name": "规范 Copilot",
+        "layer": "能力层",
+        "domain": "品牌",
+        "role": "IP/品牌视觉一致性 · Joy 资产变体 · 规范延展",
+        "avatar": "🛸"
+      },
+      {
+        "id": "c-006",
+        "type": "copilot",
+        "nameEn": "Zig",
+        "name": "互动 Copilot",
+        "layer": "能力层",
+        "domain": "互动",
+        "role": "玩法动效 · 小游戏生成 · 引导流程体验",
+        "avatar": "⚙️"
+      },
+      {
+        "id": "c-007",
+        "type": "copilot",
+        "nameEn": "Leo",
+        "name": "多媒体 Copilot",
+        "layer": "能力层",
+        "domain": "多媒体",
+        "role": "3D 场景 · 分镜脚本 · 短视频工作流",
+        "avatar": "🔩"
+      },
+      {
+        "id": "c-008",
+        "type": "copilot",
+        "nameEn": "Dev",
+        "name": "工程化 Copilot",
+        "layer": "能力层",
+        "domain": "通用",
+        "role": "工具链集成 · Wiki 资产同步 · Vibe Coding",
+        "avatar": "🛠️"
+      },
+      {
+        "id": "c-009",
+        "type": "copilot",
+        "nameEn": "Quinn",
+        "name": "质检度量 Copilot",
+        "layer": "质检闭环",
+        "domain": "通用",
+        "role": "validation_contract 预检 · G1–G4 报告 · 通过率度量",
+        "avatar": "🔧"
+      },
+      {
+        "id": "c-010",
+        "type": "copilot",
+        "nameEn": "Skye",
+        "name": "Skill 优化 Copilot",
+        "layer": "能力层",
+        "domain": "通用",
+        "role": "adhoc 升格 · Prompt 迭代 · Skill Atlas 维护",
+        "avatar": "📡"
+      },
+      {
+        "id": "c-011",
+        "type": "copilot",
+        "nameEn": "Ora",
+        "name": "编排输出 Copilot",
+        "layer": "编排层",
+        "domain": "通用",
+        "role": "任务队列生成 · skill_policy 字段 · 看板写入",
+        "avatar": "🔋"
+      },
+      {
+        "id": "c-012",
+        "type": "copilot",
+        "nameEn": "Bri",
+        "name": "品牌 Brief Copilot",
+        "layer": "需求层",
+        "domain": "品牌",
+        "role": "品牌需求引导 · Brief 完整性校验 · 策略对齐",
+        "avatar": "🧲"
+      },
+      {
+        "id": "c-013",
+        "type": "copilot",
+        "nameEn": "Cam",
+        "name": "大促策略 Copilot",
+        "layer": "能力层",
+        "domain": "营销",
+        "role": "活动节奏拆解 · 资源位策略 · 传播触点规划",
+        "avatar": "💾"
+      },
+      {
+        "id": "c-014",
+        "type": "copilot",
+        "nameEn": "Hero",
+        "name": "头图生成 Copilot",
+        "layer": "能力层",
+        "domain": "营销",
+        "role": "拼贴风格生图 · 品类模板 · 多模式输出",
+        "avatar": "🖥️"
+      },
+      {
+        "id": "c-015",
+        "type": "copilot",
+        "nameEn": "Sage",
+        "name": "分享图 Copilot",
+        "layer": "能力层",
+        "domain": "营销",
+        "role": "一句话生成分享图 · 运营自助 · 渠道适配",
+        "avatar": "⌨️"
+      },
+      {
+        "id": "c-016",
+        "type": "copilot",
+        "nameEn": "Lumi",
+        "name": "Lottie 交付 Copilot",
+        "layer": "能力层",
+        "domain": "互动",
+        "role": "视频转 Lottie · 动效参数 · JSON 导出",
+        "avatar": "🔌"
+      },
+      {
+        "id": "c-017",
+        "type": "copilot",
+        "nameEn": "Gigi",
+        "name": "小游戏生成 Copilot",
+        "layer": "能力层",
+        "domain": "互动",
+        "role": "竞品趋势采集 · 玩法方案 · 工程验证链路",
+        "avatar": "🎛️"
+      },
+      {
+        "id": "c-018",
+        "type": "copilot",
+        "nameEn": "Cora",
+        "name": "分镜脚本 Copilot",
+        "layer": "能力层",
+        "domain": "多媒体",
+        "role": "剧本到分镜 · 镜头拆解 · 全自动流转",
+        "avatar": "📟"
+      },
+      {
+        "id": "c-019",
+        "type": "copilot",
+        "nameEn": "Neo",
+        "name": "3D 预演 Copilot",
+        "layer": "能力层",
+        "domain": "多媒体",
+        "role": "立影页面预演 · Vibe Coding · 动效对齐",
+        "avatar": "🧠"
+      },
+      {
+        "id": "c-020",
+        "type": "copilot",
+        "nameEn": "Dash",
+        "name": "执行看板 Copilot",
+        "layer": "执行层",
+        "domain": "通用",
+        "role": "项目进展同步 · 执行单元追踪 · 卡点预警",
+        "avatar": "⚡"
+      },
+      {
+        "id": "c-021",
+        "type": "copilot",
+        "nameEn": "Finn",
+        "name": "IP 资产生成 Copilot",
+        "layer": "能力层",
+        "domain": "品牌",
+        "role": "Joy 情绪资产 · Prompt 母库 · 多场景变体",
+        "avatar": "🔮"
+      },
+      {
+        "id": "c-022",
+        "type": "copilot",
+        "nameEn": "Rio",
+        "name": "多尺寸延展 Copilot",
+        "layer": "能力层",
+        "domain": "营销",
+        "role": "主视觉解析 · 智能重排 · 安全区审查",
+        "avatar": "🌀"
+      },
+      {
+        "id": "c-023",
+        "type": "copilot",
+        "nameEn": "Wren",
+        "name": "Wiki 同步 Copilot",
+        "layer": "规则层",
+        "domain": "通用",
+        "role": "规范版本同步 · 资产归档 · 目录校验",
+        "avatar": "💻"
+      },
+      {
+        "id": "c-024",
+        "type": "copilot",
+        "nameEn": "Gabe",
+        "name": "人审卡点 Copilot",
+        "layer": "编排层",
+        "domain": "通用",
+        "role": "G1–G4 卡点编排 · 审批流提醒 · 阻塞预警",
+        "avatar": "📱"
+      },
+      {
+        "id": "c-025",
+        "type": "copilot",
+        "nameEn": "Mira",
+        "name": "度量报告 Copilot",
+        "layer": "质检闭环",
+        "domain": "通用",
+        "role": "首稿通过率 · 人机工时比 · 阶段性复盘",
+        "avatar": "🕹️"
+      },
+      {
+        "id": "c-026",
+        "type": "copilot",
+        "nameEn": "Pip",
+        "name": "Prompt 迭代 Copilot",
+        "layer": "能力层",
+        "domain": "通用",
+        "role": "Prompt A/B · 模板优化 · 效果对比",
+        "avatar": "🎮"
+      },
+      {
+        "id": "c-027",
+        "type": "copilot",
+        "nameEn": "Scout",
+        "name": "竞品调研 Copilot",
+        "layer": "需求层",
+        "domain": "品牌",
+        "role": "调性拆解 · 视觉标签 · 策略参考",
+        "avatar": "📷"
+      },
+      {
+        "id": "c-028",
+        "type": "copilot",
+        "nameEn": "Flux",
+        "name": "工作流编排 Copilot",
+        "layer": "编排层",
+        "domain": "通用",
+        "role": "L1–L3 自治等级 · 人机分工 · 依赖编排",
+        "avatar": "📹"
+      },
+      {
+        "id": "c-029",
+        "type": "copilot",
+        "nameEn": "Pixel",
+        "name": "资源打包 Copilot",
+        "layer": "能力层",
+        "domain": "营销",
+        "role": "批量导出 · Alpha 检查 · 压缩打包",
+        "avatar": "🎥"
+      },
+      {
+        "id": "c-030",
+        "type": "copilot",
+        "nameEn": "Nova",
+        "name": "品牌策略 Copilot",
+        "layer": "需求层",
+        "domain": "品牌",
+        "role": "命名策略 · 世界观 · 视觉方向",
+        "avatar": "🔬"
+      },
+      {
+        "id": "c-031",
+        "type": "copilot",
+        "nameEn": "Aria",
+        "name": "动效预检 Copilot",
+        "layer": "质检闭环",
+        "domain": "互动",
+        "role": "帧率检查 · 动效规范 · Lottie 预检",
+        "avatar": "🔭"
+      },
+      {
+        "id": "c-032",
+        "type": "copilot",
+        "nameEn": "Bolt",
+        "name": "批量导出 Copilot",
+        "layer": "执行层",
+        "domain": "营销",
+        "role": "切图批出 · 命名规范 · Zero 回填",
+        "avatar": "🛰️"
+      },
+      {
+        "id": "c-033",
+        "type": "copilot",
+        "nameEn": "Cleo",
+        "name": "文案生成 Copilot",
+        "layer": "能力层",
+        "domain": "营销",
+        "role": "运营话术 · 权益文案 · 多渠道改写",
+        "avatar": "🚀"
+      },
+      {
+        "id": "c-034",
+        "type": "copilot",
+        "nameEn": "Dex",
+        "name": "Design Token Copilot",
+        "layer": "规则层",
+        "domain": "通用",
+        "role": "色彩/字体 token · 组件规范 · DS 同步",
+        "avatar": "🗜️"
+      },
+      {
+        "id": "c-035",
+        "type": "copilot",
+        "nameEn": "Echo",
+        "name": "反馈回流 Copilot",
+        "layer": "质检闭环",
+        "domain": "通用",
+        "role": "评审意见结构化 · Skill 回流 · 规则更新",
+        "avatar": "⏱️"
+      },
+      {
+        "id": "c-036",
+        "type": "copilot",
+        "nameEn": "Faye",
+        "name": "会场搭建 Copilot",
+        "layer": "执行层",
+        "domain": "营销",
+        "role": "模块组合 · 搭建指南 · 节奏对齐",
+        "avatar": "⏲️"
+      },
+      {
+        "id": "c-037",
+        "type": "copilot",
+        "nameEn": "Gus",
+        "name": "渠道适配 Copilot",
+        "layer": "能力层",
+        "domain": "营销",
+        "role": "搜索/推荐/外投 · 品专换肤 · 双端适配",
+        "avatar": "🧪"
+      },
+      {
+        "id": "c-038",
+        "type": "copilot",
+        "nameEn": "Hope",
+        "name": "验收契约 Copilot",
+        "layer": "规则层",
+        "domain": "通用",
+        "role": "L/M/H/exploratory 模板 · checks 生成",
+        "avatar": "⚗️"
+      },
+      {
+        "id": "c-039",
+        "type": "copilot",
+        "nameEn": "Jade",
+        "name": "Joy 资产 Copilot",
+        "layer": "能力层",
+        "domain": "品牌",
+        "role": "IP 变体 · 情绪词典 · 场景母库",
+        "avatar": "🔊"
+      },
+      {
+        "id": "c-040",
+        "type": "copilot",
+        "nameEn": "Kite",
+        "name": "编排度量 Copilot",
+        "layer": "质检闭环",
+        "domain": "通用",
+        "role": "编排效率 · adhoc 升格追踪 · Phase 复盘",
+        "avatar": "📊"
+      }
+    ]
+  }
 }
