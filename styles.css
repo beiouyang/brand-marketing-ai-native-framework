@@ -1134,8 +1134,16 @@ h1::after {
   background: rgba(255, 255, 255, .055);
 }
 
-.case-layer .layer-head h2 {
-  font-size: clamp(28px, 3.8vw, 52px);
+.architecture-page .layer h2 {
+  font-size: clamp(20px, 2.8vw, 42px);
+}
+
+.architecture-page .case-layer .layer-head h2 {
+  font-size: clamp(18px, 2.5vw, 36px);
+}
+
+.architecture-page .validation-matrix h3 {
+  font-size: 18px;
 }
 
 .case-meta {
