@@ -6,6 +6,7 @@
 
   const capabilityGrid = document.getElementById("capability-grid");
   const wikiGrid = document.getElementById("wiki-grid");
+  const wikiMeta = document.getElementById("wiki-meta");
   const kanbanTbody = document.getElementById("kanban-tbody");
   const kanbanPagination = document.getElementById("kanban-pagination");
   const teamGrid = document.getElementById("team-grid");
@@ -417,13 +418,55 @@
     });
   }
 
+  function wikiProgressBar(value, { compact = false } = {}) {
+    const pct = Math.max(0, Math.min(100, Number(value) || 0));
+    return `
+      <span class="wiki-progress ${compact ? "wiki-progress-compact" : ""}" aria-label="进度 ${pct}%">
+        <span class="wiki-progress-track"><span class="wiki-progress-fill" style="width:${pct}%"></span></span>
+        <span class="wiki-progress-value">${pct}%</span>
+      </span>
+    `;
+  }
+
   function renderWiki() {
+    const meta = data.wikiMeta || {};
+
+    if (wikiMeta) {
+      wikiMeta.innerHTML = meta.overallProgress != null
+        ? `
+          <div class="wiki-progress-banner">
+            <div class="wiki-progress-banner-head">
+              <p class="wiki-progress-kicker">${meta.initiative || "Design Wiki 建设"}</p>
+              ${wikiProgressBar(meta.overallProgress)}
+            </div>
+            ${meta.summary ? `<p class="wiki-progress-summary">${meta.summary}</p>` : ""}
+          </div>
+        `
+        : "";
+    }
+
     wikiGrid.innerHTML = data.wiki.map((item) => `
       <article class="wiki-card">
-        <h3>${item.title}</h3>
+        <div class="wiki-card-head">
+          <h3>${item.title}</h3>
+          ${item.progress != null ? wikiProgressBar(item.progress, { compact: true }) : ""}
+        </div>
         <p>${item.desc}</p>
         <ul>
-          ${item.entries.map((entry) => `<li><span>${entry[0]}</span><span>${entry[1]}</span></li>`).join("")}
+          ${item.entries.map((entry) => {
+            const name = entry[0];
+            const tag = entry[1];
+            const progress = entry[2];
+            return `
+              <li>
+                <span class="wiki-entry-name">${name}</span>
+                <span class="wiki-entry-meta">
+                  ${progress != null ? `<span class="wiki-entry-progress">${progress}%</span>` : ""}
+                  <span class="wiki-entry-tag">${tag}</span>
+                </span>
+              </li>
+            `;
+          }).join("")}
         </ul>
       </article>
     `).join("");

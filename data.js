@@ -540,76 +540,97 @@ window.BRAIN_DATA = {
       ]
     }
   ],
+  "wikiMeta": {
+    "initiative": "品牌&营销场域 MD 建设（基建）",
+    "summary": "基于 V16.0 搭建品牌营销场域 Wiki 框架，完成营销场域基础规范（字体、空间、色彩、圆角、图形）的 MD 化及 2 个 Skill 分别用于 html 预览与倍图缩放，并上传至 Coding 仓库",
+    "overallProgress": 15
+  },
   "wiki": [
     {
       "title": "品牌规范",
       "desc": "品牌色、字体、Logo、IP 形象、视觉标签、情绪词典和 Prompt 模板。",
+      "progress": 20,
       "entries": [
         [
           "Brand Tokens",
-          "规范"
+          "规范",
+          25
         ],
         [
           "Joy IP Library",
-          "资产"
+          "资产",
+          8
         ],
         [
           "Tone Dictionary",
-          "知识"
+          "知识",
+          5
         ]
       ]
     },
     {
       "title": "营销组件",
       "desc": "会场资源位、头图模板、资源模块、商品处理规则和多尺寸延展规范。",
+      "progress": 10,
       "entries": [
         [
           "Campaign Modules",
-          "组件"
+          "组件",
+          6
         ],
         [
           "Hero Templates",
-          "模板"
+          "模板",
+          8
         ],
         [
           "Resize Rules",
-          "规则"
+          "规则",
+          15
         ]
       ]
     },
     {
       "title": "案例资产",
       "desc": "高端立影、互动活动、短剧短视频、大促会场等可复盘案例与素材母库。",
+      "progress": 5,
       "entries": [
         [
           "Motion Cases",
-          "案例"
+          "案例",
+          0
         ],
         [
           "Video Scripts",
-          "素材"
+          "素材",
+          0
         ],
         [
           "Promo Archive",
-          "归档"
+          "归档",
+          5
         ]
       ]
     },
     {
       "title": "设计原则",
       "desc": "策略先行、资产可复用、交付可验证、Skill 可进化的团队共识。",
+      "progress": 12,
       "entries": [
         [
           "Workflow Rules",
-          "原则"
+          "原则",
+          15
         ],
         [
           "QA Checklist",
-          "校验"
+          "校验",
+          10
         ],
         [
           "Agent Handoff",
-          "流程"
+          "流程",
+          8
         ]
       ]
     }
