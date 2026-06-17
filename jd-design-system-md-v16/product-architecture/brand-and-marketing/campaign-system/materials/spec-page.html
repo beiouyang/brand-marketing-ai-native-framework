@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>营销场景材质 · Campaign System Materials 规范 - JD APP 16.0</title>
+<meta name="component-slug" content="campaign-system-materials">
+<meta name="component-version" content="0.1">
+<meta name="component-level" content="page">
+<style>
+  :root {
+    --c-text: #171a26;
+    --c-text-2: #3d414d;
+    --c-text-3: #828794;
+    --c-line: rgba(17, 20, 26, 0.08);
+    --c-bg: #ffffff;
+    --c-bg-sunken: #f6f7fb;
+    --c-bg-soft: rgba(17, 20, 26, 0.03);
+    --c-brand: #ff0f23;
+    --c-brand-soft: #fff0f4;
+    --c-info: #1668dc;
+    --c-info-soft: #edf4ff;
+    --c-warning: #a35a00;
+    --c-warning-soft: #fff7e8;
+    --c-good: #00a870;
+    --c-good-soft: #e9f8f3;
+    --r-base: 6px;
+    --r-l: 8px;
+    --r-xl: 12px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--c-bg-sunken);
+    color: var(--c-text);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body.basic .pro-only,
+  body.pro .basic-only { display: none !important; }
+
+  a { color: inherit; text-decoration: none; }
+
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #f0f2f7;
+    color: #245bdb;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.92);
+    border-bottom: 1px solid var(--c-line);
+    backdrop-filter: blur(16px);
+  }
+
+  .topbar-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .brand {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--c-text);
+    white-space: nowrap;
+  }
+
+  .zone-nav {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .zone-nav a {
+    padding: 6px 10px;
+    border-radius: var(--r-l);
+    color: var(--c-text-2);
+    font-size: 13px;
+  }
+
+  .zone-nav a.is-current {
+    background: var(--c-brand-soft);
+    color: var(--c-brand);
+    font-weight: 600;
+  }
+
+  .shell {
+    max-width: 1180px;
+    margin: 28px auto 56px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 76px;
+    align-self: start;
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-xl);
+    padding: 18px;
+  }
+
+  .sidebar h2 {
+    margin: 0 0 12px;
+    border: 0;
+    padding: 0;
+    font-size: 13px;
+    color: var(--c-text-3);
+    font-weight: 600;
+  }
+
+  .toc {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 4px;
+  }
+
+  .toc a {
+    display: block;
+    padding: 7px 10px;
+    border-radius: var(--r-l);
+    color: var(--c-text-2);
+    font-size: 13px;
+  }
+
+  .toc a:hover {
+    background: var(--c-bg-soft);
+    color: var(--c-text);
+  }
+
+  .doc {
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-xl);
+    padding: 56px 64px;
+    box-shadow: 0 10px 30px rgba(17, 20, 26, 0.04);
+  }
+
+  .eyebrow {
+    margin: 0 0 10px;
+    color: var(--c-brand);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .title-row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 36px;
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  .subtitle {
+    margin: 12px 0 0;
+    color: var(--c-text-2);
+    max-width: 690px;
+  }
+
+  .view-tabs {
+    display: inline-flex;
+    padding: 3px;
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-l);
+    background: var(--c-bg-sunken);
+    flex-shrink: 0;
+  }
+
+  .view-tabs button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--c-text-2);
+    font: inherit;
+    font-size: 13px;
+    padding: 6px 11px;
+    border-radius: var(--r-base);
+    cursor: pointer;
+  }
+
+  .view-tabs button.is-active {
+    color: var(--c-text);
+    background: var(--c-bg);
+    box-shadow: 0 1px 4px rgba(17, 20, 26, 0.08);
+  }
+
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin: 28px 0 46px;
+  }
+
+  .meta-item {
+    padding: 12px 14px;
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-l);
+    background: var(--c-bg-soft);
+  }
+
+  .meta-label {
+    display: block;
+    color: var(--c-text-3);
+    font-size: 12px;
+  }
+
+  .meta-value {
+    display: block;
+    margin-top: 2px;
+    color: var(--c-text);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  h2 {
+    margin: 48px 0 18px;
+    padding-top: 22px;
+    border-top: 1px solid var(--c-line);
+    font-size: 24px;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+
+  h2:first-of-type { margin-top: 0; }
+
+  .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background: var(--c-brand);
+    color: #fff;
+    font-size: 13px;
+    vertical-align: 2px;
+  }
+
+  h3 {
+    margin: 28px 0 12px;
+    font-size: 17px;
+  }
+
+  p { margin: 0 0 14px; color: var(--c-text-2); }
+
+  ul { margin: 0 0 18px; padding-left: 20px; color: var(--c-text-2); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 14px;
+    overflow: hidden;
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-l);
+  }
+
+  th, td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--c-line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    color: var(--c-text);
+    background: var(--c-bg-soft);
+    font-weight: 700;
+  }
+
+  tr:last-child td { border-bottom: 0; }
+
+  .callout {
+    margin: 18px 0 24px;
+    padding: 14px 16px;
+    border-radius: var(--r-l);
+    background: var(--c-info-soft);
+    color: var(--c-text-2);
+    border: 1px solid rgba(22, 104, 220, 0.16);
+  }
+
+  .warn {
+    margin: 18px 0 24px;
+    padding: 14px 16px;
+    border-radius: var(--r-l);
+    background: var(--c-warning-soft);
+    color: var(--c-warning);
+    border: 1px solid rgba(163, 90, 0, 0.16);
+  }
+
+  .material-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 18px 0 28px;
+  }
+
+  .material-card {
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    background: var(--c-bg);
+  }
+
+  .material-visual {
+    height: 116px;
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .visual-flat {
+    background:
+      linear-gradient(135deg, rgba(255, 15, 35, 0.12), rgba(255, 199, 0, 0.16)),
+      repeating-linear-gradient(90deg, rgba(17, 20, 26, 0.04) 0 1px, transparent 1px 18px);
+  }
+
+  .visual-color {
+    background:
+      radial-gradient(circle at 26% 28%, #fff 0 7%, transparent 8%),
+      radial-gradient(circle at 70% 36%, rgba(255,255,255,0.7) 0 11%, transparent 12%),
+      linear-gradient(135deg, #ff4d6d, #7f5cff 48%, #11c5ff);
+  }
+
+  .visual-real {
+    background:
+      radial-gradient(circle at 70% 34%, rgba(255,255,255,0.86) 0 9%, transparent 10%),
+      radial-gradient(circle at 32% 62%, rgba(255, 235, 170, 0.9) 0 17%, transparent 18%),
+      linear-gradient(150deg, #ff79b3 0%, #ff3457 52%, #7b3ff2 100%);
+  }
+
+  .material-card h3 {
+    margin: 0;
+    padding: 14px 14px 4px;
+  }
+
+  .material-card p {
+    padding: 0 14px 16px;
+    font-size: 13px;
+  }
+
+  .token-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin: 18px 0 24px;
+  }
+
+  .token {
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-l);
+    padding: 10px;
+    background: var(--c-bg);
+  }
+
+  .swatch {
+    display: block;
+    width: 100%;
+    height: 36px;
+    border-radius: var(--r-base);
+    border: 1px solid var(--c-line);
+    margin-bottom: 8px;
+  }
+
+  .token b,
+  .token span {
+    display: block;
+    font-size: 12px;
+  }
+
+  .token span { color: var(--c-text-3); }
+
+  .swatch-text-1 { background: var(--c-text); }
+  .swatch-text-2 { background: var(--c-text-2); }
+  .swatch-text-3 { background: var(--c-text-3); }
+  .swatch-page { background: #f2f3f7; }
+  .swatch-gray-1 { background: #11141a; }
+  .swatch-line { background: rgba(17, 20, 26, 0.08); }
+  .swatch-soft { background: rgba(17, 20, 26, 0.02); }
+  .swatch-white { background: var(--c-bg); }
+
+  @media (max-width: 880px) {
+    .topbar-inner { align-items: flex-start; flex-direction: column; }
+    .shell { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .doc { padding: 36px 24px; }
+    .title-row { flex-direction: column; }
+    .meta,
+    .material-grid,
+    .token-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body class="pro">
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="../../README.md">JD APP 16.0 GUIDELINE</a>
+    <nav class="zone-nav" aria-label="Design system zones">
+      <a href="../../README.md">知识库</a>
+      <a href="../../foundation.md">基础</a>
+      <a href="../../ai-rules.md">AI 机制</a>
+      <a class="is-current" href="../../marketing-modules.md">产品架构</a>
+      <a href="../../strategies.md">横向能力</a>
+    </nav>
+  </div>
+</header>
+
+<main class="shell">
+  <aside class="sidebar">
+    <h2>目录</h2>
+    <ol class="toc">
+      <li><a href="#sec-1-definition">组件定义</a></li>
+      <li><a href="#sec-2-behavior">行为准则</a></li>
+      <li><a href="#sec-3-attributes">设计属性</a></li>
+      <li><a href="#sec-4-scenarios">应用场景</a></li>
+    </ol>
+  </aside>
+
+  <article class="doc">
+    <p class="eyebrow">BRAND & MARKETING · CAMPAIGN SYSTEM</p>
+    <div class="title-row">
+      <div>
+        <h1>营销场景材质 Campaign System Materials</h1>
+        <p class="subtitle">定义平面、颜色和拟真三类材质表达的职责与使用边界，让营销视觉在氛围表达和信息识别之间保持稳定平衡。</p>
+      </div>
+      <div class="view-tabs" role="tablist" aria-label="阅读模式">
+        <button type="button" class="is-active" data-view="pro">Pro</button>
+        <button type="button" data-view="basic">Basic</button>
+      </div>
+    </div>
+
+    <section class="meta" aria-label="文档元信息">
+      <div class="meta-item"><span class="meta-label">版本</span><span class="meta-value">0.1</span></div>
+      <div class="meta-item"><span class="meta-label">来源</span><span class="meta-value">Relay 13532:312</span></div>
+      <div class="meta-item"><span class="meta-label">同步</span><span class="meta-value">2026-06-17</span></div>
+    </section>
+
+    <h2 id="sec-1-definition"><span class="num">1</span>组件定义</h2>
+    <p>材质规范用于品牌与营销场景中的材质选择、表现强度和案例应用判断。它继承 JD APP 16.0 基础设计系统中的 Liquid Glass 与 Frosted Glass 能力，并补充营销视觉中更常见的平面质感、颜色质感和拟真质感。</p>
+    <div class="callout basic-only">
+      简单说：这份规范帮助设计师判断一个活动页面该用更清晰的平面表达、更有氛围的渐变光感，还是更沉浸的拟真材质。
+    </div>
+    <table class="pro-only">
+      <thead><tr><th>章节</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td>01 基础规范继承</td><td>继承 Liquid Glass 与 Frosted Glass。</td></tr>
+        <tr><td>02 材质类型扩展</td><td>定义平面质感、颜色质感、拟真质感。</td></tr>
+        <tr><td>03 材质应用倾向</td><td>按三类材质说明视觉特征、应用特征和适用场景。</td></tr>
+        <tr><td>04 应用原则</td><td>视觉协调与适度表达。</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="sec-2-behavior"><span class="num">2</span>行为准则</h2>
+    <p>材质本身不是交互组件，但当材质案例作为活动入口、利益模块或 banner 背景出现时，需要保护文案、价格、权益和 CTA 的可读性。</p>
+    <ul>
+      <li>材质强度可以随活动阶段变化，但信息层级不能漂移。</li>
+      <li>玻璃、模糊、光效或拟真道具出现在文字附近时，需要在目标尺寸上确认对比度和可读性。</li>
+      <li>文档章节号、灰色占位容器和页面 chrome 不应作为生产资产导出。</li>
+    </ul>
+    <blockquote class="warn">待确认: 每组材质案例后方的两个灰色占位容器是否为待补案例。如果是占位，正式发布前应替换或在文档中明确标注。</blockquote>
+
+    <h2 id="sec-3-attributes"><span class="num">3</span>设计属性</h2>
+    <div class="material-grid" aria-label="材质类型">
+      <div class="material-card">
+        <div class="material-visual visual-flat"></div>
+        <h3>平面质感 · 2D</h3>
+        <p>张弛、清晰、通用。适合日常营销视觉和基础活动传播。</p>
+      </div>
+      <div class="material-card">
+        <div class="material-visual visual-color"></div>
+        <h3>颜色质感 · 2.5D</h3>
+        <p>鲜艳、趋势、层次。适合主题活动和氛围强化表达。</p>
+      </div>
+      <div class="material-card">
+        <div class="material-visual visual-real"></div>
+        <h3>拟真质感 · 3D</h3>
+        <p>质感、直观、沉浸。适合强调氛围和沉浸体验的视觉场景。</p>
+      </div>
+    </div>
+
+    <table>
+      <thead><tr><th>类型</th><th>定义</th><th>表现维度</th><th>推荐用途</th></tr></thead>
+      <tbody>
+        <tr><td>平面质感</td><td>以二维表现为主，通过稳定布局和图形关系强化材质细节。</td><td>2D</td><td>日常营销视觉、基础活动传播。</td></tr>
+        <tr><td>颜色质感</td><td>在平面基础上加入渐变、光感和色彩层次。</td><td>2.5D</td><td>主题活动、趋势化视觉、强吸引场景。</td></tr>
+        <tr><td>拟真质感</td><td>使用三维空间、真实表面和更强光影细节。</td><td>3D</td><td>沉浸式活动、节日氛围、高情绪视觉节点。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>关键 Token</h3>
+    <div class="token-grid">
+      <div class="token"><i class="swatch swatch-text-1"></i><b>一级文本</b><span>#171a26</span></div>
+      <div class="token"><i class="swatch swatch-text-2"></i><b>二级文本</b><span>#3d414d</span></div>
+      <div class="token"><i class="swatch swatch-text-3"></i><b>三级文本</b><span>#828794</span></div>
+      <div class="token"><i class="swatch swatch-page"></i><b>页面背景</b><span>#f2f3f7</span></div>
+      <div class="token"><i class="swatch swatch-gray-1"></i><b>页头文本</b><span>#11141a</span></div>
+      <div class="token"><i class="swatch swatch-line"></i><b>边框</b><span>#11141a14</span></div>
+      <div class="token"><i class="swatch swatch-soft"></i><b>浅底</b><span>#11141a05</span></div>
+      <div class="token"><i class="swatch swatch-white"></i><b>页面底色</b><span>#ffffff</span></div>
+    </div>
+
+    <h2 id="sec-4-scenarios"><span class="num">4</span>应用场景</h2>
+    <table>
+      <thead><tr><th>场景</th><th>推荐规则</th></tr></thead>
+      <tbody>
+        <tr><td>日常营销 banner</td><td>优先使用平面质感，保持布局稳定和内容清晰。</td></tr>
+        <tr><td>主题活动模块</td><td>使用颜色质感强化氛围，同时保护主信息可读性。</td></tr>
+        <tr><td>节日或沉浸式活动</td><td>当道具、空间和光影能帮助用户理解场景时使用拟真质感。</td></tr>
+        <tr><td>玻璃化表面</td><td>遵循 Liquid Glass 或 Frosted Glass 基础规范，并验证背景对比度。</td></tr>
+        <tr><td>AI 生成营销视觉</td><td>先选择材质类型，再决定表现维度、资产处理方式和文本安全区。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Donts</h3>
+    <ul>
+      <li>不要让复杂光影或高细节纹理争夺主信息焦点。</li>
+      <li>不要默认在所有活动中使用拟真材质。</li>
+      <li>不要把 Liquid Glass / Frosted Glass 当作自由装饰，应遵循基础系统约束。</li>
+      <li>不要将灰色占位容器作为最终案例图导出。</li>
+    </ul>
+  </article>
+</main>
+
+<script>
+  const buttons = document.querySelectorAll("[data-view]");
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      document.body.className = button.dataset.view;
+      buttons.forEach((item) => item.classList.toggle("is-active", item === button));
+    });
+  });
+</script>
+</body>
+</html>
