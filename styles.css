@@ -1207,18 +1207,19 @@ h1::after {
 }
 
 .architecture-page .layer h2 {
-  font-size: clamp(20px, 2.8vw, 42px);
+  font-size: 42px;
+  line-height: 1;
 }
 
-.architecture-page #rule-layer h2,
 .architecture-page #orchestration-layer h2,
-.architecture-page #application-layer h2,
 .architecture-page #execution-layer h2 {
-  font-size: clamp(20px, 2.8vw, 42px);
+  font-size: 42px;
 }
 
-.architecture-page .case-layer .layer-head h2 {
-  font-size: clamp(18px, 2.5vw, 36px);
+.architecture-page #case-summary {
+  max-width: none;
+  white-space: nowrap;
+  font-size: 14px;
 }
 
 .architecture-page .validation-matrix h3 {
@@ -1526,6 +1527,19 @@ h1::after {
   #home-case-summary {
     white-space: normal;
   }
+
+  .architecture-page .layer h2 {
+    font-size: 36px;
+  }
+
+  .architecture-page #orchestration-layer h2,
+  .architecture-page #execution-layer h2 {
+    font-size: 36px;
+  }
+
+  .architecture-page #case-summary {
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 720px) {
@@ -1536,6 +1550,20 @@ h1::after {
   .flow-stack {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .architecture-page .layer h2 {
+    font-size: 30px;
+  }
+
+  .architecture-page #orchestration-layer h2,
+  .architecture-page #execution-layer h2 {
+    font-size: 30px;
+  }
+
+  .architecture-page #case-summary {
+    white-space: normal;
+    font-size: 15px;
   }
 
   .flow-arrow {
