@@ -1043,6 +1043,10 @@ h1::after {
   line-height: 1.7;
 }
 
+.architecture-page .layer-head .layer-summary {
+  margin-top: 14px;
+}
+
 #home-case-summary {
   margin-top: 10px;
   max-width: none;
