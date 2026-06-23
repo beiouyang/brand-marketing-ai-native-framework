@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>品牌与营销 AI-Native Framwork</title>
+  <title>品牌与营销 AI-Native Framework</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23050505'/%3E%3Cpath d='M16 44V18h11c6 0 10 3 10 8 0 3-2 6-5 7 4 1 7 4 7 9 0 6-5 10-12 10H16Zm7-16h4c3 0 5-1 5-4 0-2-2-4-5-4h-4v8Zm0 19h5c4 0 6-2 6-5s-2-5-6-5h-5v10Z' fill='%23DA205A'/%3E%3Cpath d='M42 18h6v26h-6z' fill='%2355E6D1'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css?v=20260622-runtime-fixes">
 </head>
 <body>
   <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
@@ -28,7 +28,7 @@
   <div class="shell">
     <header class="topbar" aria-label="站点导航">
       <div class="brand-cluster" aria-label="站点标识">
-        <a class="mark-symbol" href="#user-layer" aria-label="返回用户层">BM</a>
+        <a class="mark-symbol" href="#user-layer" aria-label="返回需求层">BM</a>
         <span class="mark-copy">
           <span class="mark-title-row">
             <a class="mark-title" href="#user-layer">AI-Native Skill Atlas</a>
@@ -36,25 +36,29 @@
               <img src="./assets/attachment.svg" alt="" aria-hidden="true">
             </a>
           </span>
-          <small>Brand / Marketing / Design Wiki</small>
+          <nav class="mark-links" aria-label="页面切换">
+            <a href="./index.html" aria-current="page">Home</a>
+            <span aria-hidden="true">/</span>
+            <a href="./architecture.html">Intro</a>
+          </nav>
         </span>
       </div>
       <nav class="nav-links" aria-label="分层目录">
-        <a href="#user-layer">用户层</a>
-        <a href="#application-layer">应用层</a>
+        <a href="#user-layer">需求层</a>
         <a href="#rule-layer">规则层</a>
-        <a href="#atomic-layer">原子层</a>
+        <a href="#application-layer">能力层</a>
+        <a href="#execution-layer">执行层</a>
       </nav>
     </header>
 
     <main>
       <section class="hero" id="user-layer">
         <div class="hero-copy">
-          <h1 id="type-title" data-text="品牌与营销&#10;AI-Native Framwork"></h1>
+          <h1 id="type-title" data-text="品牌与营销&#10;AI-Native Framework"></h1>
           <p class="subtitle">把品牌策略、营销生产、互动体验和团队 Skill 沉淀成可复用的 AI-Native 工作系统</p>
           <form class="search" role="search" aria-label="搜索 Skill Agent Design Wiki 知识库">
             <span class="search-pulse" aria-hidden="true"></span>
-            <input id="global-search" type="search" autocomplete="off" placeholder="有需求，你就问">
+            <input id="global-search" type="search" autocomplete="off" placeholder="有需求，你就说">
             <button type="submit" aria-label="执行搜索">
               <svg class="search-submit-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="11" cy="11" r="6.5"></circle>
@@ -65,34 +69,83 @@
           <div class="hints" aria-label="搜索提示">
             <button type="button" data-query="大促多尺寸资源怎么批量生成">大促多尺寸资源怎么批量生成<svg class="hint-arrow" viewBox="0 0 22.088 22.448" aria-hidden="true"><use href="#hint-arrow-symbol"></use></svg></button>
             <button type="button" data-query="品牌IP规范">品牌IP规范<svg class="hint-arrow" viewBox="0 0 22.088 22.448" aria-hidden="true"><use href="#hint-arrow-symbol"></use></svg></button>
-            <button type="button" data-query="生成一个互动小游戏">生成一个互动小游戏<svg class="hint-arrow" viewBox="0 0 22.088 22.448" aria-hidden="true"><use href="#hint-arrow-symbol"></use></svg></button>
+            <a href="#orchestration-layer" data-case="app16-promo" data-query="App16.0 品牌推广">App16.0 品牌推广<svg class="hint-arrow" viewBox="0 0 22.088 22.448" aria-hidden="true"><use href="#hint-arrow-symbol"></use></svg></a>
             <button type="button" data-query="我有一个Logo需求">我有一个Logo需求<svg class="hint-arrow" viewBox="0 0 22.088 22.448" aria-hidden="true"><use href="#hint-arrow-symbol"></use></svg></button>
           </div>
         </div>
       </section>
 
-      <section class="layer" id="application-layer" data-layer="application">
+      <section class="layer case-layer orchestration-case-layer" id="orchestration-layer" data-layer="orchestration">
         <div class="layer-head">
-          <p class="eyebrow">Application Layer</p>
-          <h2>AI提效工具 / 业务专家</h2>
+          <p class="eyebrow">Orchestration Layer</p>
+          <h2>编排层</h2>
+          <p class="layer-summary" id="home-case-summary"></p>
+        </div>
+
+        <div class="case-meta">
+          <div><span>需求 ID</span><strong id="home-case-req-id"></strong></div>
+          <div><span>编排模式</span><strong id="home-case-mode"></strong></div>
+          <div><span>负责人</span><strong id="home-case-owner"></strong></div>
+          <div><span>周期</span><strong id="home-case-duration"></strong></div>
+        </div>
+
+        <div class="case-columns">
+          <article class="case-panel">
+            <h3 id="home-case-title">App16.0 品牌推广</h3>
+            <ul class="case-parse" id="home-case-parse"></ul>
+          </article>
+          <article class="case-panel">
+            <h3>阶段并行</h3>
+            <div class="phase-grid" id="home-case-phases"></div>
+          </article>
+        </div>
+
+        <div class="table-wrap">
+          <h3>任务队列 · 编排输出</h3>
+          <table class="case-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>子项</th>
+                <th>执行单元</th>
+                <th>等级</th>
+                <th>卡点</th>
+                <th>依赖</th>
+                <th>截止</th>
+              </tr>
+            </thead>
+            <tbody id="home-case-tasks"></tbody>
+          </table>
+        </div>
+
+        <article class="case-panel">
+          <h3>Skill Policy 映射</h3>
+          <ul class="skill-map" id="home-case-skills"></ul>
+        </article>
+      </section>
+
+      <section class="layer atomic" id="rule-layer" data-layer="rule">
+        <div class="layer-head">
+          <p class="eyebrow">Rule Layer</p>
+          <h2>AI-Native地基</h2>
+        </div>
+        <div class="wiki-grid" id="wiki-grid"></div>
+      </section>
+
+      <section class="layer" id="application-layer" data-layer="capability">
+        <div class="layer-head">
+          <p class="eyebrow">Capability Layer</p>
+          <h2>通用设计工作流 / AI提效工具</h2>
         </div>
         <div class="domain-grid" id="application-grid"></div>
       </section>
 
-      <section class="layer" id="rule-layer" data-layer="rule">
+      <section class="layer" id="execution-layer" data-layer="execution">
         <div class="layer-head">
-          <p class="eyebrow">Rule Layer</p>
-          <h2>通用设计工作流</h2>
+          <p class="eyebrow">Execution Layer</p>
+          <h2>设计师 / Copilot</h2>
         </div>
-        <div class="domain-grid rule-grid" id="rule-grid"></div>
-      </section>
-
-      <section class="layer atomic" id="atomic-layer" data-layer="atomic">
-        <div class="layer-head">
-          <p class="eyebrow">Atomic Layer</p>
-          <h2>Design Wiki / 知识库</h2>
-        </div>
-        <div class="wiki-grid" id="wiki-grid"></div>
+        <div class="domain-grid" id="execution-grid"></div>
       </section>
     </main>
   </div>
@@ -100,7 +153,7 @@
   <div class="modal" id="detail-modal" aria-hidden="true">
     <div class="modal-backdrop" data-close></div>
     <article class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <button class="modal-close" type="button" data-close aria-label="关闭详情">×</button>
+      <button class="modal-close" type="button" data-close aria-label="关闭详情"></button>
       <div class="modal-media" aria-label="图片或视频占位">
         <div class="media-grid" aria-hidden="true"></div>
         <img id="modal-media-image" alt="" hidden>
@@ -141,7 +194,8 @@
     </article>
   </div>
 
-  <script src="./data.js"></script>
-  <script src="./app.js"></script>
+  <script src="./data.js?v=20260622-runtime-fixes"></script>
+  <script src="./architecture-data.js?v=20260622-runtime-fixes"></script>
+  <script src="./app.js?v=20260622-runtime-fixes"></script>
 </body>
 </html>

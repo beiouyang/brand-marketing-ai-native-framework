@@ -1,10 +1,11 @@
 # Skill 卡片数据存储
 
-`brain-data.json` 是后续批量修改 Skill 卡片和弹窗内容的结构化存储源。
+`brain-data.json` 是后续批量修改 Skill 卡片、弹窗内容和内容索引说明的结构化存储源。
 
 ## 字段对应
 
-- `application[].items[]`：应用层 Skill 卡片和弹窗内容
+- `application[].items[]`：能力层 Skill 卡片和弹窗内容
+- `execution[].items[]`：执行层 Skill 卡片和弹窗内容
 - `rules[].items[]`：规则层 Skill 卡片和弹窗内容
 - `wiki[]`：原子层 Wiki 卡片内容
 
@@ -21,12 +22,16 @@ Skill 条目字段：
 - `capability`：弹窗“能力介绍”
 - `hints`：弹窗“试试这样问我”
 - `externalLink`：可选，弹窗“相关链接”，格式为 `{ "label": "...", "url": "..." }`
+- `downloadLink`：可选，弹窗 `Download Skill` 按钮跳转地址
+- `downloadLabel`：可选，弹窗下载/体验按钮的自定义文案
+- `downloadEnabled`：可选，无跳转地址时也启用按钮
+- `downloadNote`：可选，记录按钮后续跳转或接入事项
 - `mediaImage`：可选，弹窗左侧预览图，格式为 `{ "src": "./assets/...", "alt": "..." }`
 
 ## 更新流程
 
 1. 批量修改 `data/brain-data.json`。
-2. 运行同步脚本生成网页使用的 `data.js`：
+2. 运行同步脚本生成网页使用的 `data.js`，并更新 `content/` 下对应的 Skill / Wiki README：
 
 ```bash
 node scripts/sync-data.mjs
@@ -38,4 +43,4 @@ node scripts/sync-data.mjs
 /Users/ouyangbei3/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node scripts/sync-data.mjs
 ```
 
-后续我会优先把你给的批量修改落到 `data/brain-data.json`，再同步到 `data.js` 并验证页面。
+后续我会优先把你给的批量修改落到 `data/brain-data.json`，再同步到 `data.js` 和 `content/` README，并验证页面。

@@ -4,7 +4,7 @@
 
 ## 页面内容
 
-- 主标题：品牌与营销AI-Native Framwork
+- 主标题：品牌与营销AI-Native Framework
 - 副标题：把品牌策略、营销生产、互动体验和团队 Skill 沉淀成可复用的 AI-Native 工作系统
 - 搜索框：支持 Skill / Agent / Design Wiki / 知识库统一检索
 - Hints：提供常用搜索意图入口

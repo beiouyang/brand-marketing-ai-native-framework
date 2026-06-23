@@ -108,6 +108,13 @@
   }
 
   function openModal(item) {
+    const modalPanel = document.querySelector(".modal-panel");
+    const modalMedia = document.querySelector(".modal-media");
+    const mediaImage = document.getElementById("modal-media-image");
+    const mediaPlaceholder = document.getElementById("modal-media-placeholder");
+    const modalLinkSection = document.getElementById("modal-link-section");
+    const downloadButton = document.querySelector(".download-btn");
+
     document.getElementById("modal-kicker").textContent = `${item.layer} / ${item.tag}`;
     document.getElementById("modal-title").textContent = item.name;
     document.getElementById("modal-desc").textContent = item.desc;
@@ -117,12 +124,12 @@
     document.getElementById("modal-impact").textContent = (item.points || []).map((point) => `· ${point}`).join("\n");
     document.getElementById("modal-hints").textContent = item.points ? item.points.join("；") : "";
     document.getElementById("modal-downloads").textContent = "";
-    document.getElementById("modal-link-section").hidden = true;
-    document.querySelector(".modal-panel").classList.remove("has-media-image");
-    document.querySelector(".modal-media").classList.remove("has-image");
-    document.getElementById("modal-media-image").hidden = true;
-    document.getElementById("modal-media-placeholder").hidden = false;
-    document.querySelector(".download-btn").hidden = true;
+    if (modalLinkSection) modalLinkSection.hidden = true;
+    if (modalPanel) modalPanel.classList.remove("has-media-image");
+    if (modalMedia) modalMedia.classList.remove("has-image");
+    if (mediaImage) mediaImage.hidden = true;
+    if (mediaPlaceholder) mediaPlaceholder.hidden = false;
+    if (downloadButton) downloadButton.hidden = true;
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
@@ -290,11 +297,13 @@
         particle.vx *= 0.88; particle.vy *= 0.88; particle.vz *= 0.88;
         particle.x += particle.vx; particle.y += particle.vy; particle.z += particle.vz;
         const alpha = Math.max(0.12, Math.min(0.86, (base.z + 1.2) / 2.6));
+        const drawRadius = particle.size * screen.p;
+        if (!Number.isFinite(drawRadius) || drawRadius <= 0) continue;
         ctx.beginPath();
         ctx.fillStyle = particle.hot
           ? `rgba(85, 230, 209, ${alpha * 0.72})`
           : `rgba(218, 32, 90, ${alpha * 0.52})`;
-        ctx.arc(screen.x, screen.y, particle.size * screen.p, 0, Math.PI * 2);
+        ctx.arc(screen.x, screen.y, drawRadius, 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.globalCompositeOperation = "source-over";

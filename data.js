@@ -6,18 +6,6 @@ window.BRAIN_DATA = {
       "summary": "调研策略 / IP 资产 / 视觉一致性",
       "items": [
         {
-          "id": "brand-strategist-expert",
-          "tag": "专家",
-          "name": "品牌策略师",
-          "desc": "15年品牌战略经验，守护品牌一致性的终极捍卫者。",
-          "status": "预研/Demo",
-          "statusType": "research",
-          "impact": "品牌跨渠道一致性审核",
-          "downloads": 986,
-          "capability": "从品牌定位、语气、视觉识别、渠道触点和传播资产出发，审核品牌表达是否保持一致。",
-          "hints": "帮我检查这组营销物料是否符合品牌一致性"
-        },
-        {
           "id": "ai-brand-brief-tool",
           "tag": "需求收集",
           "name": "AI品牌Brief工具",
@@ -28,14 +16,12 @@ window.BRAIN_DATA = {
           "downloads": 0,
           "capability": "通过分步问题、结构化字段和填写提示，把模糊的品牌诉求转成可交付的 Brief 输入，包括业务背景、目标人群、品牌调性、视觉方向、交付范围和后续 AI 生产所需信息。",
           "hints": "帮我快速填写一份品牌需求 Brief",
-          "externalLink": {
-            "label": "AI品牌Brief工具",
-            "url": "https://githublulu2022.github.io/brand-brief-tool/"
-          },
           "mediaImage": {
             "src": "./assets/skill-media/ai-brand-brief-tool.png",
             "alt": "AI品牌Brief工具预览图"
-          }
+          },
+          "downloadLabel": "点击体验",
+          "downloadLink": "https://githublulu2022.github.io/JD-brand-brief-tool/"
         },
         {
           "id": "jd-brand-mockup-tool",
@@ -62,8 +48,8 @@ window.BRAIN_DATA = {
           "tag": "调研和策略",
           "name": "品牌方案调研工作流",
           "desc": "建立京东品牌情绪词典，包含情绪标签、视觉标签、Prompt 模板等。",
-          "status": "已应用/V1.2",
-          "statusType": "applied",
+          "status": "预研/Demo",
+          "statusType": "research",
           "impact": "执行效率提升700%",
           "downloads": 1826,
           "capability": "聚合品牌调性、竞品、情绪词和视觉标签，输出品牌策略洞察、关键词和可复用 Prompt。",
@@ -74,24 +60,13 @@ window.BRAIN_DATA = {
           "tag": "品牌",
           "name": "商店功能介绍图多尺寸",
           "desc": "面向 8 种尺寸、100+ 张资源的管理场景，自动化导出、压缩、Alpha 通道检查及打包流程。",
-          "status": "已应用/V0.8",
+          "status": "已应用/V1.1",
           "statusType": "applied",
           "impact": "批量交付时间缩短60%",
           "downloads": 896,
           "capability": "读取设计资源尺寸规则，批量生成多规格图片并完成交付前检查。",
-          "hints": "把这组商店功能图扩展成 8 个投放尺寸"
-        },
-        {
-          "id": "layer-naming-keyframe",
-          "tag": "品牌",
-          "name": "高端立影互动关键帧图层规范命名",
-          "desc": "建立统一图层命名规范，降低多人协作下图层整理与人工校对成本。",
-          "status": "已应用/V0.8",
-          "statusType": "applied",
-          "impact": "资产复用率提升80%",
-          "downloads": 768,
-          "capability": "识别关键帧、动效状态和图层职责，生成规范化图层命名与分组建议。",
-          "hints": "检查这个互动稿的关键帧图层命名是否规范"
+          "hints": "把这组商店功能图扩展成 8 个投放尺寸",
+          "downloadLink": "https://github.com/GitHubLulu2022/JD-Skill-Zero-Export-Compress"
         }
       ]
     },
@@ -153,12 +128,14 @@ window.BRAIN_DATA = {
           "tag": "大促",
           "name": "营销资源模块提效工具",
           "desc": "一键替换资源氛围与文案，支持页面预览与批量导出切图。",
-          "status": "进行中",
-          "statusType": "progress",
+          "status": "已应用/V0.8",
+          "statusType": "applied",
           "impact": "交付校验覆盖率提升90%",
           "downloads": 735,
           "capability": "将模块参数、文案、氛围图和切图导出串成半自动流程，降低返工。",
-          "hints": "把这个资源模块替换成双 11 氛围并导出切图"
+          "hints": "把这个资源模块替换成双 11 氛围并导出切图",
+          "downloadLabel": "点击体验",
+          "downloadLink": "https://dayu-fenwei.serveousercontent.com"
         }
       ]
     },
@@ -167,18 +144,6 @@ window.BRAIN_DATA = {
       "title": "互动域",
       "summary": "玩法策略 / 小游戏 / Lottie 交付",
       "items": [
-        {
-          "id": "interactive-game-design-team",
-          "tag": "专家",
-          "name": "互动游戏设计团队",
-          "desc": "5位专业角色分3阶段协作完成收集竞品小游戏趋势，制定增长策略，生成互动小游戏方案并交付工程验证。",
-          "status": "进行中",
-          "statusType": "progress",
-          "impact": "互动留存率提升50%",
-          "downloads": 528,
-          "capability": "组织多角色专家从数据采集、策略辩论、玩法决策、风险评估到方案设计，输出可上线互动游戏方案。",
-          "hints": "为一个拉新活动生成可上线的互动小游戏方案"
-        },
         {
           "id": "fission-interaction-workflow",
           "tag": "互动方案落地",
@@ -190,18 +155,6 @@ window.BRAIN_DATA = {
           "downloads": 288,
           "capability": "将增长目标、奖励机制和渠道规则映射为互动策略、风险提示和活动流程。",
           "hints": "判断这个裂变活动是否有微信封控风险"
-        },
-        {
-          "id": "full-chain-interaction-workflow",
-          "tag": "互动方案落地",
-          "name": "互动设计全链路AI工作流",
-          "desc": "覆盖体验定调、资产输出、工具设计与交付说明，支撑互动活动从概念到落地。",
-          "status": "预研/Demo",
-          "statusType": "research",
-          "impact": "方案验证周期缩短50%",
-          "downloads": 316,
-          "capability": "自动整理故事观、美术设定、角色、道具、图鉴、Icon、动画与音效需求。",
-          "hints": "为抽奖互动生成一套完整设计工作流"
         },
         {
           "id": "independence-day-interaction",
@@ -216,7 +169,7 @@ window.BRAIN_DATA = {
           "hints": "把这个营销互动玩法生成可评审的动态体验方案",
           "externalLink": {
             "label": "主站互动-营销互动设计体验AI生成",
-            "url": "https://joyspace.jd.com/pages/rznqyDuccebVWfksLmcZ"
+            "url": "https://joyspace.jd.com/pages/ceeSBl1jGcuXVG0Q2QeH"
           },
           "mediaImage": {
             "src": "./assets/skill-media/interaction-design-ai-generation.png",
@@ -244,7 +197,7 @@ window.BRAIN_DATA = {
           "tag": "互动",
           "name": "主站互动交付管道-Lotties编辑器",
           "desc": "视频一键转 Lottie，可编辑速率、精度、大小，形成预览导出 JSON。",
-          "status": "已应用/V0.8",
+          "status": "已应用/V1.0",
           "statusType": "applied",
           "impact": "覆盖80%营销需求",
           "downloads": 1078,
@@ -257,7 +210,9 @@ window.BRAIN_DATA = {
           "mediaImage": {
             "src": "./assets/skill-media/lottie-delivery-editor.png",
             "alt": "主站互动交付管道-Lotties编辑器预览图"
-          }
+          },
+          "downloadLabel": "点击体验",
+          "downloadLink": "https://fc907568565-tech.github.io/Lottie-key/"
         }
       ]
     },
@@ -267,24 +222,25 @@ window.BRAIN_DATA = {
       "summary": "动态预演 / 短剧短视频 / 内容生成",
       "items": [
         {
-          "id": "premium-page-motion-preview",
-          "tag": "多媒体内容创作",
-          "name": "高端立影页面互动预演生成",
-          "desc": "利用 Codex 进行 Vibe Coding 制作高端立影页面互动预演，实时体验对齐效果。",
-          "status": "进行中",
-          "statusType": "progress",
-          "impact": "批量交付时间缩短60%",
-          "downloads": 602,
-          "capability": "基于规范化 UI 稿生成可交互预演页面，辅助提案和动效对齐。",
-          "hints": "把这个 Figma 页面变成可点击的动效预演"
+          "id": "layer-naming-keyframe",
+          "tag": "品牌",
+          "name": "高端立影互动关键帧图层规范命名",
+          "desc": "建立统一图层命名规范，降低多人协作下图层整理与人工校对成本。",
+          "status": "已应用/V1.1",
+          "statusType": "applied",
+          "impact": "资产复用率提升80%",
+          "downloads": 768,
+          "capability": "识别关键帧、动效状态和图层职责，生成规范化图层命名与分组建议。",
+          "hints": "检查这个互动稿的关键帧图层命名是否规范",
+          "downloadLink": "https://github.com/GitHubLulu2022/JD-Skill-Liying-Layer-Naming/tree/main"
         },
         {
           "id": "script-storyboard-assistant",
           "tag": "短剧内容创作",
           "name": "脚本及分镜生成助手",
           "desc": "自动化生成脚本和分镜，实现剧本到分镜图的全自动流转，零手动上传。",
-          "status": "进行中",
-          "statusType": "progress",
+          "status": "已应用/V1.0",
+          "statusType": "applied",
           "impact": "执行效率提升500%",
           "downloads": 0,
           "capability": "自动完成项目创建、素材区/提示词区/AI生成区节点布局、分镜行脚本生成和分镜图准备，打通从剧本到可出片画布的全流程。",
@@ -296,15 +252,16 @@ window.BRAIN_DATA = {
           "mediaImage": {
             "src": "./assets/skill-media/script-storyboard-assistant.png",
             "alt": "脚本及分镜生成助手预览图"
-          }
+          },
+          "downloadLink": "https://github.com/hugohung/workbuddy-skill-jd-ai-short-drama-libtv"
         },
         {
           "id": "jd-ai-short-drama-script-assistant",
           "tag": "短剧内容创作",
           "name": "京东AI短剧剧本助手",
           "desc": "内置京东合规条款自动校验，规避品牌审核风险；实现从创意到交付文档一站式输出。",
-          "status": "进行中",
-          "statusType": "progress",
+          "status": "已应用/V1.0",
+          "statusType": "applied",
           "impact": "执行效率提升200%",
           "downloads": 0,
           "capability": "自动完成主题策划、节奏地图、剧本正文、人物场景设定、封面图和视频开场提示词，最终输出一份完整的 Markdown 剧本文档。",
@@ -312,7 +269,8 @@ window.BRAIN_DATA = {
           "externalLink": {
             "label": "京东AI短剧剧本助手",
             "url": "https://joyspace.jd.com/pages/M02Jj5on3Q6vJSeeTL4R"
-          }
+          },
+          "downloadLink": "https://github.com/hugohung/workbuddy-skill-jd-ai-short-drama-helper"
         },
         {
           "id": "text-to-video-tool",
@@ -325,6 +283,67 @@ window.BRAIN_DATA = {
           "downloads": 386,
           "capability": "将文案描述转为可配置的视频生成流程，支持风格、镜头和输出参数控制。",
           "hints": "生成一个极简风格的 15 秒商品视频"
+        },
+        {
+          "id": "frame-anim-tool",
+          "tag": "动图与序列帧处理",
+          "name": "frame-anim-tool",
+          "desc": "将 PNG 序列帧合成为 APNG/GIF 动图，或将动图拆解为序列帧，支持 APNG/GIF 压缩功能。",
+          "status": "已应用/V0.8",
+          "statusType": "applied",
+          "impact": "降低序列帧与动图互转的操作门槛",
+          "downloads": 0,
+          "capability": "通过 Python + Node.js 双引擎驱动，交互式引导用户选择输出格式、帧率和压缩方案，合成/压缩后自动在 Chrome 中预览并提供下载。",
+          "hints": "把这组 PNG 序列帧合成一个压缩后的 APNG 或 GIF",
+          "downloadLink": "https://github.com/hugohung/workbuddy-skill-frame-anim-tool"
+        }
+      ]
+    }
+  ],
+  "execution": [
+    {
+      "id": "designer-copilot",
+      "title": "人机协作角色",
+      "summary": "人类关键判断 / Copilot 虚拟专家",
+      "items": [
+        {
+          "id": "snow-designer",
+          "tag": "体验设计师",
+          "name": "Snow",
+          "desc": "负责人类设计师在关键节点的方向定调、审美判断、取舍决策和最终质量把关。",
+          "status": "Leader",
+          "statusType": "progress",
+          "impact": "关键节点判断质量提升",
+          "downloads": 0,
+          "capability": "在需求澄清、创意方向、体验节奏、视觉语气和上线前评审中做主观判断与跨团队协调，确保 AI 产出的方案不偏离真实业务目标和品牌语境。",
+          "hints": "帮我判断这个方案的体验方向是否需要收敛",
+          "downloadLabel": "联系Ta",
+          "downloadEnabled": true,
+          "downloadNote": "后续跳转京Me的对应联系人对话窗口"
+        },
+        {
+          "id": "brand-strategist-expert",
+          "tag": "虚拟专家",
+          "name": "品牌策略师",
+          "desc": "15年品牌战略经验，守护品牌一致性的终极捍卫者。",
+          "status": "预研/Demo",
+          "statusType": "research",
+          "impact": "品牌跨渠道一致性审核",
+          "downloads": 986,
+          "capability": "从品牌定位、语气、视觉识别、渠道触点和传播资产出发，审核品牌表达是否保持一致。",
+          "hints": "帮我检查这组营销物料是否符合品牌一致性"
+        },
+        {
+          "id": "interactive-game-design-team",
+          "tag": "虚拟专家",
+          "name": "互动游戏设计团队",
+          "desc": "5位专业角色分3阶段协作完成收集竞品小游戏趋势，制定增长策略，生成互动小游戏方案并交付工程验证。",
+          "status": "进行中",
+          "statusType": "progress",
+          "impact": "互动留存率提升50%",
+          "downloads": 528,
+          "capability": "组织多角色专家从数据采集、策略辩论、玩法决策、风险评估到方案设计，输出可上线互动游戏方案。",
+          "hints": "为一个拉新活动生成可上线的互动小游戏方案"
         }
       ]
     }
@@ -546,74 +565,59 @@ window.BRAIN_DATA = {
   ],
   "wiki": [
     {
-      "title": "品牌规范",
-      "desc": "品牌色、字体、Logo、IP 形象、视觉标签、情绪词典和 Prompt 模板。",
+      "tag": "规范资产",
+      "title": "Design Wiki",
+      "desc": "沉淀品牌与营销设计系统的可执行规范，给 Skill 和 Copilot 提供稳定边界。",
       "entries": [
         [
-          "Brand Tokens",
-          "规范"
+          "App16.0 Guidelines",
+          "版本基线"
         ],
         [
-          "Joy IP Library",
-          "资产"
+          "Marketing Design System",
+          "组件规则"
         ],
         [
-          "Tone Dictionary",
-          "知识"
+          "Joy IP Logic",
+          "品牌资产"
         ]
       ]
     },
     {
-      "title": "营销组件",
-      "desc": "会场资源位、头图模板、资源模块、商品处理规则和多尺寸延展规范。",
+      "tag": "案例库",
+      "title": "知识库",
+      "desc": "汇总过审案例、被否稿原因和复盘材料，帮助 AI 与设计师判断什么可用、什么不可用。",
       "entries": [
         [
-          "Campaign Modules",
-          "组件"
+          "Approved Cases",
+          "正例"
         ],
         [
-          "Hero Templates",
-          "模板"
+          "Rejected Rationale",
+          "反例"
         ],
         [
-          "Resize Rules",
-          "规则"
+          "Decision Logs",
+          "复盘"
         ]
       ]
     },
     {
-      "title": "案例资产",
-      "desc": "高端立影、互动活动、短剧短视频、大促会场等可复盘案例与素材母库。",
+      "tag": "MD",
+      "title": "品牌决策规则",
+      "desc": "定义什么场景用哪套规范、哪些节点必须人审、哪些内容禁止 AI 自创。",
       "entries": [
         [
-          "Motion Cases",
-          "案例"
+          "Scenario Routing Rules",
+          "判断"
         ],
         [
-          "Video Scripts",
-          "素材"
+          "Mandatory Human Gates",
+          "护栏"
         ],
         [
-          "Promo Archive",
-          "归档"
-        ]
-      ]
-    },
-    {
-      "title": "设计原则",
-      "desc": "策略先行、资产可复用、交付可验证、Skill 可进化的团队共识。",
-      "entries": [
-        [
-          "Workflow Rules",
-          "原则"
-        ],
-        [
-          "QA Checklist",
-          "校验"
-        ],
-        [
-          "Agent Handoff",
-          "流程"
+          "Exception Approval Flow",
+          "治理"
         ]
       ]
     }

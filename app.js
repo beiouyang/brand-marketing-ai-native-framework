@@ -1,15 +1,16 @@
 (function () {
   const data = window.BRAIN_DATA;
-  const allItems = [...data.application, ...data.rules].flatMap((group) =>
+  const allItems = [...data.application, ...data.execution, ...data.rules].flatMap((group) =>
     group.items.map((item) => ({ ...item, group: group.title, groupId: group.id }))
   );
 
   const applicationGrid = document.getElementById("application-grid");
-  const ruleGrid = document.getElementById("rule-grid");
+  const executionGrid = document.getElementById("execution-grid");
   const wikiGrid = document.getElementById("wiki-grid");
   const searchInput = document.getElementById("global-search");
   const modal = document.getElementById("detail-modal");
   const navLinks = [...document.querySelectorAll(".nav-links a")];
+  const orchestrationLayer = document.getElementById("orchestration-layer");
 
   function renderGroups(container, groups) {
     container.innerHTML = groups.map((group) => `
@@ -46,6 +47,7 @@
   function renderWiki() {
     wikiGrid.innerHTML = data.wiki.map((item) => `
       <article class="wiki-card">
+        <span class="tag">${item.tag || "规则"}</span>
         <h3>${item.title}</h3>
         <p>${item.desc}</p>
         <ul>
@@ -53,6 +55,55 @@
         </ul>
       </article>
     `).join("");
+  }
+
+  function renderOrchestrationCase() {
+    const caseStudy = window.ARCHITECTURE_DATA && window.ARCHITECTURE_DATA.caseStudy;
+    if (!orchestrationLayer || !caseStudy) return;
+
+    document.getElementById("home-case-title").textContent = caseStudy.title;
+    document.getElementById("home-case-summary").textContent = caseStudy.summary;
+    document.getElementById("home-case-req-id").textContent = caseStudy.reqId;
+    document.getElementById("home-case-mode").textContent = caseStudy.mode;
+    document.getElementById("home-case-owner").textContent = caseStudy.owner;
+    document.getElementById("home-case-duration").textContent = caseStudy.duration;
+
+    document.getElementById("home-case-parse").innerHTML = caseStudy.parse.map((row) => `
+      <li><span>${row.label}</span><span>${row.value}</span></li>
+    `).join("");
+
+    document.getElementById("home-case-phases").innerHTML = caseStudy.phases.map((phase) => `
+      <article class="phase-card">
+        <h4>${phase.phase}</h4>
+        <ul>${phase.items.map((item) => `<li>${item}</li>`).join("")}</ul>
+      </article>
+    `).join("");
+
+    document.getElementById("home-case-tasks").innerHTML = caseStudy.tasks.map((task) => `
+      <tr>
+        <td>${task.id}</td>
+        <td>${task.name}</td>
+        <td>${task.exec}</td>
+        <td><span class="level-pill">${task.level}</span></td>
+        <td>${task.gate}</td>
+        <td>${task.deps}</td>
+        <td>${task.days}</td>
+      </tr>
+    `).join("");
+
+    document.getElementById("home-case-skills").innerHTML = caseStudy.skillMap.map((row) => `
+      <li>
+        <span>${row.task}</span>
+        <span>${row.skills.join(" + ")}</span>
+        <span class="policy-pill">${row.policy}${row.adhoc ? "" : " · no adhoc"}</span>
+      </li>
+    `).join("");
+  }
+
+  function revealOrchestrationCase() {
+    if (!orchestrationLayer) return;
+    orchestrationLayer.classList.add("is-open");
+    orchestrationLayer.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function bindCards() {
@@ -76,9 +127,32 @@
     document.getElementById("modal-hints").textContent = item.hints || "这里可以放团队常用提问 输入模板或调用建议";
     renderModalLink(item.externalLink);
     renderModalMedia(item.mediaImage);
+    renderDownloadLink(item.downloadLink, item.downloadLabel, item.downloadEnabled);
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+  }
+
+  function renderDownloadLink(downloadLink, label = "Download Skill", enabledWithoutLink = false) {
+    const button = document.querySelector(".download-btn");
+    button.onclick = null;
+    delete button.dataset.href;
+    button.textContent = label || "Download Skill";
+
+    if (!downloadLink && !enabledWithoutLink) {
+      button.disabled = true;
+      button.setAttribute("aria-disabled", "true");
+      return;
+    }
+
+    button.disabled = false;
+    button.removeAttribute("aria-disabled");
+    if (!downloadLink) return;
+
+    button.dataset.href = downloadLink;
+    button.onclick = () => {
+      window.open(downloadLink, "_blank", "noopener");
+    };
   }
 
   function renderModalMedia(mediaImage) {
@@ -165,8 +239,9 @@
 
   function initUI() {
     renderGroups(applicationGrid, data.application);
-    renderGroups(ruleGrid, data.rules);
+    renderGroups(executionGrid, data.execution);
     renderWiki();
+    renderOrchestrationCase();
     bindCards();
     bindNavigationState();
     typeTitle();
@@ -179,9 +254,14 @@
 
     searchInput.addEventListener("input", () => applySearch(searchInput.value));
 
-    document.querySelectorAll(".hints button").forEach((button) => {
+    document.querySelectorAll(".hints button, .hints a").forEach((button) => {
       button.addEventListener("click", () => {
         searchInput.value = button.dataset.query;
+        if (button.dataset.case === "app16-promo") {
+          applySearch("");
+          revealOrchestrationCase();
+          return;
+        }
         applySearch(searchInput.value);
         document.getElementById("application-layer").scrollIntoView({ behavior: "smooth", block: "start" });
       });
@@ -354,11 +434,13 @@
         particle.z += particle.vz;
 
         const alpha = Math.max(.12, Math.min(.86, (base.z + 1.2) / 2.6));
+        const drawRadius = particle.size * screen.p;
+        if (!Number.isFinite(drawRadius) || drawRadius <= 0) continue;
         ctx.beginPath();
         ctx.fillStyle = particle.hot
           ? `rgba(85, 230, 209, ${alpha * .72})`
           : `rgba(218, 32, 90, ${alpha * .52})`;
-        ctx.arc(screen.x, screen.y, particle.size * screen.p, 0, Math.PI * 2);
+        ctx.arc(screen.x, screen.y, drawRadius, 0, Math.PI * 2);
         ctx.fill();
       }
 
