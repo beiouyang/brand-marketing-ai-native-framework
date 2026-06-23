@@ -277,9 +277,19 @@
   }
 
   function bindNavigationState() {
+    function getLinkHash(link) {
+      const rawHref = link.getAttribute("href") || "";
+      if (rawHref.startsWith("#")) return rawHref;
+      return link.hash || "";
+    }
+
     const sections = navLinks
-      .map((link) => document.querySelector(link.getAttribute("href")))
+      .map((link) => getLinkHash(link))
+      .filter(Boolean)
+      .map((hash) => document.querySelector(hash))
       .filter(Boolean);
+
+    if (!sections.length) return;
 
     function updateActiveLink() {
       const current = sections.reduce((active, section) => {
@@ -288,12 +298,12 @@
       }, sections[0]);
 
       navLinks.forEach((link) => {
-        link.classList.toggle("is-active", link.getAttribute("href") === `#${current.id}`);
+        link.classList.toggle("is-active", getLinkHash(link) === `#${current.id}`);
       });
     }
 
     navLinks.forEach((link) => {
-      if (link.getAttribute("href") !== "#user-layer") return;
+      if (getLinkHash(link) !== "#user-layer") return;
       link.addEventListener("click", (event) => {
         event.preventDefault();
         window.history.replaceState(null, "", "#user-layer");
