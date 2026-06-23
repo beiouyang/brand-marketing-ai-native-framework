@@ -4,7 +4,7 @@
 
 ## 当前 skill 列表
 
-见 [`./skills/`](./skills/)，6 个 skill（与仓库 README 第「Skill 体系」段同步）。
+见 [`./skills/`](./skills/)，当前 8 个 skill。`.agents/skills/` 是 AI-native Operating System 的应用 / 工作流层，负责把规范录入、发布、走查、生成等重复流程沉淀为可执行能力。
 
 ## 跨 agent 兼容（symlink 约定）
 

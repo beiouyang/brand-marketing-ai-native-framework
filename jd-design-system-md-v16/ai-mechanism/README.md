@@ -1,11 +1,13 @@
 ---
 zone: ai-mechanism
-last_updated: 2026-05-18
+last_updated: 2026-06-23
 ---
 
 # 🤖 AI 机制 · AI Mechanism (V16)
 
 > 把 V16 设计系统的"编辑面 ↔ 发布面 ↔ 审计面"用 AI Skill 串起来。**这里不是写"AI 怎么用",而是写"AI 用什么协议跟 V16 对话"**。
+
+在仓库级 [AI-native Operating System](../../AI-NATIVE-OPERATING-SYSTEM.md) 中，本目录承担“规则 / 协议层”：定义 Skill 如何消费 page-doc bundle、如何生成发布页、如何审计设计资产，以及哪些 AI 产物可以进入正式规范链路。
 
 V15 同名目录见 [[../../jd-design-system-md/ai-mechanism/README.md]](还在维护中,V15 token 走查仍走那边)。
 
